@@ -1,0 +1,18 @@
+rm -fr Models/Entities/*
+rm -fr Models/Mappings/*
+rm -fr Models/Proxies/*
+
+php doctrine orm:convert-mapping --from-database --namespace='Entities\' php Models/Mappings/ --force
+
+php doctrine orm:generate-entities Models
+
+php doctrine orm:generate-proxies
+
+Copiar Entidades al servidor:
+scp -r -P 20330 Models/Entities/Mto* subiw@89.7.222.195:/var/www/html/pr-montecerrado.hometech.red/api/app/Models/Entities/
+scp -r -P 20330 Models/Mappings/Entities.Mto* subiw@89.7.222.195:/var/www/html/pr-montecerrado.hometech.red/api/app/Models/Mappings/
+scp -r -P 20330 Models/Proxies/__CG__EntitiesMto* subiw@89.7.222.195:/var/www/html/pr-montecerrado.hometech.red/api/app/Models/Proxies/
+
+
+Conectarme al servidor:
+ssh -p 20330 soa@89.7.222.195

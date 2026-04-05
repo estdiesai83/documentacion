@@ -1,0 +1,143 @@
+<div class="contenedor" [ngStyle]="{'maxHeight': (viewportHeight - 20) + 'px'}">
+   <div class="cerrar" *ngIf="boton === 0" (click)="cerrarTexto()" ><i class="fa fa-reply"></i></div>
+   <div class="cerrar" *ngIf="boton === 1" (click)="cerrarTexto()" ><i class="fa fa-times"></i></div>
+
+   <div class="titulo-pizarra">
+      <div class="titulo" *ngIf="tipo === 0">Control asistencia</div>
+      <div class="titulo" *ngIf="tipo === 1">Control comedor</div>
+      <div class="titulo" *ngIf="tipo === 2">Control recogidas</div>
+      <div class="titulo" *ngIf="tipo === 3">Control puntualidad</div>
+      <div class="titulo" *ngIf="tipo === 4">Documentos</div>
+      <div class="titulo" *ngIf="tipo === ''"></div>
+   </div>
+   <!--PIZARRA TEXTO-->
+   <div class="pizarra" [ngClass]="{'inoperativo' : mostrar.confirm ===  1, 'enviada' : enviada === 1 ||  enviada === 2, 'sinadjuntos': !adjuntos}">
+      <textarea #pizarra [(ngModel)]="texto" [readonly]="readonly" placeholder="Escribe  .."></textarea>
+   </div>
+   <!-- contenido adjuntos -->
+   <div class="adjuntos" [ngClass]="{'inoperativo' : mostrar.confirm ===  1, 'enviada' : enviada === 1 ||  enviada === 2}" *ngIf="adjuntos && !readonly">
+      <!-- lengueta añadir adjuntos -->
+      <div class="contenedor-lengueta-adjuntos">
+         <div *ngIf="mostrar.adjuntos" [@slideLeftOut] class="contenido-lengueta-adjuntos">
+            <div (click)="escribirCamara()"  class="item">
+               <div class="circulo-adjunto">
+                  <i class="fa fa-camera"></i>
+               </div>
+            </div>
+            <div (click)="escribirVideo()"   class="item">
+               <div class="circulo-adjunto">
+                  <i class="fas fa-video"></i>
+               </div>
+            </div>
+            <div (click)="cogerGaleria()" class="item">
+               <div class="circulo-adjunto">
+                  <i class="fas fa-file"></i>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div (click)="mostrarAdjuntos()"  *ngIf="!mostrar.adjuntos"  class="boton-contenido">
+         <i class="fa fa-paperclip"></i>
+      </div>
+      <div (click)="mostrarAdjuntos()" *ngIf="mostrar.adjuntos" class="boton-contenido-cerrar">
+         <i class="fa fa-times"></i>
+      </div>
+      <div class="contenido-adjuntos">
+         <div class="flecha izquierda"><i class="fa fa-chevron-left"></i></div>
+         <div class="contenido-galeria">
+            <div class="contenido-div" *ngFor="let item of rutasadjuntos">
+                  <div (click)="mostrarImagen(item.adjunto)" *ngIf="item.tipo === 'imagen'" class="contenedor">
+                  <img [src]="item.adjunto"/>
+               </div>
+               <div (click)="mostrarVideo(item.adjunto)" *ngIf="item.tipo === 'video'" class="contenedor">
+                  <video [src]="item.adjunto"></video>
+                  <i class="play far fa-play-circle"></i>
+               </div>
+               <div (click)="mostrarDocumento(item.adjunto)" *ngIf="item.tipo !=='imagen' && item.tipo !=='video'" class="contenedor">
+                  <i class="fa fa-file"></i>
+               </div>
+            </div>
+         </div>
+         <div class="flecha derecha"><i class="fa fa-chevron-right"></i></div>
+      </div>
+   </div>
+
+   <!--BOTONERA-->
+   <div  (click)="validarPizarra()" *ngIf="directo!=1 && enviada === 0 && !readonly" [ngClass]="{'dos':texto_escribir!=''}" class="botonpizarra">OK</div>
+   <div  (click)="mostrarConfirmClave()" *ngIf="directo===1 && enviada === 0 && !readonly" class="botonpizarra verde"><i class="fa fa-paper-plane"></i>ENVIAR</div>
+   <div  class="botonlimpiar" *ngIf="texto_escribir!='' && directo != 1 && enviada === 0 && !readonly"  (click)="mostrarAlerta()">
+      <div class="icono">
+         <i class="fa fa-trash"></i>
+      </div>
+      <div class="texto">
+         ELIMINAR
+      </div>
+   </div>
+
+   <div class="enviadapizarra animacion" *ngIf="enviada === 1">
+      ENVIANDO 
+      <div class="loading">
+         <div class="css-loader-line"></div>
+      </div>
+   </div>
+
+   <div class="enviadapizarra" *ngIf="enviada === 2">
+      <i class="fa fa-check"></i> ENVIADA
+   </div>
+
+
+
+   <!--alerta borrar nota-->
+   <div class="contenido-alerta-pizarra" *ngIf="mostrar.confirm ===  1"> 
+      <app-alerta-confirmacion2 [texto1]="textoalerta" [textoboton]="textoboton" (confirmar)="limpiarPizarra()" (cerrar)="mostrarAlerta()"></app-alerta-confirmacion2>
+   </div>
+
+
+
+   <!-- contenido imagen -->
+   <div *ngIf="mostrar.imagen == 1" class="contenido-escribirtexto imagen">
+      <img [src]="src_imagen_visualizar">
+      <div class="botones">
+         <div (click)="reiniciarCapas()" class="item-botones cerrar">
+            <i class="fa fa-times"></i>
+            <span>CERRAR</span>
+         </div>
+         <div  (click)="eliminarImagenAdjunto()"  class="item-botones eliminar">
+            <i class="fa fa-trash"></i>
+            <span>ELIMINAR</span>
+         </div>
+      </div>
+   </div>
+      
+   <!-- contenido video -->
+   <div *ngIf="mostrar.video == 1" class="contenido-escribirtexto video">
+      <video (click)="playPauseVideo($event)" (ended)="video_playing = false" [src]="src_video_visualizar"></video>
+      <i  *ngIf="!video_playing" class="play far fa-play-circle"></i>
+      <div class="botones">
+         <div (click)="reiniciarCapas()" class="item-botones cerrar">
+            <i class="fa fa-times"></i>
+            <span>CERRAR</span>
+         </div>
+         <div  (click)="eliminarVideoAdjunto()"  class="item-botones eliminar">
+            <i class="fa fa-trash"></i>
+            <span>ELIMINAR</span>
+         </div>
+      </div>
+   </div>
+
+
+   <!-- contenido documento -->
+   <div *ngIf="mostrar.documento  === 1"  class="contenido-escribirtexto documento">
+      <iframe [src]="sanitizer.bypassSecurityTrustResourceUrl(src_doc_visualizar)"></iframe> 
+      <div class="botones documento">
+         <div (click)="reiniciarCapas()" class="item-botones cerrar">
+            <i class="fa fa-times"></i>
+            <span>CERRAR</span>
+         </div>
+         <div (click)="eliminarDocAdjunto()"  class="item-botones eliminar">
+            <i class="fa fa-trash"></i>
+            <span>ELIMINAR</span>
+         </div>
+      </div>
+   </div>
+</div>

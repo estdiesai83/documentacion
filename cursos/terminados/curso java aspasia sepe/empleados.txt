@@ -1,0 +1,61 @@
+<%-- 
+    Document   : empleadosoficios
+    Created on : 10 oct 2024, 2:04:48
+    Author     : dell
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="java.sql.*" %>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Empleados por oficio</title>
+    </head>
+    <body>
+        <%try{
+            DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+
+            Connection cn = DriverManager.getConnection(
+                "jdbc:oracle:thin:@localhost:1521:XE","DB_TEST","DB_TEST");
+            Statement sentencia = cn.createStatement(
+                ResultSet.TYPE_SCROLL_INTENSITIVE,ResulSet.CONCUR_READ_ONLY);
+            ResultSet rs = sentencia.executeQuery("SELECT DISTINCT JOB FROM EMP");%>
+        <h1>OFICIOS EMPLEADOS</h1>
+        <form method='POST' action='empleadosoficios.jsp' name='form1'>
+            <select name='cmboficio'>
+                <% String oficio="";
+                String opcioneshtml="";
+                oficio = request.getParameter("cmboficio");
+                while(rs.next()){
+                    String opcion = rs.getString(1);
+                    if(opcion!=null && opcion.equals(oficio))
+                        opcioneshtml += "<OPTION VALUE='"+opcion+"'SELECTED>"+opcion+"</OPTION>"; 
+                    }else{
+                        opcioneshtml += "<OPTION VALUE='"+opcion+"'>"+opcion+"</OPTION>";
+                    }
+                }%>
+                <%=opcioneshtml%>
+            </select>
+            <INPUT TYPE='SUBMIT' VALUE='Ver Empleados' NAME='btnbuscar'>
+        </form>
+        <%
+            String tabla ="";
+            if(oficio!=null){
+            PreparedStatement pst = cn.prepareStatement("SELECT ENAME,JOB,DEPNO FROM EMP WHERE JOB=%?");
+            pst.setString(1,oficio);
+            rs = pst.executeQuery();
+            tabla=<table border='1'>;
+            while(rs.next()){
+                tabla += "<tr><td>"+rs.getString(1)+"</td></tr>";
+                tabla += "<tr><td>"+rs.getString(2)+"</td></tr>";
+                tabla += "<tr><td>"+rs.getString(3)+"</td></tr>";
+                tabla += "</table>";%>
+        <%=tabla%>
+        <%}%>
+        <%} catch (Exception ex) {%>
+        <h1>Error:<%=ex.toString()%></h1>
+        <%}%>
+    </body>
+</html>

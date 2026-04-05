@@ -1,0 +1,124 @@
+<!-- <img src="/home/soa/Descargas/DSC_8117.JPG" alt="Imagen" width="500" height="200">  -->
+
+<a href="#seccion1">Ir a la sección 1</a>
+...
+<div id="seccion1">
+     Contenido de la seccion1
+</div>
+
+Accesibilidad:
+<a href=”https://www.ejemplo,com ">Visita Ejemplo</a>
+
+Accesibilidad:
+<a href=”#seccion1 ">Ir a la sección 1</a>
+…
+<div id=”seccion1 ">Contenido de la sección 1</div>
+
+<a href="https://www.ejemplo.com" target="_blank">Visita Ejemplo en una nueva pestaña</a>
+<!-- Muestra un texto al pasar el cursor sobre el enlace -->
+<a href="https://www.ejemplo.com" target="_blank" title="Aprende mas sobre Ejemplo">Visita Ejemplo en una nueva pestaña</a>
+<!--  -->
+<a href="https://www.ejemplo.com" target="_blank" rel="noopener noreferrer">Visita Ejemplo en una nueva pestaña</a>
+
+Accesibilidad:
+<a href="hetps://wm.ejenplo.com" target="_blank">Visita Ejemplo en una nueva pestaña</a>
+
+Accesibilidad:
+<a href="https://www.ejemplo.com" title="Aprende más sobre Ejemplo">Visita Ejemplo</a>
+
+Accesibilidad:
+<a href="https://www.ejemplo.com" rel="noopener noreferrer">Visita Ejemplo</a>
+
+Listas
+<div>
+   <!-- Lista ordenada -->
+   <ol>
+      <li>Primer paso</1i>
+      <li>Segundo paso</1i>
+   </ol>
+   <!-- Lista no odernada -->
+   <ul>
+      <li>Caracteristica A</1i>
+      <li>Caracteristica B</1i>
+   </ul>
+   <!-- Lista de descripción -->
+   <dl>
+      <dt>Término 1</dt>
+         <dd>Descripción 1</dd>
+      <dt>Término 2</dt>
+         <dd>Descripción 2</dd>
+  </dl>
+</div>
+
+<!-- FORMULARIOS -->
+ <!-- label -->
+ <label for="nombre">Nombre:</label>
+ <input type="text" id="nombre" name="nombre">
+ <!-- contraseñas -->
+ <label for="contraseña">Contraseña:</label>
+ <input type="password" id="contraseña" name="contraseña">
+ <!-- botones -->
+ <button type="submit">Enviar</button>
+ <button type="reset">Limpiar</button>
+<!-- checkbox -->
+<label>
+   <input type="checkbox" name="interes" value="musica">Música
+</label>
+<label>
+   <input type="checkbox" name="interes" value="libros">Libros
+</label>
+<!-- radiobutton -->
+<label>
+   <input type="radio" name="genero" value="masculino">Masculino
+   <input type="radio" name="genero" value="femenino">Femenino
+</label>
+<!-- Listas deplegables -->
+<label for="pais">Pais</label>
+<select id="pais" name="pais">
+    <option value="">Seleccione un pais...</option>
+    <option value="españa">España</option>
+    <option value="mexico">México</option>
+    <option value="argentina">Argentina</option>
+</select>
+<br>
+
+<!-- textarea texto multilínea -->
+<label for="comentario">Comentario:</label><br>
+<textarea id="comentario" name="comentario" rows="4" cols="50">
+Escribe algo aqui...
+</textarea>
+<!-- Agrupación de elementos -->
+<fieldset>
+   <legend>Información del contacto</legend>
+   <label for="email">Email:</label>
+   <input type="email" id="email" name="email">
+   <label for="telefono">Teéfono:</label>
+   <input type="tel" id="telefono" name="telefono">
+</fieldset>
+
+<!-- Etiquetas semánticas -->
+<article>
+   <header>
+       <h1>Título del Post</h1>
+       <p>
+           Publicado por <author>Nombre del autor</author> el <time datetime="2025-02-22"></time>
+       </p>
+   </header>
+   <section>
+       <h2>Introducción</h2>
+       <p>Contenido introductorio...</p>
+   </section>
+   <section>
+       <h2>Contenido Principal</h2>
+       <p>Detalle del contenido...</p>
+   </section>
+   <footer>
+       <p>
+           Comentarios...
+       </p>
+   </footer>
+</article>
+
+<br><br>
+<button aria-expanded="false" aria-controls="menu">Menu</button>
+<button aria-expanded="true" aria-controls="menu">Menu</button>

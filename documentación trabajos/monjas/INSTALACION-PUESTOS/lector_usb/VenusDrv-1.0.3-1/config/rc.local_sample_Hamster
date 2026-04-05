@@ -1,0 +1,39 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+###############################################################
+# for NITGEN Hamster / DX
+###############################################################
+KER_VER='uname -r'
+DRIVER_PATH="/lib/modules/$KER_VER/kernel/drivers/usb/misc/"
+device="nitgen"
+major=180
+
+rm -f /dev/${device}[0-7]
+
+mknod /dev/${device}0 c $major 230
+mknod /dev/${device}1 c $major 231
+mknod /dev/${device}2 c $major 232
+mknod /dev/${device}3 c $major 233
+mknod /dev/${device}4 c $major 234
+mknod /dev/${device}5 c $major 235
+mknod /dev/${device}6 c $major 236
+mknod /dev/${device}7 c $major 237
+
+chmod 777 /etc/VenusDrv.conf
+chmod 666 /dev/nitgen*
+
+modprobe --ignore-install VenusDrv
+###############################################################
+
+exit 0

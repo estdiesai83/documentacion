@@ -1,0 +1,14 @@
+<div #labelHora class="hora" (click)="desplegar()">
+   {{ hora }}
+</div>
+
+<div class="capa-deshabilitadora" *ngIf="desplegable" (click)="cerrarDesplegable($event)"></div>
+<div class="desplegable" 
+   id="listado-elementos"
+   *ngIf="desplegable" 
+   [@inOutDesplegable]="direccion_desplegable" 
+   [ngStyle]="{'top': desplegable_top, 'bottom': desplegable_bottom, 'left': desplegable_left}">
+   <div *ngFor="let h of horas" class="h" (click)="seleccion(h)" [ngClass]="{'seleccionado': h === hora, 'elemento-seleccionado': h === focus}">
+      {{ h }}
+   </div>
+</div>

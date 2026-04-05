@@ -1,0 +1,42 @@
+<app-mensajeria
+   [ngStyle]="{'height': 'calc(100% - ' + heightEntrada + ')'}"
+   [mensajes]="mensajes"
+   [bajarScroll]="bajarScroll"
+   [heightEntrada]="heightEntrada">
+</app-mensajeria>
+
+<div class="capa-deshabilitadora-clara" *ngIf="otros_adjuntos" (click)="otros_adjuntos = false"></div>
+<!-- Otros adujuntos -->
+<div class="otros-adjuntos" 
+   *ngIf="otros_adjuntos" 
+   @inOutOtrosAdjuntos 
+   [ngStyle]="{'bottom': obtenerBottomOtrosAdjuntos()}">
+   <div class="opcion" (click)="adjuntoDocumento($event)">
+      <div class="icono"><i class="fas fa-file"></i></div>
+      <div class="nemo">Documento</div>
+   </div>
+   <div class="opcion" (click)="adjuntoCamara($event)">
+      <div class="icono"><i class="fas fa-camera"></i></div>
+      <div class="nemo">Cámara</div>
+   </div>
+   <div class="opcion" (click)="adjuntoGaleria($event)">
+      <div class="icono"><i class="fas fa-image"></i></div>
+      <div class="nemo">Galería</div>
+   </div>
+</div>
+
+<app-entrada 
+   (otrosAdjuntos)="mostrarOtrosAdjuntos()"
+   (camara)="adjuntoCamara($event)"
+   (cambioHeight)="cambioHeightEntrada($event)"
+   (envioTexto)="envioTexto($event)"
+   (mostrarMail)="mostrarMail()">
+</app-entrada>
+
+<div class="capa-deshabilitadora-oscura" *ngIf="mail" @inOutFade></div>
+<div class="objeto-mail" *ngIf="mail" @inOutFromBottom>
+   <app-mail 
+      (eventoTerminar)="envioMail($event)"
+      (eventoCerrar)="mail = false">      
+   </app-mail>
+</div>

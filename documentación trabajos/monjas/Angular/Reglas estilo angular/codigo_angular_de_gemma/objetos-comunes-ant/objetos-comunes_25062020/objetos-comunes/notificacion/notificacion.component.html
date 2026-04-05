@@ -1,0 +1,28 @@
+<div class="notificacion" >
+   <div class="lateral">
+      <div *ngIf="tipo === 0" class="icono">
+         <i class="fas fa-exclamation"></i>
+      </div>
+      <div *ngIf="tipo === 1" class="icono">
+         <i class="fas fa-user-friends"></i>
+      </div>
+   </div>
+
+   <div class="cabecera">
+      <div class="tipo">
+         {{ nombre }}
+      </div>
+      <div class="fecha">
+            <i class="fas fa-check" *ngIf="fechaleida !== undefined"></i>  {{ fecha }}
+      </div>
+   </div>
+ 
+   <div class="mensaje">
+      <span class="principal">{{ titulo }}:&nbsp;</span>
+      <span class="secundario">{{ resumen}}</span>
+   </div>
+   <!-- <div class="fecha-leida" *ngIf="fechaleida !== undefined">
+         <i class="fas fa-check"></i>{{ fechaleida }}
+   </div> -->
+</div>
+ 

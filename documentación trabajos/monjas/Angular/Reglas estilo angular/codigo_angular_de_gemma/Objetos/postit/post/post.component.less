@@ -1,0 +1,242 @@
+:host{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position:relative;
+
+
+//   .contenedor{
+//     width: 100%;
+//     height: 100%;
+//     --height: 100%;
+//     padding: 5%;
+//     background-color: rgb(255,254,209);
+//     -moz-box-shadow: 2px 2px 2px #999;
+//     -webkit-box-shadow: 2px 2px 2px #999;
+//     box-shadow: 2px 2px 2px #999;
+//     border-radius: 10px;
+//     --transition: background-color 500ms linear;
+
+//     &.activado{
+//       background-color:  rgb(255,252,80);
+//     }
+
+//     .textarea{
+//       width: 100%;
+//       height: 97%;
+//       font-size: calc(2.1vw + 2.1vh);
+//       padding: 3%;
+//       padding-bottom: 5%;
+//       resize: none;
+//       border: 0;
+//       color: #333;
+//       background-color: transparent;
+//       border-radius: 10px;
+//       outline: none;
+//       font-family: arial;
+
+//       &::-webkit-input-placeholder {
+//         color: #ccc;
+//       }
+//       &:-moz-placeholder {
+//         color: #ccc;
+//       }
+//       &::-moz-placeholder {
+//         color: #ccc;
+//       }
+//       &:-ms-input-placeholder {
+//         color: #ccc;
+//       }
+//     }
+//     .caracteres{
+//       position: absolute;
+//       bottom: 3%;
+//       left: 3%;
+//       font-size: calc(1.7vw + 1.7vh);
+//       color: rgb(150,150,150);
+
+//       @keyframes "blinker1" {
+//         50% {
+//           color: white;
+//         }
+//       }
+//       &.warm{
+//         	color: rgb(114, 103, 255);
+//           animation: blinker1 1s linear infinite;
+
+//       }
+
+//       &.alert{
+//         color: red;
+//         font-weight: bold
+//       }
+//     }
+//     .boton-ok{
+//       position: absolute;
+//       right: 0;
+//       bottom: 0;
+//       display: flex;
+//       align-items: center;
+//       width: 30%;
+//       height: 20%;
+
+//       .icono{
+//         position: absolute;
+//         right: 15%;
+//         font-size: calc(2.5vw + 2.5vh);
+//       }
+//     }
+
+//     .cerrar{
+//       position: absolute;
+//       width: 18%;
+//       height: 23%;
+//       top: -4%;
+//       display: flex;
+//       right: -4%;
+//       color: #969696;
+//       justify-content: center;
+//       font-size: calc(2.3vw + 2.3vh);
+//       justify-content: center;
+//       align-items: center;
+//     }
+//   }
+
+#cp_contenido_post_postit_teho{
+   width: 100%;
+   height: 100%;
+   position: relative;
+}
+
+#titilo_crear_postit_post_postit_teho{
+   width: 100%;
+   height: 10%;
+   position: absolute;
+   top: 0;
+   left: 0;
+   text-align: center;
+   font-size: calc(1.5vw + 1.5vh);
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+#cp_contenedor_textarea_post_postit_teho{
+   width: 100%;
+   height: 100%;
+   --height: 100%;
+   padding: 5%;
+
+   background-color: rgb(255,254,209); 
+   box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.15);
+   border-radius: 10px;
+   --transition: background-color 500ms linear;
+}
+#cp_contenedor_textarea_post_postit_teho.validado{
+   background-color: rgb(255,252,80); 
+   --transition: background-color 500ms linear;
+}
+#cp_contenedor_textarea_post_postit_teho .cerrar{
+   position: absolute;
+   width: 18%;
+   height: 23%;
+   top: -4%;
+   right: -4%;
+   color: rgb(150,150,150);
+   font-size: calc(2.3vw + 2.3vh);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+#cp_caracteres_restantes_textarea_post_postit_teho{
+   position: absolute;
+   bottom: 3%;
+   left: 3%;
+   font-size: calc(1.7vw + 1.7vh);
+   color: rgb(150,150,150);
+}
+@keyframes blinker1{
+   50% { color: white }
+}
+#cp_caracteres_restantes_textarea_post_postit_teho.warn{
+   --font-size: calc(1.4vw + 1.4vh);
+   --font-weight: bold;
+   color: rgb(114, 103, 255);
+   animation: blinker1 1s linear infinite;
+}
+#cp_caracteres_restantes_textarea_post_postit_teho.alrt{
+   color: red;
+   font-weight: bold;
+}
+#cp_contenedor_textarea_post_postit_teho textarea{
+   width: 100%;
+   height: 100%;
+   font-size: calc(2.1vw + 2.1vh);
+   padding: 2%;
+   padding-bottom: 5%;
+   resize: none;
+   border: 0;
+   background-color: transparent;
+   border-radius: 10px;
+   user-select: all;
+   -webkit-user-select: all;
+}
+#cp_contenedor_textarea_post_postit_teho textarea::placeholder{
+   color: rgb(200,200,200);
+}
+#cp_contenedor_textarea_post_postit_teho textarea:focus{
+   outline: none;
+}
+
+#cp_barra_textarea_post_postit_teho{
+   position: absolute;
+   width: 100%;
+   height: 19%;
+   border-top: 1px solid rgb(200,200,200);
+   border-bottom-right-radius: 10px;
+   border-bottom-left-radius: 10px;
+   font-size: calc(3vw + 3vh);
+   bottom: 0;
+   left: 0;
+}
+
+#boton_ok_post_post_postit_teho{
+   position: absolute;
+   right: 0;
+   bottom: 0;
+   display: flex;
+   align-items: center;
+   width: 30%;
+   height: 20%;
+}
+#boton_ok_post_post_postit_teho .texto{
+   position: absolute;
+   right: 45%;
+   font-size: calc(1.7vw + 1.7vh);
+   color: rgb(100,100,100);
+}
+#boton_ok_post_post_postit_teho .icono{
+   position: absolute;
+   right: 15%;
+   font-size: calc(2.5vw + 2.5vh);
+}
+#boton_ok_post_post_postit_teho .icono.parpadeo{
+   animation: blinker1 1s linear infinite;
+}
+
+#cp_barra_textarea_post_postit_teho #boton_ok_post_post_postit_teho .front{
+   width: 100%;
+   height: 100%;
+   background-color: transparent;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.ui-effects-transfer { 
+   border: 2px dotted rgb(150,150,150);
+   z-index: 3000;
+}
+}

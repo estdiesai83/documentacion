@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="pruebaLibros.css" type="text/css"?>
+
+<catalog>
+   <book>
+      <title>Clean Code</title>
+      <author>Robert C. Martin</author>
+      <year>2008</year>
+      <publisher>Prentice Hall</publisher>
+   </book>
+   <!-- Agrega al menos tres libros más siguiendo este formato -->
+   <book>
+      <title>Clean Code</title>
+      <author>Robert C. Martin</author>
+      <year>2008</year>
+      <publisher>Prentice Hall</publisher>
+   </book>
+   <book>
+      <title>Clean Code</title>
+      <author>Robert C. Martin</author>
+      <year>2008</year>
+      <publisher>Prentice Hall</publisher>
+   </book>
+</catalog>

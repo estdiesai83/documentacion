@@ -1,0 +1,36 @@
+
+<div class="despegable">
+   <!-- <div [ngClass]="{activo: estado.cuando}" (click)="despeglarCuando()" class="boton"> -->
+   <div [ngClass]="{activo: estado.cuando}" (click)="toggleFecha()" class="boton">
+      <span class="icono"><i class="fas fa-calendar"></i></span>
+      <!-- <span class="texto">Cuando</span> -->
+   </div>
+</div>
+<!-- <div class="linea"></div> -->
+<div class="contenedor-info" (click)="!enviado ? mostrar = 2 : null">
+      <div class="nemo" *ngIf="fecha === undefined || fecha.date === undefined">INMEDIATO</div>
+      <div *ngIf="fecha !== undefined && fecha.date !== undefined" class="fecha">
+      {{("0" + fecha.dia ).slice(-2)}}/{{("0" + fecha.mes ).slice(-2)}}/{{ fecha.anio }}<br>{{ fecha.hora }}
+   </div>
+   
+</div>
+<app-desplegable class="desplegable fecha"
+         *ngIf="mostrar === 2"
+         [opciones]="opciones_fecha" 
+         [indicador]="0"
+         (seleccion)="seleccionFecha($event)"
+         (eventoCerrar)="mostrar = 0">      
+      </app-desplegable>
+<div class="capa-deshabilitadora-oscura" *ngIf="mostrar.fecha === 1" @inOutFade></div>
+
+<div class="fechahora" *ngIf="mostrar.fecha === 1" @inOutFromBottom>
+   <app-fechahora-picker 
+      [weekend]="true" 
+      [intervalo]="10" 
+      [ver_dia]="(fecha !== undefined && fecha.date !== undefined) ? fecha.date : undefined"
+      [hora]="(fecha !== undefined && fecha.hora !== undefined) ? fecha.hora : undefined"
+      [focus]="'08:00'"
+      (eventoValidado)="fechaElegida($event)"
+      (eventoCerrar)="mostrar = 0">      
+   </app-fechahora-picker>
+</div>

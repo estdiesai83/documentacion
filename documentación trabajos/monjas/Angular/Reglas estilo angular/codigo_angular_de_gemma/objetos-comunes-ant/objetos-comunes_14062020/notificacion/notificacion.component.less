@@ -1,0 +1,111 @@
+:host{
+   width: 100%;
+   display: block;
+   font-size: 11.5px;
+
+   .notificacion{
+      width: 100%;
+      border-radius: 15px;
+      position: relative;
+      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
+      border: 1px solid #ececec;
+      padding: 10px 17px;
+      background: white;
+      float: left;
+      margin-bottom: 20px;
+
+      .lateral{
+         width: 30px;
+         height: 30px;
+         float: left;
+         display: flex;
+         justify-content: flex-start;
+         align-items: center;
+         font-size: 1.8em;
+         color: #0088ff;
+
+         .icono{
+            position: relative;
+            float: left;
+         }
+      }
+      .cabecera{
+         width: calc(100% - 30px);
+         height: 30px;
+         float: right;
+         padding-left: 10px;
+
+         .tipo{
+            text-transform: uppercase;
+            height: 100%;
+            color: #0088ff;
+            display: flex;
+            -webkit-box-pack: start;
+            justify-content: flex-start;
+            -webkit-box-align: center;
+            align-items: center;
+            font-weight: normal;
+            font-size: 1.3em;
+            float: left;
+            font-weight: bold;
+
+            &::first-letter {
+               text-transform: uppercase;
+            }
+         }
+         .fecha{
+            height: 100%;
+            color: grey;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 1.2em;
+            float: right;
+            i{
+               margin-right: 5px;
+            }
+         }
+      }
+      .mensaje{
+         width: 100%;
+         font-size: 1.3em;
+         float: right;
+         padding-bottom: 0;
+         margin-top: 10px;
+         line-height: 20px;
+         height: 20px;
+         white-space: nowrap;
+         overflow: hidden;
+         text-overflow: ellipsis;
+
+         .principal{
+            font-weight: bold;
+
+            &::first-letter {
+               text-transform: uppercase;
+            }
+         }
+         .secundario{
+            &::first-letter {
+               text-transform: uppercase;
+            }
+         }
+      }
+      .fecha-leida{
+         position: absolute;
+         height: 50px;
+         bottom: 0;
+         right: 0;
+         color: grey;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         font-size: 1.2em;
+         right: 17px;
+
+         i{
+            margin-right: 5px;
+         }
+      }
+   }
+}

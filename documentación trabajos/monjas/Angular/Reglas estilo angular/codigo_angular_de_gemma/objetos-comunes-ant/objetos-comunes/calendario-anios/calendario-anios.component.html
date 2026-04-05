@@ -1,0 +1,12 @@
+
+<div class="swiper-container swiper-container1">
+   <div class="swiper-wrapper">
+      <div 
+      class="swiper-slide"  
+      (swipeLeft)="restar();"
+      (swipeRight)="sumar();" 
+      *ngFor="let anio of anios">
+      <div data-calendar="2019"  class="calendar"></div>
+      </div>
+   </div>
+</div>

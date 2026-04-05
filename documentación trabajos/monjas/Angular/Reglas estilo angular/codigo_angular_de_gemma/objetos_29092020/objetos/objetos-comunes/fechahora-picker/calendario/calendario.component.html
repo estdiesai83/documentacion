@@ -1,0 +1,13 @@
+<div class="contenedor">
+   <igx-calendar
+      [ngClass]="{'weekend': weekend}"
+      [hasHeader]="false"
+      #calendar 
+      [selection]="seleccion"
+      [locale]="locale"
+      [formatOptions]="formatOptions"
+      [formatViews]="formatViews"
+      [weekStart]="1"
+      (onSelection)="diaSeleccionado.emit($event)">
+   </igx-calendar>
+</div>

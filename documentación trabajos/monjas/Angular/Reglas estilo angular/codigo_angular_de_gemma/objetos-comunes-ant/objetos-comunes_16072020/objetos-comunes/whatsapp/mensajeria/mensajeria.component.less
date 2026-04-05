@@ -1,0 +1,238 @@
+@num_botones_input: 3;
+@width_boton_input: 40px;
+@input_height: 50px;
+@contenido_entrada_padding: 5px;
+@contenido_entrada_height: calc(@input_height + (2 * @contenido_entrada_padding));
+
+:host{
+   display: block;
+   width: 100%;
+   height: 100%;
+
+   .mensajeria{
+      width: 100%;
+      // Tengo en cuenta el alto de la cabecera (50px)
+      max-height: calc(100% - (@contenido_entrada_height + 50px));
+      overflow: auto;
+      padding: 25px 0;
+      position: absolute;
+      left: 0;
+      bottom: @contenido_entrada_height;
+      // border-top: 5px solid red;
+      // border-bottom: 5px solid red;
+
+      .mensaje{
+         width: 100%;
+         padding: 5px 25px;
+         float: left;
+         position: relative;
+
+         .bocadillo{
+            max-width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08);
+            position: relative;
+            width: auto;
+
+            &.enviado{
+               background-color: rgb(227,246,202);
+               float: right;
+            }
+            &.recibido{
+               background-color: #fdf5f5;
+               float: left;
+            }
+
+            .texto{
+               font-size: 1.5rem;
+               padding: .6rem;
+               padding-right: 4rem;
+               padding-left: .8rem;
+               word-break: break-all;
+               white-space: pre-wrap;
+            }
+            .hora{
+               font-size: 1.1rem;
+               color: rgba(0, 0, 0, 0.3);
+               position: absolute;
+               bottom: 7px;
+               right: 7px;
+            }
+         }
+         .archivo{
+            max-width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08);
+            position: relative;
+            width: auto;
+
+            &.enviado{
+               background-color: rgb(227,246,202);
+               float: right;
+
+               audio{
+                  &::-webkit-media-controls-panel{
+                     border-radius: 10px;
+                     background-color: rgb(227,246,202);
+                  }
+               }
+            }
+            &.recibido{
+               background-color: #fdf5f5;
+               float: left;
+
+               audio{
+                  &::-webkit-media-controls-panel{
+                     border-radius: 10px;
+                     background-color: #fdf5f5;
+                  }
+               }
+            }
+            &.imagen{
+               padding: 5px;
+
+               img{
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 7px;
+                  object-fit: contain;
+                  display: block;
+               }
+
+               .hora{
+                  color: white;
+                  text-shadow: 0 0 3px black;
+                  bottom: 10px;
+                  right: 10px;
+               }
+            }
+            &.audio{
+               audio{
+                  padding-right: 5rem;
+                  outline: none;
+                  display: block;
+               }
+            }
+            
+            .hora{
+               font-size: 1.1rem;
+               color: rgba(0, 0, 0, 0.3);
+               position: absolute;
+               bottom: 7px;
+               right: 7px;
+            }
+            .cargando{
+               height: 50px;
+               padding-right: 5rem;
+               padding-left: 2rem;
+               display: block;
+
+               img{
+                  height: 100%;
+                  object-fit: contain;
+               }
+            }
+         }
+         .mail{
+            width: 100%;
+            border-radius: 3px;
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding: 10px 0;
+
+            &.enviado{
+               background-color: rgb(227,246,202);
+            }
+            &.recibido{
+               background-color: #fdf5f5;
+            }
+
+            .asunto{
+               font-size: 1.6rem;
+               word-break: break-all;
+               white-space: pre-wrap;
+               padding: 0 15px;
+               margin-bottom: 5px;
+            }
+            .comentario{
+               font-size: 1.1rem;
+               color: rgb(115, 115, 115);
+               font-size: 1.5rem;
+               word-break: break-all;
+               white-space: pre-wrap;
+               padding: 0 15px;
+            }
+            .adjuntos{
+               margin-top: 15px;
+               position: relative;
+               width: 100%;
+               height: 80px;
+
+               .cargando{
+                  width: 100%;
+                  height: 100%;
+                  text-align: center;
+                  display: block;
+
+                  img{
+                     height: 100%;
+                     object-fit: contain;
+                  }
+               }
+            }
+         }
+
+         .rabillo{
+            position: absolute;
+            top: 5px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08);
+            // z-index: 1;
+
+            &.enviado{
+               right: 17px;
+               border-top: 10px solid #e3f6c9;
+               background-color: #e3f6c9;
+               border-bottom-right-radius: 100%;
+            }
+            &.recibido{
+               left: 17px;
+               border-top: 10px solid #fdf5f5;
+               background-color: #fdf5f5;
+               border-bottom-left-radius: 100%;
+            }
+         }
+      }
+
+      .indicativo-scroll{
+         position: fixed;
+         bottom: 80px;
+         right: 0;
+         width: 50px;
+         height: 30px;
+         background-color: #505050;
+         border-top-left-radius: 5px;
+         border-bottom-left-radius: 5px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+
+         .icono{
+            color: #56b0ff;
+            border: 2px solid #56b0ff;
+            border-radius: 1000px;
+            font-size: 1.2rem;
+            height: 20px;
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 2px;
+            padding-left: 0px;
+         }
+      }
+   }
+}

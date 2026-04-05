@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+
+</head>
+<body>
+    <div style="float: left; margin-top: 16%; margin-left: 21%;">
+      <img class="class_servicio_muneco"  src="img/serviciotecnico.jpg" style=" width: 249px;"/>
+    </div>
+<div style="padding: 12px; border: 1px solid black; position: absolute; margin-top: 23%; margin-left: 36%; width: 50%;">
+        <table style="margin-left: 19%;">
+            <tr>
+                <td style="text-align: center; ">
+                    Pongase en contacto con el servicio técnico
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;font-weight: bold;font-size:18px">
+                    91 675 84 85
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

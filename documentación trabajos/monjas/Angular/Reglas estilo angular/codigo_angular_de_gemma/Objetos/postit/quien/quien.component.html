@@ -1,0 +1,55 @@
+<div class="contenido-quienes"  [ngClass]="{activo: estado.quienes, 'error': errorquienes}" (click)="despeglarQuienes()">
+   <div class="despegable" >
+      <div   class="boton">
+         <span class="icono"><i class="fas fa-user"></i></span>
+         <!-- <span class="texto">Donde</span> -->
+      </div>
+   </div>
+   <!-- <div class="linea"></div> -->
+   <div *ngIf="dependenciasQuienes.length"  [ngClass]="{'error': error}" class="contenedor-info">
+      <div class="elemento"  [ngClass]="{'ultimo': last}" *ngFor="let personas of dependenciasQuienes; let last = last">
+         <div class="nombre">
+            <div>
+               {{personas.nemo}} {{personas.nombre}}
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div *ngIf="!dependenciasQuienes.length" [ngClass]="{'error': error}" class="contenedor-info" (click)="despeglarQuienes()"></div>
+
+
+<!-- LISTA DESPEGABLE -->
+<div class="despegables-quienes no-pointer-events" (clickOutside)="onClickedOutside($event)">
+   <ul *ngIf="mostrar.lista"  class="lista en-pointer-events" [@slideInOut]>
+         <li (click)="cerrarDespeglarQuienes()" class="cerrar">
+            <span class="icono"><i class="fas fa-caret-down"></i></span>
+         </li>
+         <li class="todos" value="todos">
+            <div (click)="deseleccionarTodosQuienes()" class="deseleccionar">
+               <i class="far fa-trash-alt"></i>
+            </div>
+            <div (click)="seleccionarTodosQuienes()" class="seleccionar">
+               <div class="nombre">TODOS</div>
+               <span class="seleccion icono">
+                  <i *ngIf="!estado.todos" class="far fa-square"></i>
+                  <i *ngIf="estado.todos" class="far fa-check-square"></i>
+               </span>
+            </div>
+         </li>
+         <li class="lista">
+            <ul>
+               <li  [ngClass]="{activado: personas.estado}" (click)="seleccionarDependencia(personas.nombre, personas.nemo, personas.id, personas.estado)"  *ngFor="let personas of quienesNuevos">
+                  <div class="nombre">
+                     {{personas.nemo}} {{personas.nombre}}
+                  </div>
+                  <span class="seleccion icono">
+                     <i *ngIf="personas.estado" class="fas fa-check"></i>
+                  </span>
+               </li>
+
+            </ul>
+      </li>
+   </ul>
+</div>
+

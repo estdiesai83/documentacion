@@ -1,0 +1,33 @@
+<div class="contenedor">
+   <div class="cabecera"> 
+      <div class="boton cerrar" (click)="cerrarCalendario()">
+         Cerrar
+      </div>
+
+      <div class="boton crear" (click)="guardarValores()">
+         {{textoOk}}
+      </div>
+   </div>   
+
+   <div class="check">
+      <mat-checkbox 
+         [(ngModel)]="tipo_seleccion_check" 
+         (change)="cambiarTipoSeleccion()">
+         Seleccionar rango
+      </mat-checkbox>
+   </div>
+   
+   <div #contenedorCalendario class="contenedor-calendario" [ngStyle]="{'height': calendario_height + 'px'}">
+      <igx-calendar
+         #calendar 
+         *ngIf="mostrar_calendario"
+         selection="{{tipo_seleccion_calendar}}"
+         [locale]="locale"
+         [formatOptions]="formatOptions"
+         [formatViews]="formatViews"
+         [weekStart]="1"
+         (onSelection)="seleccionardias($event)">
+      </igx-calendar>
+   </div>
+</div>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <!-- Contenido del documento XML -->
+<libros>
+   <libro>
+      <titulo>Aprende a programar java</titulo>
+      <autor>John Scott</autor>
+   </libro>
+</libros>

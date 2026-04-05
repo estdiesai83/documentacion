@@ -1,0 +1,80 @@
+@import '../../globals.less';
+
+:host{
+   display: block;
+   width: 100%;
+   height: 100%;
+   position: relative;
+   background-image: url('@{BASE_APP}/assets/img/asistente.jpg');
+
+   .otros-adjuntos{
+      position: absolute;
+      width: calc(100% - 20px);
+      bottom: 60px;
+      display: flex;
+      background-color: white;
+      left: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+      z-index: 1;
+
+      .opcion{
+         width: 33.33%;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+         padding: 20px;
+
+         .icono{
+            color: #0088ff;
+            font-size: 3.5rem;
+            height: 50px;
+         }
+         .nemo{
+            font-size: 1.5rem;
+            color: #6b6b6b;
+         }
+      }
+   }
+   
+   .objeto-mail{
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 70px);
+      z-index: 1;
+
+      app-mail{
+         border-top-left-radius: 10px;
+         border-top-right-radius: 10px;
+         overflow: hidden;
+
+         ::ng-deep{
+            .cabecera{
+               border-top-left-radius: 10px;
+               border-top-right-radius: 10px;
+               overflow: hidden;
+            }
+         }
+      }
+   }
+   .capa-deshabilitadora-clara{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;   // Este z-index deberá ir cambiando según convenga
+   }
+   .capa-deshabilitadora-oscura{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 1;   // Este z-index deberá ir cambiando según convenga
+   }
+}

@@ -1,0 +1,17 @@
+<div class="capa-deshabilitadora" *ngIf="show && capa_deshabilitadora"></div>
+
+<div class="desplegable-opciones" 
+   *ngIf="show"
+   [@inOutOpciones]="indicador" 
+   (clickOutside)="clickedOutside()">
+
+   <i class="indicativo izda fas fa-caret-left" *ngIf="indicador === 0"></i>
+   <i class="indicativo dcha fas fa-caret-right" *ngIf="indicador === 1"></i>
+   <i class="indicativo superior fas fa-caret-up" *ngIf="indicador === 2"></i>
+   <i class="indicativo inferior fas fa-caret-down" *ngIf="indicador === 3"></i>
+
+   <div class="opcion" *ngFor="let opcion of opciones" (click)="seleccionar(opcion)" [ngClass]="{'disabled': opcion.disabled}">
+      <span class="texto">{{opcion.nemo}}</span>
+      <i class="icono {{opcion.icono}}"></i>
+   </div>
+</div>

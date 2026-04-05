@@ -1,0 +1,22 @@
+;
+; archivo BIND para zona cataloniavip.net
+;
+$TTL    604800
+@       IN      SOA     cataloniavip.net. hostmaster.cataloniavip.net. (
+                5       ; Serial
+                           1200         ; Refresh
+                            300         ; Retry
+                        2419200         ; Expire
+                           1200 )       ; Negative Cache TTL
+
+cataloniavip.net.    IN      NS      ns.cataloniavip.net.
+cataloniavip.net.    IN      MX      1 mail.cataloniavip.net.
+
+localhost            IN      A       127.0.0.1
+cataloniavip.net.    IN      A       79.148.242.52
+
+ns	 IN      A       79.148.242.52
+
+www      IN      A       79.148.242.52
+smtp     IN      A       79.148.242.52
+mail	 IN	 A 	 79.148.242.52

@@ -1,0 +1,165 @@
+; File written on Wed Apr  9 12:31:44 2014
+; dnssec_signzone version 9.8.1-P1
+viphoteles.net.		604800	IN SOA	ns1.viphoteles.net. support.viphoteles.net. (
+					2014040803 ; serial
+					21600      ; refresh (6 hours)
+					3600       ; retry (1 hour)
+					604800     ; expire (1 week)
+					1800       ; minimum (30 minutes)
+					)
+			604800	RRSIG	SOA 8 2 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					ajw8Kb1LP68xtB5TDb3Kn0xXdu+YYsLxCotA
+					CM7EaNCal5xuXaYcQIPAqRAoHBcklqHtUtwq
+					BvXsdA40yayyOIoHJBrI2I/ziVwrGIavHkfa
+					nM6THKQakAdPj6v8okgC1BSUWLf3GiXTw6FM
+					CVHjfMxm5aBEmj4KkcLz+CwJoOc= )
+			604800	NS	ns1.viphoteles.net.
+			604800	RRSIG	NS 8 2 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					bMUediSLffjYC2Cf1QP6i/HnJ/Oqa9LElinu
+					7YaXhrBnI7uF/ci/cTMXCc5e2h9WTyzWzhel
+					7OzOYWA7h6UByk4vWmDB5eObMlUnl59273gK
+					m/aLU8xhHzTaBAP9p8VYop4RbMJOPBW7QjBv
+					YwCquPYqW/r5pdBcnEGnxHzdRuY= )
+			604800	A	79.148.242.52
+			604800	RRSIG	A 8 2 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					5Kn0UQC5Rvs1rz0m/W69lTK5IwjqjfvEnOzm
+					2VP/P6ufuZVjgjzlEXTpeU1+I6Q42j7GUESf
+					5PT3HyCBOZeS7HwI4Y5Y8etbIpqjAB5gJBhn
+					q+OL+NHZFoepW/0LtMmhzO1ppDxWO/7IkE01
+					/o2i8ywTPuvTJ4ynlbaESHVA+QQ= )
+			604800	MX	10 mail.viphoteles.net.
+			604800	RRSIG	MX 8 2 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					F5OhguZGSsBtwAcRKKEyNnvgJLMKk8ORarMR
+					/K/0L14+4A5snrTyQFY2LvHn3tpoYRD5B5Xt
+					uge9ukaOWPXEq/D5KwIZfJADRyOWZ1vwcptD
+					QU55usJd6EKuqRczbcA1N7xPAPQYftx869ZH
+					2bUn2fbpTNaratWLuxQouja1rv8= )
+			604800	DNSKEY	256 3 8 (
+					AwEAAbCibLGEqhy4udWtmLusE1pVz+RCyYSx
+					XQWT2qpsHqa9jleTgSK4xDg7NkuYdrLhklxi
+					lMhstPhYZDiHxMNKarVk3Rn23STpXZgRRBKA
+					N8fjdaw4XsXkse9elutQhYdv5gHispuNPGvY
+					twqv/P165puB2q6Eto8eUYtoiF2cuFtv
+					) ; key id = 54528
+			604800	DNSKEY	256 3 8 (
+					AwEAAfuhItDoXe+cU+K3ppLq5hWXqlHbk+Wn
+					kFtTx/TcEwzG447VxM/9m+OOZq9D0NkXat3N
+					O1llnMMykTtUe6bbo/ads8Kvz4/5bSa7zQmO
+					KuvJyc3DgrMXGmk7KioD3y5ZlRru/IYjqio+
+					vEfm4kSebVdw0RQyZWhRDY4cJm66oP3F
+					) ; key id = 25479
+			604800	DNSKEY	257 3 8 (
+					AwEAAcRAivPW4H5EsZAQW4uHsIQMOwBkvCqG
+					yFrHQJ1JoWHim+JKdmS21kkFfd5YEtVi/8EQ
+					bu8bx5t4NZBivvv+Xc0i5mJJ8fNLHw6+KWoN
+					ceGN7F3JkA2vBAB0iL4aby8Ay/ju+/KFuK4N
+					pibeKsb05mb2ySirkv2hUTk8KqQNDX47WWok
+					rqhyxCD9ceUMETGLbendYjdVjmUzza+2DLfP
+					HICtl0ocRwTMU8kYTzXeyTiCBVgULKqSW1lp
+					xx8DpqP+6JV1XUlPkOh5gqYd219KUJv5B1Ig
+					5PPwVtk+YhpaY/Baf9KYYSYe4BALGMIkXzAv
+					SMr16T52jpSDdg0VpmOGYOc=
+					) ; key id = 33139
+			604800	RRSIG	DNSKEY 8 2 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					8w6BjbEZMY+hs8vWKVjvHxFYhDa4xirf86u3
+					2TGH/j5lZ3YOMpQasdgOOVCahcCCxYgLJNeG
+					9Na7H40MS+AUHLOiVALLWE0yqdrTc7ksckY7
+					8ffv31AqcKoG2Z8+vgi8XXgiREuOWqa0bdki
+					yRRGyztLMGDA3i0Dcd5wEvfdbew= )
+			604800	RRSIG	DNSKEY 8 2 604800 20140509093144 (
+					20140409093144 33139 viphoteles.net.
+					IU0p2uNszcpvhuISIq+ZnvRQe7IkYN7K5thN
+					uZJgMqPIZP4lp4lfOVCYgTht0NoTDiM3JM+k
+					FW27jhbj/gX7KEplbAiPsCiU23Cauz4BVqHb
+					KvUBEnjCL/P9OcLe0vi+bCYZ8ut0m63mZkci
+					7jUI4iPq4UIjw/ZuP0Jhyado00mVKKfhPaih
+					VvvubzuiivyqaVdmiGFJnA8dHQD7cb9AKDKL
+					nrUL/mu31Dxw5ANhDAsC3VjKkpcbYk0qnmQ9
+					5dNqgmNyUzIBH0XjrHJFdSS3etIpbsN2xWMi
+					E+J2Uo4agUkicSloM4DzE1M8/EgXCCvhCJlx
+					5vqmzW2JXwkKtC4i+w== )
+			0	NSEC3PARAM 1 0 100 65B6CD51E3FB5E7F
+			0	RRSIG	NSEC3PARAM 8 2 0 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					CN8Xr9Wj6J0n3MBbWaGWzS8dhKnJg+Qbqm2w
+					kp2d2P4iZuE9UHvADDrqewgvtt+NaYCkfhuT
+					0ZQKHc7LC6vvAy//eYCTn6BMxFyshH5y0Gr5
+					mAWvkDXJRjNSovuPvVVOL8JYxzU/r9sJzDy/
+					RV/QkZiyQV2DUj7EFIwbudg2ehg= )
+ns1.viphoteles.net.	604800	IN A	79.148.242.52
+			604800	RRSIG	A 8 3 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					kId44PCMCqSgnxF1OFGb3ZL/3NSw7n8u3hLP
+					dbu8S1rsJ/TR08WI/y7lKRVwUwY624dpCQDX
+					7bGLwo+MHbzBGuWLashJzCYfx3QnHbiMsBRB
+					pHSgjbx7Jhifp6cyBqBz1d/Z4gmWf1XDgBJU
+					Ahw+hTbV1lhw7YHnvH5A5/UXPmg= )
+CNVQFFACSC55KF3VNPNN6E9MTSHFH901.viphoteles.net. 1800 IN NSEC3 1 0 100 65B6CD51E3FB5E7F IG1I369FOELJTV0TJCFF0VSRVHN95SJR A RRSIG
+			1800	RRSIG	NSEC3 8 3 1800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					lrzXjBfZkX4DKSEZWIQ7n51Z1gOnQOQbXdQy
+					Sy9rjghu0ecUvhHC2vXg9TJJhhhAw2avPsz8
+					ZASttujmVmwnAQX4AxVkpNpe7AH6n3JoAo/q
+					xfLGq9/dtfHF5YBNQd/iSi4n+veB0jLK6tsl
+					bo26scXxZF7vZV0aU36QYQKpMv0= )
+IG1I369FOELJTV0TJCFF0VSRVHN95SJR.viphoteles.net. 1800 IN NSEC3 1 0 100 65B6CD51E3FB5E7F MA52ST2O1C5FK2KRH3AVCN6JN3NO0MJU A RRSIG
+			1800	RRSIG	NSEC3 8 3 1800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					Ta0hPPTXT4aEnfYkpTYyqnwIH5uQfF2VFI3o
+					MiMSO5nb0lLLfLDjWQqKf+Ijb8GOl7VJ3NXI
+					5MtRwAqNCuf7eSM2khZaOBZKlA3LASIjVBJD
+					37fxHgISOvuK9JEvxEXJaYjCk3budGSu/sDa
+					zXUKaQ2o05o9iJaME9Pq31alywQ= )
+mail.viphoteles.net.	604800	IN A	79.148.242.52
+			604800	RRSIG	A 8 3 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					5BXRioSa7KZxKrQu2PqzaxEdvraPbaTS2DJ8
+					QWFchHrAyzU1awt/LAZ2DYKlXzsfZbVeQwWE
+					Mm2DodihxI5jEuLZ7OBNX9PVo58YyW/QF9tW
+					DTHhKcTfM7UaWr34SXHbty/bqjx0p9n+Lqdn
+					wXnfl6tT1yQIuyk7X6Aa9g5aQ2c= )
+www.viphoteles.net.	604800	IN A	79.148.242.52
+			604800	RRSIG	A 8 3 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					kHntrSNGlBpMMWLg9AUaS+9LZ13zbLKfOLIe
+					N2rFVbs1Cn+6nKqrF2EblyeIbG4fz0Ag/9rU
+					Up9eVzfERpfGsiOzRxBKHAn9d8bSCZp+b6vw
+					W5ERF1ly5dK2hWmWj2+ZsMdShs/Gp0vcCvQS
+					2YAWi/ULree87ten2CwteBv2MN0= )
+TLT3S7KVRJG6KQIOBMTM948M7JJPMCIF.viphoteles.net. 1800 IN NSEC3 1 0 100 65B6CD51E3FB5E7F V13EU3U405FFA2R1NJBD1GN3SKRHJFH5 A NS SOA MX RRSIG DNSKEY NSEC3PARAM
+			1800	RRSIG	NSEC3 8 3 1800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					ydP2dQ4SaMe0Z5wQQo5UYwgvvRTnd34wlkh/
+					rCtL7Wx9/a17J5TObHICUny93rBn1SmpIABc
+					+Wh9+iJXIekCzJCER2z3sm5FyOhWo7GrCXZi
+					eMNGDOCyiLyct/IXagj2LqzB9ApvS0FzoUfo
+					ZFrsU+Flc06Y4ew5Y+dmQr9thqE= )
+smtp.viphoteles.net.	604800	IN A	79.148.242.52
+			604800	RRSIG	A 8 3 604800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					tTWyjIeBEqpeb7HctFDK4y4iEmRNKyuB0Sq4
+					je2XMO4KDiC7pjDytB9qWABYFo3zNT/BEfZi
+					+kvqAh7qkIO9q3/mdS68PTHWueki1oFxy4iG
+					w1b6GZRLLYI2GkeflgkupQSL1sDtfymYjfu6
+					ElpM6hsGufgPkqOJ4MfJXu82EDE= )
+MA52ST2O1C5FK2KRH3AVCN6JN3NO0MJU.viphoteles.net. 1800 IN NSEC3 1 0 100 65B6CD51E3FB5E7F TLT3S7KVRJG6KQIOBMTM948M7JJPMCIF A RRSIG
+			1800	RRSIG	NSEC3 8 3 1800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					nLN64PcJpl0dE9IU04r4FlqnKiVwAY1YAgX1
+					4Y+xr2WALC5fIEeOoP55iFJghXyEjbJcfuD2
+					CWEjuTHCl3EePDmBTtL8EThzkDbYNebmGKMI
+					EjHwKnbVPl5ihDEAkJ8O/yBUb9aM86GVer0R
+					pKFpymstRnIXXISXCi2gcBcXGuQ= )
+V13EU3U405FFA2R1NJBD1GN3SKRHJFH5.viphoteles.net. 1800 IN NSEC3 1 0 100 65B6CD51E3FB5E7F CNVQFFACSC55KF3VNPNN6E9MTSHFH901 A RRSIG
+			1800	RRSIG	NSEC3 8 3 1800 20140509093144 (
+					20140409093144 25479 viphoteles.net.
+					KKj8JCVvCeC5ToEexPe6if4pVi2VWN0W01uM
+					rm9MEIybtsGq9mCFt4vvQipa8rLgiCmn7ZGp
+					jhAG9YIxm0R4i5eV2Fc+Sios4E6s2KRy2aPN
+					8Efq2NgZf+pWM132Um+gmiRrGOti8vPtjlHW
+					lSnK7Wg9GMGsOpQDDAo14iOjG08= )

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<libros>
+   <libro>
+   <titulo>novela</titulo>
+   <autor>Roberto</autor>
+   <year>2000</year>
+   </libro>
+</libros>

@@ -1,0 +1,77 @@
+<div @inOutMenu class="filtros">
+      <i   [ngStyle]="{'left': posicion_indicativo}"  class="indicativo fas fa-caret-up"></i>
+   <div *ngIf="con_buscar" class="buscar">
+      <i  class="icono fas fa-search"></i>
+      <input type="text" placeholder="Buscar..." />
+   </div>
+   <div *ngIf="con_tipo" class="grupo">
+      <div class="titulo">Tipo notificación</div>
+      <div (click)="seleccionarTipo(OpcionTipo.Peticion)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_tipo !== OpcionTipo.Peticion" class="far fa-circle"></i>
+            <i *ngIf="seleccion_tipo === OpcionTipo.Peticion" class="fas fa-check"></i>
+         </div>
+         <div class=nemo> Petición Tutoria</div>
+      </div>
+      <div (click)="seleccionarTipo(OpcionTipo.Cambio)" class="elemento">
+         <div class=check>
+            <i  *ngIf="seleccion_tipo !== OpcionTipo.Cambio" class="far fa-circle"></i>
+            <i  *ngIf="seleccion_tipo === OpcionTipo.Cambio" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Cambio de Fecha</div>
+      </div>
+      <div (click)="seleccionarTipo(OpcionTipo.Especial)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_tipo !== OpcionTipo.Especial" class="far fa-circle"></i>
+            <i *ngIf="seleccion_tipo === OpcionTipo.Especial" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Petición Especial</div>
+      </div>
+      <div (click)="seleccionarTipo(OpcionTipo.Anulada)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_tipo !== OpcionTipo.Anulada" class="far fa-circle"></i>
+            <i *ngIf="seleccion_tipo === OpcionTipo.Anulada" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Anuladas</div>
+      </div> 
+      <div (click)="seleccionarTipo(OpcionTipo.Confirmada)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_tipo !== OpcionTipo.Confirmada" class="far fa-circle"></i>
+            <i *ngIf="seleccion_tipo === OpcionTipo.Confirmada" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Confirmadas</div>
+      </div> 
+      <div (click)="seleccionarTipo(OpcionTipo.Nota)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_tipo !== OpcionTipo.Nota" class="far fa-circle"></i>
+            <i *ngIf="seleccion_tipo === OpcionTipo.Nota" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Notas</div>
+      </div>
+   </div>
+   <div *ngIf="con_fecha" class="grupo fecha">
+      <div class="titulo">Fechas</div>
+      <div (click)="seleccionarFecha(OpcionFecha.Fija)" class="elemento">
+         <div class=check>
+            <i  *ngIf="seleccion_fecha !== OpcionFecha.Fija" class="far fa-circle"></i>
+            <i  *ngIf="seleccion_fecha === OpcionFecha.Fija" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Fija</div>
+      </div>
+      <div (click)="seleccionarFecha(OpcionFecha.Mes)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_fecha !== OpcionFecha.Mes" class="far fa-circle"></i>
+            <i *ngIf="seleccion_fecha === OpcionFecha.Mes" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Mes</div>
+      </div>
+      <div (click)="seleccionarFecha(OpcionFecha.Rango)" class="elemento">
+         <div class=check>
+            <i *ngIf="seleccion_fecha !== OpcionFecha.Rango" class="far fa-circle"></i>
+            <i *ngIf="seleccion_fecha === OpcionFecha.Rango" class="fas fa-check"></i>
+         </div>
+         <div class=nemo>Rango</div>
+      </div>
+   </div>
+   <div class="boton ok" >FILTRAR</div>
+</div>

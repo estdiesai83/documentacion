@@ -1,0 +1,46 @@
+:host{
+   display: block;
+   width: 100%;
+   height: 100%;
+   position: relative;
+
+   .hora{
+      width: 100%;
+      height: 100%;
+   }
+
+   .capa-deshabilitadora{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+   }
+   .desplegable{
+      position: fixed;
+      z-index: 100;
+      background-color: white;
+      max-height: 300px;
+      overflow: auto; -webkit-overflow-scrolling: touch;
+      padding: 10px 5px;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+
+      .h{
+         padding: 10px 40px;
+         line-height: 25px;
+         border-bottom: 1px solid #eaeaea;
+         min-width: 140px;
+         text-align: center;
+
+         &.seleccionado{
+            font-weight: bold;
+         }
+
+         :last-child{
+            border-bottom: none;
+         }
+      }
+   }
+}

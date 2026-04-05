@@ -1,0 +1,119 @@
+10
+
+dir
+0
+https://217.127.196.206:443/svn/polideportivo/system/language/english
+https://217.127.196.206:443/svn/polideportivo
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+
+
+
+
+
+
+
+
+
+
+
+75e6edf7-efd9-0f4a-b9dd-18e2a03f1234
+
+number_lang.php
+file
+
+
+
+add
+
+calendar_lang.php
+file
+
+
+
+add
+
+ftp_lang.php
+file
+
+
+
+add
+
+migration_lang.php
+file
+
+
+
+add
+
+date_lang.php
+file
+
+
+
+add
+
+form_validation_lang.php
+file
+
+
+
+add
+
+unit_test_lang.php
+file
+
+
+
+add
+
+profiler_lang.php
+file
+
+
+
+add
+
+imglib_lang.php
+file
+
+
+
+add
+
+index.html
+file
+
+
+
+add
+
+upload_lang.php
+file
+
+
+
+add
+
+db_lang.php
+file
+
+
+
+add
+
+email_lang.php
+file
+
+
+
+add
+

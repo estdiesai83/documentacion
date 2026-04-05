@@ -1,0 +1,385 @@
+10
+
+dir
+0
+https://217.127.196.206:443/svn/polideportivo/img
+https://217.127.196.206:443/svn/polideportivo
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+75e6edf7-efd9-0f4a-b9dd-18e2a03f1234
+
+Thumbs.db
+file
+
+
+
+add
+
+abajo.png
+file
+
+
+
+add
+
+bg_bienvenida.png
+file
+
+
+
+add
+
+botonimprimir.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonimprimir_.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonmail.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonmail_.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonn19.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonn19_.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonusb.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+botonusb_.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+btn_manita.png
+file
+
+
+
+add
+
+btn_manita_on.png
+file
+
+
+
+add
+
+cargando.gif
+file
+
+
+
+add
+
+despliege.png
+file
+
+
+
+add
+
+error.png
+file
+
+
+
+add
+
+facturacion_a.png
+file
+
+
+
+add
+
+facturacion_b.png
+file
+
+
+
+add
+
+flecha_abajo.png
+file
+
+
+
+add
+
+foto.gif
+file
+
+
+
+add
+
+foto2.gif
+file
+
+
+
+add
+
+gestionproductos_a.png
+file
+
+
+
+add
+
+gestionproductos_b.png
+file
+
+
+
+add
+
+gestionsocios_a.png
+file
+
+
+
+add
+
+gestionsocios_b.png
+file
+
+
+
+add
+
+huella.png
+file
+
+
+
+add
+
+icon_a.png
+file
+
+
+
+add
+
+icon_b.png
+file
+
+
+
+add
+
+info.png
+file
+
+
+
+add
+
+instalaciones_a.png
+file
+
+
+
+add
+
+instalaciones_b.png
+file
+
+
+
+add
+
+logo.png
+file
+
+
+
+add
+
+logo2.png
+file
+
+
+
+add
+
+logo_gris.png
+file
+
+
+
+add
+
+msg_error.gif
+file
+
+
+
+add
+
+pasar_huella.png
+file
+
+
+
+add
+
+personal_a.png
+file
+
+
+
+add
+
+personal_b.png
+file
+
+
+
+add
+
+png
+dir
+
+
+
+add
+
+success.png
+file
+
+
+
+add
+
+tl2.png
+file
+
+
+
+add
+
+vb2.png
+file
+
+
+
+add
+
+warning.png
+file
+
+
+
+add
+

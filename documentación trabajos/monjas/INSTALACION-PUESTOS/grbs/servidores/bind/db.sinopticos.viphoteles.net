@@ -1,0 +1,20 @@
+$TTL 3600; 1 hora
+sinopticos.viphoteles.net.  IN 	SOA	ns1.viphoteles.net. hostmaster.mail.viphoteles.net. (
+				2014041908	;serial
+				10800 		;Refresh
+				3600 		;Retry
+				604800 		;Expire
+				300 ) 		;Minimun TTL
+
+
+sinopticos.viphoteles.net.	IN	NS	ns1.viphoteles.net.
+sinopticos.viphoteles.net.	IN	A	79.148.242.52
+
+	IN	A	79.148.242.52
+
+ns1     IN      A       79.148.242.52
+www	IN  	A	79.148.242.52
+mail	IN	A	79.148.242.52
+
+
+

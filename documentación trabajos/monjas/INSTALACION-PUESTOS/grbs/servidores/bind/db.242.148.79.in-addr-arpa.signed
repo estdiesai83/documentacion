@@ -1,0 +1,102 @@
+; File written on Mon Apr 21 20:40:53 2014
+; dnssec_signzone version 9.8.1-P1
+242.148.79.in-addr-arpa. 604800	IN SOA	ns1.viphoteles.net. support.mail.viphoteles.net. (
+					2014041904 ; serial
+					21600      ; refresh (6 hours)
+					3600       ; retry (1 hour)
+					604800     ; expire (1 week)
+					1800       ; minimum (30 minutes)
+					)
+			604800	RRSIG	SOA 8 4 604800 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					iJiKHo8twt731Jhtw4ejeAxwkouHzpvb93FM
+					3WfPbeDCgsY9NJn1AIGVopCvLkYopLtD4j8s
+					mQeJC0592IeCwJ3HGPl/YYHJMRDOhUZMec6L
+					VOc7PY2vJm+kVxwtpsItFLQo9w7OvU2D6Ntj
+					QwJ9LAYr1rr3D4jefmkxhKrjiPs= )
+			604800	NS	ns1.viphoteles.net.
+			604800	RRSIG	NS 8 4 604800 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					XQp8fAYog74j6gkTNifZm4qj14auBx/S4YLZ
+					RiZVNaDb6ucUTAAayM5Dw5gS1z7EwFhZBs6K
+					UFrzwVDJLph6uOz3LAKyRvIFzP/uNVk6Q7/6
+					EG2ck5xVRGuHBaP5i+Z4yHjhf+R2HFZT3T48
+					IqewHTI3gZy+riaT6jyJ2ifmUeE= )
+			604800	DNSKEY	256 3 8 (
+					AwEAAaJMemXE0xaFFxDGDj3IsocyUsxpSdHs
+					kNk76IO7u9uKpmnCH8SzhikdHfTbPEecHO23
+					whD0wgFMyudvV/1CSDjrzKrh17ZhgxJm2KBX
+					4/MEW72WCjgBGIwnhOqCJHRUs+RAea/dY8LL
+					7pzMKxx/UoF81TV6F/ZIncrWQH7Y8pZ1
+					) ; key id = 42723
+			604800	DNSKEY	256 3 8 (
+					AwEAAb3dH8/pkCD5caOM2KYOrdL6af74MpgS
+					TvyWQRe4j1iF7s5aGHjObkpVdI2O1od3GYh4
+					POvBwHqhGnG2RCFRcnze4eV1sy5tcA7KgUdz
+					vngQpxIyxGAzIDTpMPvY1BjxJQq7lnEV0jHv
+					f5Mug9CilmwVhc++rJPjl0EfoqSkJE/t
+					) ; key id = 18000
+			604800	DNSKEY	257 3 8 (
+					AwEAAbHPQt8O5xDwX3iagAHNnxkuFBRhtbRa
+					lGEuDZbJJyuuaOW5MgGqTmrt1csDYlw8QbUL
+					Oi40rP6VfjZ3lH6gJpW6BbSksnsFUw2XgDda
+					UiYev6HATlVmwdELl1osqtEf7r3+nZz/PASM
+					EnJtQKgXuyAnn/1Lzv3vHkn8sYNNXFudQ8UI
+					y7lXnb4g40sc5DohLMpXY5mDZUsgZ5nkHHMp
+					VbxxB3HG/mhDpFOf8L2JeeCiRCh740IT4biN
+					ZadyFR7HLDKAmKPVU6mb/eieUROIVGp6HDUO
+					qXF6X5htyHs97GRPC6PLoBZ5rfEdeKSmWlkO
+					7u6xraWI2NwL0JnZbIoXwaE=
+					) ; key id = 35584
+			604800	RRSIG	DNSKEY 8 4 604800 20140521174053 (
+					20140421174053 35584 242.148.79.in-addr-arpa.
+					l7374C2ymkC5aaSO0svpdlBpYrRvAJnAC2Ni
+					JWaV/H69DFHUgi9UW4eaUZ14gUPS3pS9T/9w
+					7IF41gSMunqzdjXRFVirYbKaOezdtvwINI4Q
+					lmIX1Kozf+1aKfHhqK4dS0BKX4sWUg5ZEUuB
+					WkwyAJN1S/Um/euTUT8jhkw0vmjxej90rAZs
+					JAO71o2bV/2HyQeJPc9GUMS6SBz6tPdbb3zz
+					gTJHKnrJUVIzZuEfBdbvJNKiXf9gOKvTqvMi
+					VLqsGhhh/rvzzEs9Rdg+EymyzssNuILg75z2
+					sJDM+H8vUrBnvwlhsOZh+OK9y1dn1eqadket
+					+opJUM9aJLTteFCfAw== )
+			604800	RRSIG	DNSKEY 8 4 604800 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					cxfTfP9fAO2Kd8aa88GFDA0Bc4YcIKesw3fk
+					pcBg0x+ye3phYRXuQbZBByx2/XOOXExe2RaB
+					bWd3wg5u7IjeVaGnl9krN8svdhgbsMhsVojf
+					0z1GErP25Q054r1Xx98AOnSUiAz457JW39fT
+					7RS9ygggjIt98rwj/IlMzo9ZG9s= )
+			0	NSEC3PARAM 1 0 100 8E3A81FBA7FD7E8C
+			0	RRSIG	NSEC3PARAM 8 4 0 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					ToQ3lmC53SYgkgKqlHVoLvSeExnry6QatXNc
+					H42acxMOY1xiu6qisKVZG2UI+dQrUlSIWohO
+					UfTZcVHXpMO+is18zYcuJ42djBkn5dPveyW/
+					+mUHMwH3Xu5ygBKmeGPB7w0+zYn//e4S2CGj
+					xCtaIhzvQtxohzP0L6FtsAnt5eY= )
+01HBM4FPF249DQU03G7BBREGNOP6MT0V.242.148.79.in-addr-arpa. 1800 IN NSEC3	1 0 100 8E3A81FBA7FD7E8C 88CRJA6B2NGDEF38P3CLPFGC3DNP5FSH NS SOA RRSIG DNSKEY NSEC3PARAM
+			1800	RRSIG	NSEC3 8 5 1800 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					jNPA8WzzVMWFxcq8j/hFR0xs6AiGcpJyU6JY
+					tz601ocfKket3u5Rw7uMYeX9eTZ/5wa4xmbP
+					CuYrfCrYOwFtgt5fSW5scH79zMkN5xjkAamM
+					XEci2SZCIyqDHTyTyaJL4KbI4lzQweQp0rPR
+					LY9wGdXUle2NTH1bxUFf33FdqNg= )
+52.242.148.79.in-addr-arpa. 604800 IN PTR mail.viphoteles.net.
+			604800	IN PTR	viphoteles.net.
+			604800	RRSIG	PTR 8 5 604800 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					i9OPRZxzhIdm+a2Vo3rY3XLwNQOokbFNajmt
+					kz41dtXqP3bFN+Io+hYtF1tmVWtGnEGniYIi
+					fYK+CErtSiAAd0SJA3ma+S7nZYgS64vSDBDB
+					17iDdZxNeoNtuRIic4w77RSiulxn2hx2fpoG
+					4mLne6x4j0XRPdPPhM3RwjTyn0Q= )
+88CRJA6B2NGDEF38P3CLPFGC3DNP5FSH.242.148.79.in-addr-arpa. 1800 IN NSEC3	1 0 100 8E3A81FBA7FD7E8C 01HBM4FPF249DQU03G7BBREGNOP6MT0V PTR RRSIG
+			1800	RRSIG	NSEC3 8 5 1800 20140521174053 (
+					20140421174053 42723 242.148.79.in-addr-arpa.
+					DjcN7LhSLN1CjZbg5rUbZFj20r7NXt89O0v7
+					DRVQOXw+D8wSWCPwiOlcBIMJYV1syALT9+2q
+					a5i6qiouNd68vwtzEgeUNzVFXGTR77IbuUc+
+					JGSoBOudKtXLiklSwyvHouNO09IDOumcj2S7
+					PLEz52Ff0McuixFn23cwy21P7j4= )

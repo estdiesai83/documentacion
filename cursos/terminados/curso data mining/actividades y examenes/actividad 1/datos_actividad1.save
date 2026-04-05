@@ -1,0 +1,15 @@
+import pandas as pd
+from sklearn.cluster import Kmeans
+import matplotlib.pyplot as plt
+← bibliotecas...
+# Datos ficticios (este comentario no sale:)
+data = {
+'Edad': [25, 30, 35, 40, 45],
+'Ingresos': [30000, 40000, 50000, 60000, 70000],
+'Compras_Anteriores': [5, 8, 3, 6, 10],
+'Monto_Gastado': [500, 800, 300, 600, 1000]
+}
+data2 = {
+'Otros': [1, 2, 3, 4, 5, 6],
+}
+df = pd.DataFrame(data)

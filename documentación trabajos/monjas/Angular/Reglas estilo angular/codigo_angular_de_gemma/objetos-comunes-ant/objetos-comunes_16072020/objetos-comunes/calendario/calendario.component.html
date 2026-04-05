@@ -1,0 +1,17 @@
+<div class="contenedor">
+   <div #contenedorCalendario class="contenedor-calendario" [ngStyle]="{'height': calendario_height + 'px'}">
+   <!-- <div #contenedorCalendario class="contenedor-calendario"> -->
+      <igx-calendar
+         [ngClass]="{'espaciado': espaciado}"
+         [hasHeader]="false"
+         #calendar 
+         selection="{{tipo_seleccion_calendar}}"
+         [locale]="locale"
+         [formatOptions]="formatOptions"
+         [formatViews]="formatViews"
+         [weekStart]="1"
+         (onSelection)="seleccionardias($event)">
+      </igx-calendar>
+   </div>
+</div>
+

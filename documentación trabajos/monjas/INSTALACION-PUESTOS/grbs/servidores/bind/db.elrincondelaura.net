@@ -1,0 +1,21 @@
+$TTL 3600; 1 hora
+elrincondelaura.net.  IN 	SOA	ns1.elrincondelaura.net. hostmaster.mail.elrincondelaura.net. (
+				2014042901	;serial
+				10800 		;Refresh
+				3600 		;Retry
+				604800 		;Expire
+				300 ) 		;Minimun TTL
+
+
+elrincondelaura.net.	IN	NS	ns1.elrincondelaura.net.
+elrincondelaura.net.	IN	A	79.148.242.52
+elrincondelaura.net.	IN      MX      10 mail.elrincondelaura.net.
+
+	IN	A	79.148.242.52
+
+ns1     IN      A       79.148.242.52
+www	IN  	A	79.148.242.52
+mail	IN	A	79.148.242.52
+
+
+

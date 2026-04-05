@@ -1,0 +1,25 @@
+<div class="card-container">
+   <div [ngClass]="{'flipped': flip == true }" class="card">
+      <div (click)="abrirPuertasEnvio()" class="front">
+         <div [ngClass]="{'abierto': puertas, 'activo': activo}" class="puerta-izquierda">Env</div>
+         <div [ngClass]="{'abierto': puertas, 'activo': activo}" class="puerta-derecha">iar</div>
+         <!-- <div class="enviado-correctamente">Enviando <i class="fas fa-spinner fa-pulse"></i></div> -->
+         <div class="enviado-correctamente">Enviando <img src="{{BASE_APP}}assets/gif/loading1.gif" /></div>
+      </div>
+      <div  class="back">
+         <div class="opciones">
+               <div class="enviado_correctamente">
+                  <div class="icono"><i class="fas fa-check"></i></div>
+                  <div class="texto1">Enviado</div>
+                  <div class="texto2">Correctamente</div>
+               </div>
+               <div (click)="reutilizarEnvio()" class="reutilizar">
+                  <div class="icono">
+                     <i class="fas fa-redo"></i>
+                  </div>
+                  <div class="texto">Reutilizar</div>
+               </div>
+         </div>
+      </div>
+   </div>
+</div>

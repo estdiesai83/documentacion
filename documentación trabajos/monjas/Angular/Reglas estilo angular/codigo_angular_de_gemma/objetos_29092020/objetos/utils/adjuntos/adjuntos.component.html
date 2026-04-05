@@ -1,0 +1,36 @@
+<div class="capa-deshabilitadora" *ngIf="mostrar.opciones && capa_deshabilitadora"></div>
+
+<div 
+   class="desplegable-opciones" 
+   *ngIf="mostrar.opciones" 
+   @inOutOpciones 
+   [ngStyle]="{'top': y + 'px', 'left': x + 'px'}"
+   (clickOutside)="clickedOutside()">
+   <i class="indicativo fas fa-caret-down"></i>
+   <div class="opcion" (click)="ver()">
+      <i class="icono fas fa-eye"></i>
+      <span class="texto">Ver</span>
+   </div>
+   <div class="opcion" *ngIf="adjunto.tipo !== 'video' && imprimible" (click)="imprimir()">
+      <i class="icono fas fa-print"></i>
+      <span class="texto">Imprimir</span>
+   </div>
+   <div class="opcion" *ngIf="descargable">
+      <i class="icono fas fa-download"></i>
+      <span class="texto">Descargar</span>
+   </div>
+   <div class="opcion last" (click)="eliminar()" *ngIf="adjunto.local && eliminable">
+      <i class="icono fas fa-trash-alt"></i>
+      <span class="texto">Eliminar</span>
+   </div>
+</div>
+
+<!-- Visor -->
+<app-visor-media 
+   *ngIf="mostrar.archivo"
+   @inOutFromBottom
+   [tipo]="tipo_archivo"
+   [archivo]="adjunto.src"
+   [imgComprimido]="adjunto.local ? false : true"
+   (eventoCerrar)="mostrar.archivo = false">
+</app-visor-media>

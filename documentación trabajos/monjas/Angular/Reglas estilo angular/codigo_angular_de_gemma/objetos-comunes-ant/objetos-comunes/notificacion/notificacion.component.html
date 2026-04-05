@@ -1,0 +1,25 @@
+<div class="notificacion">
+   <div class="lateral">
+      <div *ngIf="tipo === 0" class="icono">
+         <i class="fas fa-exclamation"></i>
+      </div>
+      <div *ngIf="tipo === 1" class="icono">
+         <i class="fas fa-user-friends"></i>
+      </div>
+   </div>
+
+   <div class="cabecera">
+      <div class="tipo">
+         {{ titulo }}
+      </div>
+      <div class="fecha">
+         {{ fecha }}
+      </div>
+   </div>
+
+   <div class="mensaje">
+      <!-- <span class="principal">{{ resumen }}:&nbsp;</span> -->
+      <span class="secundario">{{ resumen.substring(0,50) }}</span>
+      <span *ngIf="resumen.length > 50" class="puntos">...</span>
+   </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="contenido-alerta-tipo5" [ngClass]="{'show': show}">
+   <div class="contenido-mensaje">
+      <div class="contenedor-icono">
+         <div class="icono">
+            <i class="fas fa-exclamation-circle"></i>
+         </div>
+      </div>
+      <div class="mensaje mensaje1">{{texto1}}</div>
+      <div class="mensaje mensaje2">{{texto2}}</div>
+      <div class="mensaje mensaje3">{{texto3}}</div>
+      <div *ngIf="mostrarboton" class="botonera">
+         <div (click)="cerrarAlerta()" class="boton cancelar">{{botontextocancelar}}</div>
+         <div (click)="aceptarAlerta()" class="boton aceptar">{{botontextoaceptar}}</div>
+      </div>
+   </div>
+</div>

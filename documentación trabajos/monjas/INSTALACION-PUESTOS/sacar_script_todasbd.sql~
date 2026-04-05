@@ -1,0 +1,3 @@
+mysqldump -u root -proot --databases ps_finca karnaverde_finca huevon_finca huevin_finca calendario_finca contenedor_finca sistema_finca pantallas_finca teo_finca autoteo_finca utilidades_finca > sistema_finca_13052016.sql
+
+mysqldump -u root -proot --databases ps_maqueta karnaverde_maqueta huevon_maqueta huevin_maqueta calendario_maqueta contenedor_maqueta sistema_maqueta pantallas_maqueta teo_maqueta autoteo_maqueta utilidades_maqueta > sistema_maqueta_13052016.sql

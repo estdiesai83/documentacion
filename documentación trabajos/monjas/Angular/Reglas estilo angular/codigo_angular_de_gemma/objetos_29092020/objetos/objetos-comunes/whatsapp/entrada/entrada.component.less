@@ -1,0 +1,134 @@
+@num_botones_input: 4;
+@width_boton_input: 40px;
+@input_height: 50px;
+@contenido_entrada_padding: 5px;
+@contenido_entrada_height: calc(@input_height + (2 * @contenido_entrada_padding));
+
+:host{
+   width: 100%;
+   position: absolute;
+   left: 0;
+   bottom: 0;
+   z-index: 1;
+
+   .contenido-entrada{
+      width: 100%;
+      height: @contenido_entrada_height;
+      // padding: @contenido_entrada_padding calc(@contenido_entrada_height + (2 * @contenido_entrada_padding));
+
+      .input{
+         width: calc(100% - @contenido_entrada_height);
+         padding: @contenido_entrada_padding;
+         padding-right: 0;
+         height: 100%;
+         float: left;
+
+         .orla{
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 20px;
+            display: flex;
+
+            .boton{
+               width: @width_boton_input;
+               height: @input_height;
+               font-size: 1.8rem;
+               color: grey;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+            }
+            .contenedor-textarea{
+               width: calc(100% - (@num_botones_input * @width_boton_input));
+               height: 100%;
+               display: flex;
+               align-items: center;
+
+               &.con-texto{
+                  width: calc(100% - (2 * @width_boton_input));
+               }
+
+               textarea {
+                  width: 100%;
+                  float: left;
+                  border: none;
+                  font-size: 1.5rem;
+                  display: flex;
+                  align-items: center;
+                  height: calc(@input_height - 10px);
+                  outline: none;
+                  overflow: auto;
+                  resize: none;
+                  padding: 10px;
+                  line-height: 20px;
+                  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+               }
+            }
+         }
+         .grabando {
+            width: 100%;
+            float: left;
+            height: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-right: 60px;
+
+            .icono{
+               color: #da0a0a;
+               margin-right: 20px;
+               font-size: 2.2rem;
+            }
+            .tiempo{
+               font-size: 2.2rem;
+               color: grey;
+            }
+         }
+      }
+      
+      .accion{
+         width: @contenido_entrada_height;
+         height: @contenido_entrada_height;
+         float: left;
+
+         .contenedor-boton{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &.enviar{
+               .boton{
+                  background-color: #559e97;
+                  padding-right: .2rem;
+                  font-size: 1.7rem;
+               }
+            }
+            &.micro{
+               .boton{
+                  background-color: #559e97;
+                  font-size: 1.9rem;
+
+                  &.rec{
+                     background-color: #da0a09;
+                  }
+               }
+            }
+
+            .boton{
+               float: left;
+               width: @input_height;
+               height: @input_height;
+               border-radius: 1000px;
+               color: white;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+            }
+         }
+      }
+   }
+}

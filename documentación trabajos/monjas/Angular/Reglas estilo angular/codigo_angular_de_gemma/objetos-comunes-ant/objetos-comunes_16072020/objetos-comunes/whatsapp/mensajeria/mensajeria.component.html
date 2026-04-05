@@ -1,0 +1,60 @@
+<!-- Mensajeria -->
+<div class="mensajeria" #mensajeria (scroll)="eventoScrollMensajeria($event)">
+   <div *ngFor="let m of mensajes" class="mensaje">
+      <div class="rabillo" [ngClass]="{'enviado': m.emisor === LOCAL_USER_ID, 'recibido': m.emisor !== LOCAL_USER_ID}"></div>
+
+      <div class="bocadillo" 
+         *ngIf="m.tipo === 0"
+         [ngClass]="{'enviado': m.emisor === LOCAL_USER_ID, 'recibido': m.emisor !== LOCAL_USER_ID}">
+         <div class="texto">{{m.texto}}</div>
+         <div class="hora">{{m.hora}}</div>
+      </div>
+      <div class="archivo imagen" 
+         *ngIf="m.tipo === 1 && m.tipoadjunto === 0" 
+         [ngClass]="{'enviado': m.emisor === LOCAL_USER_ID, 'recibido': m.emisor !== LOCAL_USER_ID}">
+         <img *ngIf="!m.cargando && !m.adjunto.local" [src]="BASE_FILE + m.adjunto + '.thumb'" />
+         <img *ngIf="!m.cargando && m.adjunto.local" [src]="BASE_FILE + m.adjunto.adjunto" />
+         <span *ngIf="m.cargando" class="cargando">
+            <img [src]="BASE_APP + 'assets/gif/loading3.gif'" />
+         </span>
+         <div class="hora">{{m.hora}}</div>
+      </div>
+      <div class="archivo audio" 
+         *ngIf="m.tipo === 1 && m.tipoadjunto === 2" 
+         [ngClass]="{'enviado': m.emisor === LOCAL_USER_ID, 'recibido': m.emisor !== LOCAL_USER_ID}">
+         <audio *ngIf="!m.cargando" controls="controls">
+            <source [src]="BASE_FILE + m.adjunto" />
+         </audio>
+         <span *ngIf="m.cargando" class="cargando">
+            <img [src]="BASE_APP + 'assets/gif/loading3.gif'" />
+         </span>
+         <div class="hora">{{m.hora}}</div>
+      </div>
+      <div class="mail" 
+         *ngIf="m.tipo === 2" 
+         [ngClass]="{'enviado': m.emisor === LOCAL_USER_ID, 'recibido': m.emisor !== LOCAL_USER_ID}">
+         <div class="asunto">{{m.asunto}}</div>
+         <div class="comentario">{{m.comentario}}</div>
+         <div class="adjuntos" *ngIf="m.adjuntos !== undefined && m.adjuntos.length">
+            <app-galeria 
+               *ngIf="!m.cargando" 
+               [adjuntos]="m.adjuntos" 
+               [eliminable]="false"
+               [imprimible]="false"
+               [descargable]="m.emisor !== LOCAL_USER_ID">      
+            </app-galeria>
+            <span *ngIf="m.cargando" class="cargando">
+               <img [src]="BASE_APP + 'assets/gif/loading3.gif'" />
+            </span>
+         </div>
+      </div>
+   </div>
+
+   <div class="indicativo-scroll" 
+      (click)="forzarScrollMensajeriaAbajo()" 
+      *ngIf="scroll_detached" 
+      @inOutIndicarivoScroll
+      [ngStyle]="{'bottom': obtenerBottomIndicativo()}">
+      <i class="icono fas fa-chevron-down"></i>
+   </div>
+</div>

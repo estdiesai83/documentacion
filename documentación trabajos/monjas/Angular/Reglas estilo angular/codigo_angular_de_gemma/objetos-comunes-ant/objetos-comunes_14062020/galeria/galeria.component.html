@@ -1,0 +1,27 @@
+<div class="flecha izquierda">
+   <i *ngIf="adjuntos !== undefined && adjuntos.length" class="fas fa-chevron-left"></i>
+</div>
+
+<div class="listado" (scroll)="cerrarOpciones()">
+   <div class="sin" *ngIf="(adjuntos === undefined || !adjuntos.length || adjuntos === 0) && !readonly">Añadir adjuntos</div>
+   <div class="sin" *ngIf="(adjuntos === undefined || !adjuntos.length || adjuntos === 0) && readonly">Sin adjuntos</div>
+   <div class="adjunto" *ngFor="let adjunto of adjuntos; let i = index">
+      <div class="img" *ngIf="adjunto.tipo === 'imagen'" (click)="mostrarOpciones($event, adjunto, i)">
+         <img *ngIf="adjunto.local" [src]="adjunto.adjunto" />
+         <img *ngIf="!adjunto.local" [src]="BASE_FILE + adjunto.adjunto + '.thumb'" />
+      </div>
+      <div class="video" *ngIf="adjunto.tipo === 'video'" (click)="mostrarOpciones($event, adjunto, i)">
+         <video *ngIf="adjunto.local" [src]="adjunto.adjunto"></video>
+         <video *ngIf="!adjunto.local" [src]="BASE_FILE + adjunto.adjunto"></video>
+         <i class="play far fa-play-circle"></i>
+      </div>
+      <div class="doc" *ngIf="adjunto.tipo === 'documento'" (click)="mostrarOpciones($event, adjunto, i)">
+         <i class="fas fa-file"></i>
+         <div class="nombre">{{adjunto.adjunto.split('/').pop()}}</div>
+      </div>
+   </div>
+</div>
+
+<div class="flecha derecha">
+   <i *ngIf="adjuntos !== undefined && adjuntos.length" class="fas fa-chevron-right"></i>
+</div>

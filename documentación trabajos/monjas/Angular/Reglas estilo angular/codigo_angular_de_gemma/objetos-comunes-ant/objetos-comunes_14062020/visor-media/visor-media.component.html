@@ -1,0 +1,16 @@
+<div class="cabecera">
+   <div class="boton cerrar" (click)="eventoCerrar.emit()">
+      Atrás
+   </div>
+</div>
+
+<!-- Imagen -->
+<pinch-zoom *ngIf="tipo === 0" class="imagen">
+   <img [src]="archivo">
+</pinch-zoom>
+   
+<!-- Video -->
+<div *ngIf="tipo === 1" class="video">
+   <video (click)="playPauseVideo($event)" (ended)="video_playing = false" [src]="archivo"></video>
+   <i  *ngIf="!video_playing" class="play far fa-play-circle"></i>
+</div>

@@ -1,0 +1,85 @@
+
+<div class="cabecera-calendario">
+   <div class="contenedor-calendario" > 
+         <div class="botoncalendario">
+               <i class="fa fa-calendar"></i>
+         </div>
+   </div>
+   
+   <div class="nemo-titulo">CALENDARIO DIARIO</div>
+   <div class="contenedor-volver" (click)="cerrar.emit()"> 
+      <div class="botoncerrar">
+         <i class="fa fa-times"></i>
+      </div>
+   </div>
+</div>
+<div class="responsive-calendar" (swipeleft)="sumarMesCalendarioMovimiento()"  (swiperight)="restarMescalendarioMovimiento()">
+   <div class="controls">
+      <div data-go="prev" class="flecha">
+         <i class="fa fa-chevron-left"></i>
+      </div>
+      <div class="meses"> 
+         <span class="mes" (click)="mostrarMeses()" data-head-month></span>
+         <span class="anio" (click)="mostrarAnio()" data-head-year></span>
+      </div>
+      <div data-go="next" class="flecha">
+         <i class="fa fa-chevron-right"></i>
+      </div>
+   </div>
+   <div class="day-headers">
+      <div class="day header">Lu</div>
+      <div class="day header">Ma</div>
+      <div class="day header">Mi</div>
+      <div class="day header">Ju</div>
+      <div class="day header">Vi</div>
+      <div class="day header">Sa</div>
+      <div class="day header">Do</div>
+   </div>
+   <div class="days" data-group="days">
+      <!-- the place where days will be generated -->
+   </div>
+</div>
+
+
+<div   class="buscadorfecha">
+   <label for="date1">Date</label>
+   <input #fecha type="text" name="date1" id="date1" class="mobiscroll" />
+</div>
+
+
+
+
+<!-- ELEGIR MES / anio
+
+<div class="contenedornegro" *ngIf="mostrar.capa === 1" >
+   <div *ngIf="mostrar.meses === 1" class="meses">
+      <div class="botoncerrarcapa" (click)="cerrarCapas()">
+            <i class="fa fa-times"></i>
+      </div>
+      <div class="titulo">ELIGE MES</div>
+      <div class="listado">
+         <div class="item-meses" [ngClass]="{selecionado : mes === 1}" (click)="cambiarMes(1)">ENERO  <i *ngIf=" mes === 1" class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 2}" (click)="cambiarMes(2)">FEBRERO <i *ngIf=" mes === 2"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 3}" (click)="cambiarMes(3)">MARZO <i *ngIf=" mes === 3"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 4}" (click)="cambiarMes(4)">ABRIL <i *ngIf=" mes === 4"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 5}" (click)="cambiarMes(5)">MAYO <i *ngIf=" mes === 5"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 6}" (click)="cambiarMes(6)">JUNIO <i *ngIf=" mes === 6"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 7}" (click)="cambiarMes(7)">JULIO <i *ngIf=" mes === 7"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 8}" (click)="cambiarMes(8)"> AGOSTO <i *ngIf=" mes === 8"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 9}" (click)="cambiarMes(9)">SEPTIEMBRE <i *ngIf=" mes === 9"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 10}" (click)="cambiarMes(10)">OCTUBRE <i *ngIf=" mes === 10"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 11}" (click)="cambiarMes(11)">NOVIEMBRE <i *ngIf=" mes === 11"  class="fa fa-check"></i></div>
+         <div class="item-meses" [ngClass]="{selecionado : mes === 12}" (click)="cambiarMes(12)">DICIEMBRE <i *ngIf=" mes === 12"  class="fa fa-check"></i></div>
+      </div>
+   </div>
+   <div *ngIf="mostrar.anio === 1" class="anio">
+      <div class="botoncerrarcapa" (click)="cerrarCapas()">
+            <i class="fa fa-times"></i>
+      </div>
+      <div class="titulo">ELIGE ANIO</div>
+      <div class="listado">
+         <div *ngFor="let a of anios" class="item-anio" (click)="cambiarAnios(a.anio)" [ngClass]="{selecionado : anio === a.anio}">{{a.anio}} <i *ngIf=" anio === a.anio" class="fa fa-check"></i></div>
+      </div>
+   </div>
+</div>
+ -->

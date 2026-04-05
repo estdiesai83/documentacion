@@ -1,0 +1,285 @@
+:host{
+   width: 100%;
+   height: 100%;
+   position: relative;
+   .contenido-quienes{
+      display: flex;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      justify-content: flex-start;
+      border: 1px solid gainsboro;
+      border-radius: 10px;
+
+      .despegable{
+         height: 100%;
+         padding: 0;
+         float: left;
+         width: 22%;
+         z-index: 1;
+         // border-top: 1px solid #cccccc;
+         // border-bottom: 1px solid #cccccc;
+   
+         &.error{
+            border-top: 1px solid red;
+            border-bottom: 1px solid red;
+         }
+         
+         .boton{
+            width: 100%;
+            height: 100%;
+            font-size: calc(2vw + 2vh);
+            border: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            transition: background .5s;
+            color: #0088ff;
+            font-size: 1.7rem;
+            &.error{
+               color: red;
+            }
+            
+         
+   
+            .icono{
+            //   width: 45%;
+            //   float: left;
+            //   height: 100%;
+            //   display: flex;
+            //   justify-content: center;
+            //   align-items: center;
+            // margin-right: 10px;
+            }
+            .texto{
+            //   width:50%;
+            //   float: left;
+            //   height:100%;
+            //   display:flex;
+            //   justify-content: left;
+            //   align-items: center;
+            color: #0088ff;
+            }
+         }
+      }
+      &.activo{
+         background: #c1e6ff;;
+         color: white;
+      }
+      &.error{
+         border: 1px solid red;
+      }
+   }
+   
+
+   // .linea{
+   //    position: absolute;
+   //    height: 70%;
+   //    width: 1px;
+   //    background-color: #a7a7a7;
+   //    left: 33%;
+   //    top: 15%;
+   // }
+
+   .contenedor-info{
+      height: 100%;
+      font-size: 1.2rem;
+      color: #828282;
+      overflow: auto;
+      white-space: nowrap;
+      WIDTH: 78%;
+      padding: 2% 0;
+      float: left;
+      // border-top: 1px solid #cccccc;
+      // border-bottom: 1px solid #cccccc;
+
+      &.error{
+         border-top: 1px solid red;
+         border-bottom: 1px solid red;
+      }
+      &.activo{
+         background: #0088ff;;
+         color: white;
+      }
+
+      .elemento {
+         // min-width: 40%;
+         height: 100%;
+         display: inline-block;
+         text-align: center;
+         padding: 0 10px;
+         position: relative;
+         border-right: 1px solid #bbbbbb;
+         height: 100%;
+         display: inline-block;
+         text-align: center;
+         padding: 0 10px;
+         position: relative;
+         border-right: 1px solid #bbbbbb;
+         font-family: 'lato original';
+         color: #424242;
+         text-transform: uppercase;
+         font-size: 1.3rem;
+         &.ultimo{
+            border-right: 0;
+         }
+
+      .nombre {
+         width: 100%;
+         height: 100%;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         --pointer-events: none;
+         font-family: 'lato original';
+         color: #424242;
+
+         div {
+            --width: 100% !important;
+            min-width: 95%;
+            height: 70%;
+            overflow: hidden;
+            padding: 0% 10px;
+            //  background-color: rgb(240,240,240);
+            --pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+         }
+         }
+      }
+   }
+
+   .despegables-quienes{
+      width: 100%;
+      margin: 0;
+      position: absolute;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      bottom: 100%;
+      padding-top: 2%;
+      left: 0%;
+      overflow: hidden;
+
+      .lista{
+         padding: 0;
+         margin: 0;
+         position: relative;
+         width: 93%;
+         margin: 0 auto;
+         list-style: none;
+         background-color: white;
+         box-shadow: 0 0 10px 0 #c5c5c5;
+         border: 1px solid #cccccc;
+         overflow: hidden;
+         border-top-left-radius: 15px;
+         border-top-right-radius: 15px;
+         border-bottom-left-radius: 15px;
+         border-bottom-right-radius: 15px;
+
+         .cerrar {
+         height: 7vh;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         font-size: calc(3vw + 3vh);
+         background-color: white;
+         text-shadow: 0px 3px 10px rgb(100,100,100);
+         color: #0088ff;
+
+         }
+         .todos {
+            font-size: calc(1.5vw + 1.5vh);
+            height: 10vh;
+            position: relative;
+            border-top: 1px solid #ababab;
+            border-bottom: 1px solid #ababab;
+
+            .deseleccionar{
+               width: 50%;
+               height: 100%;
+               float: left;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               font-size: calc(2vw + 2vh);
+            }
+            .seleccionar{
+               position: relative;
+               width: 50%;
+               height: 100%;
+               float: right;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+            
+               .nombre {
+                  font-size: calc(1.2vw + 1.2vh);
+                  padding-right: 10%;
+               }
+               .seleccion {
+                  color: #646464;
+                  font-size: calc(2vw + 2vh);
+               }
+            }
+         }
+         .lista {
+            max-height: 33vh;
+            overflow: auto;
+            list-style: none;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+            width: 100%;
+
+            ul {
+               height: 100%;
+               overflow-y: auto;
+               list-style: none;
+               padding: 0 20px;
+               margin: 0;
+               list-style: none;
+
+               li {
+               font-size: 1.2rem;
+               height: 12vh;
+               border-bottom: 1px solid #dedede;
+               cursor: default;
+               position: relative;
+               // background-color: rgb(230,230,230);
+               font-family: 'lato original';
+               color: #424242;
+               text-transform: uppercase;
+               &.activado{
+                  // background-color: rgb(220,220,220)
+               }
+
+               .nombre {
+                  width: 70%;
+                  height: 100%;
+                  text-align: left;
+                  display: flex;
+                  justify-content: left;
+                  align-items: center;
+                  padding-left: 8%;
+                  }
+
+                  .seleccion {
+                  width: 30%;
+                  height: 100%;
+                  color: rgb(0,200,0);
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+               }
+               }
+            }
+         }
+      }
+   }
+}

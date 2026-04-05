@@ -1,0 +1,2 @@
+/home/soa/snx_V2.0.3.0/driver/snx.ko
+/home/soa/snx_V2.0.3.0/driver/snx_main.o /home/soa/snx_V2.0.3.0/driver/snx_devtable.o /home/soa/snx_V2.0.3.0/driver/snx_serial.o /home/soa/snx_V2.0.3.0/driver/snx_parallel.o /home/soa/snx_V2.0.3.0/driver/snx_share.o /home/soa/snx_V2.0.3.0/driver/snx_ieee1284.o /home/soa/snx_V2.0.3.0/driver/snx_ieee1284_ops.o /home/soa/snx_V2.0.3.0/driver/snx_ppdev.o /home/soa/snx_V2.0.3.0/driver/snx_lp.o

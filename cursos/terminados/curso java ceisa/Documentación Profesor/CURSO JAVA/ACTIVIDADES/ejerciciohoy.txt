@@ -1,0 +1,38 @@
+ejercicio: 
+En el hotel laguna grande existe los siguientes
+departamentos:
+
+alimentos y bebidas con los restaurantes:
+bar cafe
+lobby bar
+piano bar
+restaurante a la carta
+numero de personal:80
+
+ama de llave:
+limpieza general
+limpieza de habitaciones
+numero de personal:50
+
+recepcion:
+recepcionista
+botonones
+numero de personal:20
+
+seguridad
+seguridad general
+numero de personal: 15
+
+Direccion
+director general
+director de alimentos y bebidas
+director de ama de llave
+director de seguridad
+numero de personal:5
+
+1.-Crear un archivo xml con el arbol estructural del hotel
+2.-crear un programa donde extraigas los siguientes elementos:
+.-Tipo de elemento
+.-nombre del elemento a extraer
+.-nombre de cada elemento extraido
+.-numero de elemento extraido 

@@ -1,0 +1,65 @@
+:host{
+
+   .capa-deshabilitadora{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+   }
+   
+   .desplegable-opciones{
+      min-width: 128px;
+      position: fixed;
+      background-color: #5f5f5f;
+      border-radius: 20px;
+      box-shadow: 0px 0px 50px 0 rgba(0, 0, 0, 0.15);
+      z-index: 2;
+
+      .indicativo{
+         position: absolute;
+         bottom: -18px;
+         left: 0;
+         font-size: 3rem;
+         color: #5f5f5f;
+         display: flex;
+         width: 100%;
+         justify-content: center;
+         align-items: center;
+      }
+
+      .opcion{
+         width: 100%;
+         height: 50px;
+         border-bottom: 1px solid #797979;
+         display: flex;
+
+         &:last-child{
+            border-bottom: none;
+         }
+
+         .texto{
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            float: left;
+            font-size: 1.4rem;
+            color: white;
+            margin-right: 25px;
+         }
+         .icono{
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            float: left;
+            color: white;
+            font-size: 1.7rem;
+            margin-right: 17px;
+            margin-left: 25px;
+         }
+      }
+   }
+}

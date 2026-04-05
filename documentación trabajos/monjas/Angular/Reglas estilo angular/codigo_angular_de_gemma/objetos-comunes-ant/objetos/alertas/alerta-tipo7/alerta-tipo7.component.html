@@ -1,0 +1,20 @@
+<div class="contenido-alerta-tipo7" [ngClass]="{'show': show}">
+   <div (click)="cerrarAlerta()" class="cerrar">
+      <i class="fa fa-times"></i>
+   </div>
+   <div class="contenido-mensaje">
+      <div class="contenedor-icono">
+         <div class="icono">
+            <i class="fas fa-exclamation"></i>
+         </div>
+      </div>
+      <div class="mensaje">{{texto}}</div>
+      <div *ngIf="mostrarboton" class="botonera">
+         <div (click)="cerrarAlerta()" class="boton cancelar">
+            <i class="fas fa-reply"></i>
+            {{botontextocancelar}}
+         </div>
+         <div (click)="aceptarAlerta()" class="boton aceptar">{{botontextoaceptar}}</div>
+      </div>
+   </div>
+</div>

@@ -1,0 +1,12 @@
+/*!
+ *  Font Awesome 4.3.0 by @davegandy - httpfontawesome.io - @fontawesome
+ *  License - httpfontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+/* FONT PATH
+ * -------------------------- */
+
+@font-face {
+    font-family: 'jd_digital';
+    src: url('http://localhost/principal/css/fonts/jd_digital.ttf');
+ src: url('http://localhost/principal/css/fonts/jd_digital.ttf')format ('truetype')
+}

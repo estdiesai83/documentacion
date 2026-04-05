@@ -1,0 +1,1 @@
+![iniciarhilostrb](/home/esther/git/soa/documentacion/bd/imagenes/iniciarhilostrb.png)

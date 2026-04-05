@@ -1,0 +1,8 @@
+export LD_LIBRARY_PATH=/home/soa/Git/esther/soa/libsoav1/libreria/:/home/soa/Git/esther/soa/libsoav1/eNBSP/bin/:/home/soa/Git/esther/soa/libloav1/libreria/
+
+
+export LD_LIBRARY_PATH=/home/soa/sistema_hazard/libsoav1_unitp/eNBSP/bin:/home/soa/sistema_hazard/libsoav1_unitp/libreria:/home/soa/sistema_hazard/libloav1_unitp/libreria
+
+
+
+export LD_LIBRARY_PATH=/home/soa/sistema_rudy/libsoav1/eNBSP/bin:/home/soa/sistema_rudy/libsoav1/libreria:/home/soa/sistema_hazard/libloav1_unitp/libreria

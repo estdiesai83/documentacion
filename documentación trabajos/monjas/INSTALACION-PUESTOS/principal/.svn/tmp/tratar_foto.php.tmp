@@ -1,0 +1,28 @@
+<?php
+//error_reporting(0);
+$id_controlsupermaster=$_GET['id'];
+$filename = $id_controlsupermaster.'_foto_ficha.jpg';
+$upload_dir='upload/';
+$result = file_put_contents($upload_dir.$filename, file_get_contents('php://input') );
+if (!$result) {
+	print "ERROR: Comprueba permisos de escritura en el directorio\n";
+	exit();
+}else {
+	
+	
+	//CORTA FOTO
+	$filecrop="$upload_dir"."$filename";
+	$src_im = imagecreatefromjpeg($filecrop); //imagen origen
+	$dst_im = imagecreatetruecolor($_GET['x'],$_GET['y']); //imagen final
+	imagefill($dst_im, 0, 0, imagecolorallocate($dst_im, 255, 255, 255));//rellena foto
+	imagecopy($dst_im, $src_im,0,0,$_GET['bx'],$_GET['by'],$_GET['x'],$_GET['y']);//recorta foto
+	imagejpeg($dst_im,$filecrop); //creafoto
+	$foto='data:image/png;base64,'.base64_encode(file_get_contents($filecrop));
+	unlink("$filecrop");
+	//devuelve contenido o ruta de foto
+	echo $foto;
+	
+	
+}
+
+?>

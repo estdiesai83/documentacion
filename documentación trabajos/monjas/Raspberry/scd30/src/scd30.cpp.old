@@ -1,0 +1,224 @@
+#include "Arduino.h"
+#include <Adafruit_SCD30.h>
+
+#define ID 1
+
+Adafruit_SCD30  scd30;
+
+struct SCD30_DATA {
+   float CO2;
+   float temperature;
+   float relative_humidity;
+};
+
+typedef union {
+   float floatingPoint;
+   byte binary[4];
+} binaryFloat;
+
+binaryFloat CO2; 
+binaryFloat temperature; 
+binaryFloat relative_humidity; 
+
+SCD30_DATA data = { 0, 0, 0 };
+
+unsigned long previousMillis = 0;
+// const long interval = 10000;        // 10s
+const long interval = 2000;        // 2s
+
+char buffer[2];
+int bufferLength = 0;
+
+void serial_listen();
+void respond_with_data();
+void scd30_configuration();
+void scd30_read();
+void print_data();
+
+void setup(void) {
+   Serial.begin(9600);
+   Serial1.begin(9600);
+
+   scd30_configuration();
+}
+
+void loop() {
+   serial_listen();
+   scd30_read();
+}
+
+void serial_listen() {
+
+   /*
+    * Se espera una trama de dos bytes
+    * byte[0] -> indica el identificador
+    * byte[1] -> si es una f indica que se piden los datos
+    */
+
+   if (Serial1.available()) {
+
+      Serial.println("SERIAL AVAILABLE");
+
+      bufferLength = Serial1.readBytes(buffer, 2);
+
+      Serial.print("LENGTH: ");
+      Serial.println(bufferLength);
+
+      if ( bufferLength == 2 ) {
+         Serial.print(buffer[0], HEX);
+         Serial.print(" ");
+         Serial.println(buffer[1], HEX);
+         if ( buffer[0] == ID && buffer[1] == 0x0f ) {
+            respond_with_data();
+            print_data();
+         }
+      }
+   }
+}
+
+void respond_with_data() {
+   CO2.floatingPoint = data.CO2;
+   temperature.floatingPoint = data.temperature;
+   relative_humidity.floatingPoint = data.relative_humidity;
+
+   Serial1.write(CO2.binary[3]);
+   Serial1.write(CO2.binary[2]);
+   Serial1.write(CO2.binary[1]);
+   Serial1.write(CO2.binary[0]);
+
+   Serial1.write(temperature.binary[3]);
+   Serial1.write(temperature.binary[2]);
+   Serial1.write(temperature.binary[1]);
+   Serial1.write(temperature.binary[0]);
+
+   Serial1.write(relative_humidity.binary[3]);
+   Serial1.write(relative_humidity.binary[2]);
+   Serial1.write(relative_humidity.binary[1]);
+   Serial1.write(relative_humidity.binary[0]);
+
+   Serial1.write('\n');
+}
+
+void scd30_configuration() {
+   // Try to initialize!
+   if (!scd30.begin()) {
+      Serial.println("Failed to find SCD30 chip");
+      while (1) { delay(10); }
+   }
+   Serial.println("SCD30 Found!");
+
+   /*** Adjust the rate at which measurements are taken, from 2-1800 seconds */
+   if (!scd30.setMeasurementInterval(2)){
+      Serial.println("Failed to set measurement interval");
+   }
+   Serial.print("Measurement Interval: "); 
+   Serial.print(scd30.getMeasurementInterval()); 
+   Serial.println(" seconds");
+
+   /*** Restart continuous measurement with a pressure offset from 700 to 1400 millibar.
+    * Giving no argument or setting the offset to 0 will disable offset correction
+    */
+   // if (!scd30.startContinuousMeasurement(15)){
+   //   Serial.println("Failed to set ambient pressure offset");
+   //   while(1){ delay(10);}
+   // }
+   Serial.print("Ambient pressure offset: ");
+   Serial.print(scd30.getAmbientPressureOffset());
+   Serial.println(" mBar");
+
+   /*** Set an altitude offset in meters above sea level.
+    * Offset value stored in non-volatile memory of SCD30.
+    * Setting an altitude offset will override any pressure offset.
+    */
+   // if (!scd30.setAltitudeOffset(110)){
+   //   Serial.println("Failed to set measurement interval");
+   //   while(1){ delay(10);}
+   // }
+   Serial.print("Altitude offset: ");
+   Serial.print(scd30.getAltitudeOffset());
+   Serial.println(" meters");
+
+   /*** Set a temperature offset in hundredths of a degree celcius.
+    * Offset value stored in non-volatile memory of SCD30.
+    */
+   // if (!scd30.setTemperatureOffset(1984)){ // 19.84 degrees celcius
+   //   Serial.println("Failed to set temperature offset");
+   //   while(1){ delay(10);}
+   // }
+   Serial.print("Temperature offset: ");
+   Serial.print((float)scd30.getTemperatureOffset()/100.0);
+   Serial.println(" degrees C");
+
+   /*** Force the sensor to recalibrate with the given reference value
+    * from 400-2000 ppm. Writing a recalibration reference will overwrite
+    * any previous self calibration values.
+    * Reference value stored in non-volatile memory of SCD30.
+    */
+   // if (!scd30.forceRecalibrationWithReference(400)){
+   //   Serial.println("Failed to force recalibration with reference");
+   //   while(1) { delay(10); }
+   // }
+   Serial.print("Forced Recalibration reference: ");
+   Serial.print(scd30.getForcedCalibrationReference());
+   Serial.println(" ppm");
+
+   /*** Enable or disable automatic self calibration (ASC).
+    * Parameter stored in non-volatile memory of SCD30.
+    * Enabling self calibration will override any previously set
+    * forced calibration value.
+    * ASC needs continuous operation with at least 1 hour
+    * 400ppm CO2 concentration daily.
+    */
+   if (!scd30.selfCalibrationEnabled(true)){
+      // Serial.println("Failed to enable or disable self calibration");
+      while(1) { delay(10); }
+   }
+   if (scd30.selfCalibrationEnabled()) {
+      Serial.print("Self calibration enabled");
+   } else {
+      Serial.print("Self calibration disabled");
+   }
+
+   Serial.println("\n\n");
+}
+
+void scd30_read() {
+   unsigned long currentMillis = millis();
+
+   if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+
+      if (scd30.dataReady()){
+         if (!scd30.read()){ 
+            // Serial.println("Error reading sensor data"); 
+            return; 
+         }
+
+         data.CO2 = scd30.CO2;
+         data.temperature = scd30.temperature;
+         data.relative_humidity = scd30.relative_humidity;
+
+         // Serial.println("Data available!");
+
+         // respond_with_data();
+         // print_data();
+      } else {
+         Serial.println("No data");
+      }
+   }
+}
+
+void print_data() {
+   Serial.print("Temperature: ");
+   Serial.print(data.temperature);
+   Serial.println(" degrees C");
+
+   Serial.print("Relative Humidity: ");
+   Serial.print(data.relative_humidity);
+   Serial.println(" %");
+
+   Serial.print("CO2: ");
+   Serial.print(data.CO2, 3);
+   Serial.println(" ppm");
+   Serial.println("");
+}

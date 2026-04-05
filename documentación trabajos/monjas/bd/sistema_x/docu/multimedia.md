@@ -1,0 +1,1 @@
+![multimedia](/home/esther/git/soa/documentacion/bd/imagenes/multimedia.png)

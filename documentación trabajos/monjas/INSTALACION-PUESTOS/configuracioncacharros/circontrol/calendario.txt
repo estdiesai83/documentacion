@@ -1,0 +1,104 @@
+CIRCONTROL.DOC
+==============
+funciones especiales – operaciones  tecnicas  en  lectores circontrol
+mantenimiento lectores con programa circontrol:
+
+Ejecutando:       #	./circontrol 						muestra ayuda
+					./circontrol   con argumentos		ejecuta orden-operacion
+
+SE EJECUTA CON UN SOLO LECTOR CONECTADO AL BUS, UNICO EN EL BUS.
+(excepto si se usa la operacion 2 o 7, de confirmar estado de un lector, 
+o lectura tag tarjeta)
+
+formato general:
+----------------
+programa:	   argumentos:
+
+./circontrol   operacion    numlector    puerto    eco  [tiempolectura]
+														[velocidad]
+(en caso de formato erroneo, falta de argumentos, etc.   
+  mostrará el error  y  una  ayuda)
+  
+operacion :		0 a 5, 7
+---------	0: resetear lector		(numlector si es conocido, o 1)
+			1: programar direccion lector		(necesario numlector)
+			2: pedir informacion del equipo		(necesario numlector)
+			3: fijar  tiempo de relectura 		(necesario numlector)
+			4: cambiar el lector a binario		(numlector si es conocido, o 1)
+											 (necesario para poder programarlo)
+			5: fijar velocidad del lector		(necesario numlector)
+			7: informacion del ultimo tag 
+				o tarjeta leida					(necesario numlector)
+
+numlector:		direccion o numero del lector  (otro numero si no lo necesita)
+puerto:			0,1, ...
+eco:			0,1	(0:sin eco  1:con eco, existe conversor)
+tiempolectura:	0,1,2,3,4...		opcional
+velocidad:		4800, 9600, 19200	opcional
+
+los lectores comunican todos  a  4800, excepto  modelos   tipo  CP-E  que  se  
+pueden   programar ademas a  9600  y  19200.
+
+los lectores  modelo   CP-E  y  CP-L  o similares  disponen  de  2 protocolos.
+y deben cambiarse  al  protocolo  binario.
+los lectores del modelo CP-ES, antiguos,  solo disponen  del protocolo binario 
+por defecto.
+
+COMO PROGRAMAR LA DIRECCION DE UN LECTOR
+----------------------------------------
+el lector debe ser el unico conectado al bus, poner  la direccion de lector  8,
+en puerto  0  y  sin eco:
+
+1)quitar la corriente del lector y volverla a poner
+2)cambiar a binario, si es necesario (depende del lector)		
+solo  en  CP-E  CP-L  o similar
+#	./circontrol  4  1  0  0
+	--> si es ok pita (CP-E) (CP-L no pita)
+3)reset en el lector  (pulsar boton rojo en lector)   
+	--> pita  y  se pone  rojo-naranja.
+4)poner  una tarjeta en el lector    
+	--> cambia el color  a  mas rojo.
+5)resetear o reiniciar  el lector:   
+	./circontrol  0  1  0  0
+6)programar la direccion nueva:  8
+	./circontrol  1  8  0  0
+	--> se pone a verde
+7)verificar si el lector es ok:
+	./circontrol  2  8  0  0
+	--> debe mostrar  el tipo, version  del lector 8, si existe.
+
+
+COMO  CAMBIAR EL TIEMPO DE RELECTURA DEL LECTOR
+-----------------------------------------------
+normalmente se usará el  tiempo  0,  el que  da  el menor tiempo posible,
+dependiendo  del  polling de  todos  los  lectores  conectados.
+
+tiempo relectura =  es la operacion  3
+
+poner  tiempo  a  0  en el lector 8:
+
+	./circontrol  3  8  0  0  0
+							  I------------> tiempo de relectura:
+							  0,1,2,3,4,...
+										seg =  numero / 2  =
+										4 / 2  =  2  seg
+										2 / 2  =  1  seg.
+										0  =   70  milis.
+COMO CAMBIAR LA VELOCIDAD DEL LECTOR
+------------------------------------
+es la operacion  5  :
+
+por defecto está a 4800, y queremos ponerlo a 9600:
+
+	./circontrol   5  8  0  0  9600
+
+
+LECTURA ULTIMO TAG  O NUMERO TARJETA LEIDA POR UN LECTOR
+--------------------------------------------------------
+es la operacion  7  : 
+		
+	./circontrol  7  8  0  0
+	--> codigo tarjeta
+
+
+# prompt del sistema linux

@@ -1,0 +1,19 @@
+ ; BIND data file for local loopback interface
+ ;
+$TTL 604800 ; Default record TT
+viphoteles.net. 	IN 	SOA ns1.viphoteles.net. mail.viphoteles.net. (
+			2014040811; Date based serial number.
+			21600 ; Secondary server refresh TTL
+			3600 ; Secondary refresh failure try again TTL
+			604800 ; Secondary zone keep alive if primary unavailable
+			1800 ) ; Negative Cache TTL
+;
+viphoteles.net.	IN	NS	ns1.viphoteles.net.
+
+		IN	A	79.148.242.52
+ns1		IN  	A   	79.148.242.52
+www     	IN  	A	79.148.242.52
+mail		IN	A	79.148.242.52
+smtp		IN	A	79.148.242.52
+viphoteles.net. IN  	MX 	10 mail.viphoteles.net.
+

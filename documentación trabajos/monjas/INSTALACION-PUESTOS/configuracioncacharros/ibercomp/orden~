@@ -1,0 +1,1 @@
+gcc -o $1 $2  `pkg-config --cflags gtk+-2.0` `pkg-config --cflags glib-2.0` `pkg-config --libs gtk+-2.0` `pkg-config --libs glib-2.0` `pkg-config --cflags gthread-2.0` `pkg-config --libs gthread-2.0` -I../../libsoav1/includes/  -I../../libloav1/includes/  -I/usr/include/mysql -L ../../libsoav1/libreria/ -L ../../libloav1/libreria/ -lmysqlclient -llibsoa -llibloav1 -ldl

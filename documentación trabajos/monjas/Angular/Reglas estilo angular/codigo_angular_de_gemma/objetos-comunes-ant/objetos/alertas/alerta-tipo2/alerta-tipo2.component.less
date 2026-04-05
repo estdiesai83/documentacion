@@ -1,0 +1,96 @@
+:host{
+   width: 100vw;
+   height: 100vh;
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   background-color: rgba(0,0,0,0.6);
+   z-index: 1000;
+   font-size: 13px;
+
+   .contenido-alerta-tipo2{
+      display: block;
+      width: 80%;
+      border-radius: 7px;
+      background-color: rgb(250,250,250);
+      position: absolute;
+      top: 20%;
+      left: 10%;
+      opacity: 0;
+      transition: all 500ms;
+
+      &.show{
+         top: 25%;
+         opacity: 1;
+      }
+
+     .contenido-mensaje {
+         width: 100%;
+         height: 100%;
+         .contenedor-boton{ 
+            width: 100%;
+            .boton{
+               width: 20%;
+               height: 8vh;
+               float: right;
+               .icono{
+                  width: 100%;
+                  height: 50%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: flex-end;
+                  font-size: 1.6em;
+              }
+               .nemo{
+                  width: 100%;
+                  height: 50%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  font-size: 0.9em;
+               }
+               
+            }
+         }
+         .mensaje{
+            width: 100%;
+            padding: 0 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 2.1em;
+            padding: 10% 5%;
+            padding-top: 5%;
+            color: black;
+         }
+         .botonera{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10%;
+            padding-bottom: 8%;
+            color: green;
+           
+            .nemo{
+               width: 90%;
+               height: 100%;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               border-radius: 1000px;
+               font-size: 1.7em;
+               text-transform: uppercase;
+               padding: 4%;
+               font-weight: bold;
+               .icono {
+                  width: 10%;
+                  font-size: 1.6em;
+               }
+            }
+         }
+
+      }
+   }
+}

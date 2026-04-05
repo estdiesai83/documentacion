@@ -1,0 +1,105 @@
+10
+
+dir
+0
+https://217.127.196.206:443/svn/polideportivo/system/database/drivers
+https://217.127.196.206:443/svn/polideportivo
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+
+
+
+
+
+
+
+
+
+
+
+75e6edf7-efd9-0f4a-b9dd-18e2a03f1234
+
+mssql
+dir
+
+
+
+add
+
+sqlite
+dir
+
+
+
+add
+
+oci8
+dir
+
+
+
+add
+
+pdo
+dir
+
+
+
+add
+
+postgre
+dir
+
+
+
+add
+
+mysql
+dir
+
+
+
+add
+
+odbc
+dir
+
+
+
+add
+
+cubrid
+dir
+
+
+
+add
+
+index.html
+file
+
+
+
+add
+
+sqlsrv
+dir
+
+
+
+add
+
+mysqli
+dir
+
+
+
+add
+

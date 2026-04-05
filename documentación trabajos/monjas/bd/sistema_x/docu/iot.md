@@ -1,0 +1,1 @@
+![iot](/home/esther/git/soa/documentacion/bd/imagenes/iot.png)

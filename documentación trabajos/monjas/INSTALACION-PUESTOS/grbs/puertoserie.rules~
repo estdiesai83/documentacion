@@ -1,0 +1,1 @@
+KERNEL=="ttyS*", MODE="0777", OWNER="soa", GROUP="dip"

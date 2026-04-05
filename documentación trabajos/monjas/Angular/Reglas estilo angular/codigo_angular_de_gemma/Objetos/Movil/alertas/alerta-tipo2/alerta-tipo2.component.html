@@ -1,0 +1,15 @@
+<div class="contenido-alerta-tipo2" [ngClass]="{'show': show}">
+   <div class="contenido-mensaje" (clickOutside)="onClickedOutside()">
+      <div class="contenedor-boton">
+         <div  class="boton" (click)="cerrarAlerta()" >
+            <i class="icono fa fa-reply"></i>
+            <div class="nemo">VOLVER</div>
+         </div>
+      </div>
+      <div class="mensaje">{{texto}}</div>
+      <div *ngIf="mostrarboton" class="botonera">
+        
+         <div (click)="aceptarAlerta()" class="nemo"> <i class="icono fa fa-hand-point-right" ></i>{{botontexto}}</div>
+      </div>
+   </div>
+</div>

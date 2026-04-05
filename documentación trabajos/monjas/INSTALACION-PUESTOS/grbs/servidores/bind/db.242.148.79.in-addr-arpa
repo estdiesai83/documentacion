@@ -1,0 +1,11 @@
+$TTL	604800;
+@       IN      SOA    	ns1.viphoteles.net. support.mail.viphoteles.net. (
+                        2014041904 ; Date based serial number.
+                        21600 ; Secondary server refresh TTL
+                        3600 ; Secondary refresh failure try again TTL
+                        604800 ; Secondary zone keep alive if primary unavailable
+                        1800 ) ; Negative Cache TTL
+;
+@	IN  NS  ns1.viphoteles.net.
+52	IN  PTR viphoteles.net.
+52 	IN  PTR mail.viphoteles.net.

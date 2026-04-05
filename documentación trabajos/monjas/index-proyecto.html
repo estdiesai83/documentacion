@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ardal</title>
+  <base href="/">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
+   <script type="application/javascript" src="assets/js/fastclick.js"></script>
+
+</head>
+<body>
+  <app-root></app-root>
+
+<script>
+   document.addEventListener("deviceready", onDeviceReady, false);
+   function onDeviceReady() {
+      /*
+       * Permisos
+       */
+
+      var permissions = cordova.plugins.permissions;
+      permissions.requestPermission(permissions.CAMERA, function() {}, function() {});
+      permissions.requestPermission(permissions.RECORD_AUDIO, function() {}, function() {});
+      permissions.requestPermission(permissions.RECORD_AUDIO_SETTINGS, function() {}, function() {});
+      permissions.requestPermission(permissions.READ_EXTERNAL_STORAGE, function() {}, function() {});
+      permissions.requestPermission(permissions.WRITE_EXTERNAL_STORAGE, function() {}, function() {});
+
+      /*
+       * Boton atras
+       */
+
+      document.addEventListener("backbutton", function (e) {
+         e.preventDefault();
+      }, false );
+
+      /*
+       * Manejo teclado en ios
+       */
+
+      Keyboard.shrinkView(true);
+      // Keyboard.disableScrollingInShrinkView(true);
+
+      StatusBar.overlaysWebView(false);
+      StatusBar.styleDefault();
+      StatusBar.backgroundColorByHexString("#F5F5F5");
+
+      window.screen.orientation.lock('portrait');
+
+      if ( device.platform === "iOS" ) {
+         console.log('iOS');
+         universalLinks.subscribe('unilink', function (eventData) {
+            // do some work
+            console.log('Did launch application from the link: ' + eventData.url);
+
+            var event = new CustomEvent('universallink', { detail: { 'url': eventData.url } });
+            document.dispatchEvent(event);
+         });
+
+         FastClick.attach(document.body);
+      }
+   }
+
+   /*
+    * BROWSER VIEWPORT RESIZE
+    */
+
+   document.addEventListener('DOMContentLoaded', (event) => {
+      var body = document.body;
+      var html = document.documentElement;
+
+      var height = Math.max(
+         body.scrollHeight,
+         body.offsetHeight,
+         html.clientHeight,
+         html.scrollHeight,
+         html.offsetHeight );
+
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+      window.localStorage.setItem('deviceHeight', h);
+
+      size();
+   });
+
+   function size() {
+      document.documentElement.setAttribute("style","height:"+window.localStorage.getItem('deviceHeight')+'px');
+      document.body.setAttribute("style","height:"+window.localStorage.getItem('deviceHeight')+'px');
+
+      viewport = document.querySelector("meta[name=viewport]");
+      viewport.setAttribute('content', 'width=device-width, height=' + window.localStorage.getItem('deviceHeight') + ', user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1');
+   }
+
+   window.addEventListener('resize', function() {
+      size();
+   }, false);
+
+</script>
+<script>
+   var cssId = 'scsFonts1';  // you could encode the css path itself to generate id..
+   if (!document.getElementById(cssId)){
+      var head  = document.getElementsByTagName('head')[0];
+      var link  = document.createElement('link');
+      link.id   = cssId;
+      link.rel  = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'assets/font-awesome.css?v=' + Math.random();
+      link.media = 'all';
+      head.appendChild(link);
+   }
+  
+</script>
+</body>
+</html>

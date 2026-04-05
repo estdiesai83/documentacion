@@ -1,0 +1,54 @@
+<div class="contenido-entrada" #contenidoEntrada>
+   <div class="input">
+      <div class="orla" *ngIf="!grabando">
+         <div class="boton mail" *ngIf="!hayTexto()" (click)="mostrarMail.emit()">
+            <i class="far fa-envelope"></i>
+         </div>
+         <div class="boton emoji">
+            <i class="far fa-laugh"></i>
+         </div>
+
+         <div class="contenedor-textarea" [ngClass]="{'con-texto': hayTexto()}">
+            <textarea
+               #input
+               [(ngModel)]="input_text"
+               (keydown)="redimensionarTextarea()"
+               (keyup)="redimensionarTextarea()">
+               {{input_text}}
+            </textarea>
+         </div>
+
+         <div class="boton clip" (click)="otrosAdjuntos.emit()">
+            <i class="fas fa-paperclip"></i>
+         </div>
+
+         <div class="boton camera" *ngIf="!hayTexto()" (click)="camara.emit()">
+            <i class="fas fa-camera"></i>
+         </div>
+      </div>
+      <div *ngIf="grabando" class="grabando">
+         <i class="icono fas fa-dot-circle"></i>
+         <span class="tiempo">{{tiempoGrabado}}</span>
+      </div>
+   </div>
+
+   <div class="accion">
+      <div class="contenedor-boton enviar" *ngIf="input_text !== undefined && input_text !== ''">
+         <div class="boton" (touchstart)="refocus()" (click)="enviar()">
+            <i class="fas fa-paper-plane"></i>
+         </div>
+      </div>
+
+      <div class="contenedor-boton micro" *ngIf="input_text === undefined || input_text === ''">
+         <div 
+            class="boton"
+            (touchstart)="startRecording()"
+            (mousedown)="startRecording()"
+            (touchend)="stopRecording()"
+            (mouseup)="stopRecording()"
+            [ngClass]="{'rec': grabando}">
+            <i class="fas fa-microphone"></i>
+         </div>
+      </div>
+   </div>
+</div>

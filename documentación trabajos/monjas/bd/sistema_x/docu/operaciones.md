@@ -1,0 +1,1 @@
+![operacion](/home/esther/git/soa/documentacion/bd/imagenes/operacion.png)

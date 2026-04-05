@@ -1,0 +1,108 @@
+<div class="card-container" [ngClass]="{'enviado': enviado}">
+   
+   <div [ngClass]="{'flipped': flip == true }" class="card">
+      <div class="front" [ngClass]="{'enviado': enviado}">
+         <!-- <div (click)="eventoCerrar.emit()" class="cerrar">
+            <i class="fa fa-times"></i>
+         </div> -->
+         <div [ngClass]="{'deshabilitado': deshabilitar}" class="post"> 
+            <app-post 
+            [sitio]="sitio" >
+
+            </app-post> </div>
+         <div [ngClass]="{'deshabilitado': deshabilitar}" (click)="girarContenidoPost()" class="nemo">
+            <div class="epost">e-post</div>
+            <div class="reg">&reg;</div>
+         </div> 
+         <div  *ngIf="sitio === undefined" [ngClass]="{'deshabilitado': deshabilitar}" class="quien"> 
+            <app-quien *ngIf="sitio === undefined"></app-quien> </div>
+         <!-- <div [ngClass]="{'deshabilitado': deshabilitar}" class="cuando"> <app-cuando></app-cuando> </div> -->
+         <div class="cuando" [ngClass]="{'deshabilitado': deshabilitar}" >
+            <div class="contenido" [ngClass]="{activo: mostrar === 2}">
+               <div class="opcion cuando" (click)="!enviado ? mostrar = 2 : null">
+                  <div class="icono"><i class="fas fa-calendar"></i></div>
+                  <div class="nemo" *ngIf="fecha === undefined || fecha.date === undefined">INMEDIATO</div>
+                  <div class="nemo con" *ngIf="fecha !== undefined && fecha.date !== undefined"> {{("0" + fecha.dia ).slice(-2)}}/{{("0" + fecha.mes ).slice(-2)}}/{{ fecha.anio }} &nbsp; &nbsp;   {{ fecha.hora }}</div>
+               </div>
+            </div>
+      
+            <div class="capa-deshabilitadora-oscura" *ngIf="mostrar === 2 " @inOutFade></div>
+            
+            <app-desplegable class="desplegable fecha"
+               *ngIf="mostrar === 2"
+               [opciones]="opciones_fecha" 
+               [indicador]="3"
+               (seleccion)="seleccionFecha($event)"
+               (eventoCerrar)="mostrar = 0">      
+            </app-desplegable>
+         </div>
+         <div *ngIf="sitio !== undefined" class="espacio-inferior"> </div>
+        
+         <div class="contenido-boton"  *ngIf="validar"
+            [ngClass]="{'enviando': enviando, 'enviado': enviado}">
+           
+            <div class="boton" [ngClass]="{'enviando': enviando, 'enviado': enviado}">
+               <div class="texto" 
+                  *ngIf="!enviando && !enviado" 
+                  (click)="procesoEnviar()">
+                  <div *ngIf="transfer.end" class="icono">
+                     <i class="fas fa-paper-plane"></i>
+                  </div>
+                  ENVIAR
+               </div>
+              
+               <div class="texto con-icono-derecho" *ngIf="enviando && !enviado">
+                  ENVIANDO
+                  <img [src]="BASE_APP + 'assets/gif/loading5.gif'" />
+               </div>
+               <div class="texto con-icono-izquierdo" *ngIf="enviado">
+                  <i class="enviado fas fa-check"></i>
+                  ENVIADO
+               </div>
+            </div>
+            <div *ngIf="!enviado && !enviando &&  sitio === undefined" class="reiniciar" (click)="empezarNuevo()">
+               <i class="fas fa-redo-alt"></i>
+            </div>
+            <div *ngIf="enviado" class="nuevo" (click)="empezarNuevo()">
+               <i class="fas fa-file"></i>
+               NUEVO
+            </div>
+            <!-- <div *ngIf="enviado && sitio === undefined" class="reutilizar"  (click)="reutilizarEnvio()">
+               <i class="fas fa-redo"></i>
+               REUTILIZAR
+            </div> -->
+             
+         </div>
+         
+         <app-alerta-tipo4
+            *ngIf="alerta" 
+            [texto]="'¿Estas seguro que quieres enviar el post sin destinatario?'" 
+            [botontextoaceptar]="'Si'"
+            [botontextocancelar]="'No'"
+            (eventobotonaceptar)="realizarEnvioSinDestinatario()"
+            (eventobotoncancelar)="alerta = false">
+         </app-alerta-tipo4>
+         <div *ngIf="transfer.show"  [ngClass]="{'transfer': transfer.animate}" class="capa-efecto-transfer"></div>
+      </div>
+      <div  class="back"> 
+          <div class="historico"> <app-historico [actualizar]="flip"></app-historico> </div>
+      </div>
+   </div>
+</div>
+
+<div class="capa-deshabilitadora-oscura" *ngIf="mostrar === 3 " @inOutFade></div>
+<div class="fechahora" *ngIf="mostrar === 3" @inOutFromBottom>
+   <app-fechahora-picker 
+      [weekend]="true" 
+      [intervalo]="10" 
+      [ver_dia]="(fecha !== undefined && fecha.date !== undefined) ? fecha.date : undefined"
+      [hora]="(fecha !== undefined && fecha.hora !== undefined) ? fecha.hora : undefined"
+      [focus]="'00:00'"
+      (eventoValidado)="fechaElegida($event)"
+      (eventoCerrar)="mostrar = 0">      
+   </app-fechahora-picker>
+</div>
+<app-cargando 
+   *ngIf="enviando && !enviado"
+   [texto]="'Enviando'" >
+</app-cargando> 

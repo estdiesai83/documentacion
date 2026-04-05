@@ -1,0 +1,129 @@
+Para conectarme a servidor de produccion:
+ssh -p 20330 soa@89.7.222.195
+clave: _?sis_??
+
+Sacar script :
+mysqldump -u localhost -plocalhost --events sistema_alejandro_somosaguas > sistema_alejandro_somosaguas_11052023_contablas_configuraciones_y_tdato_configuracion.sql
+
+
+Mirar los logs del soa:
+sudo docker logs kernelsoa-alejandro-somosaguas -f -n 100
+
+Los logs Ya no se guardan en el servidor en sistemas/logs
+Estan en el contenedort
+
+Para acceder a ello tienes que hacer lo siguiente:
+sudo docker exec -it kernelsoa-alejandro-somosaguas sh
+
+Y ahí dentro tienes una carpeta de logs
+
+Para reiniciar el soa
+sudo docker restart kernelsoa-penelope-valdelagua-staging
+hay dos maneras de reiniciar el soa, reiniciar el contenedor o la imagen
+Si reinicio solo el contenedor se mantienen los log
+Si reinicio la imagen se limpia todo
+
+
+Para copiar desde el servidor de produccion el ultimo scrip de sistema_alejandro
+scp -r -P 20330 soa@89.7.222.195:/home/soa/sistema_alejandro_somosaguas_15052023_contablas_configuraciones_y_tdato_configuracion.sql /home/soa/Descargas/copias_servidor_195/
+
+Para conectarme a rudy
+ssh -p 30 soa@83.56.25.97
+clave: _?sis_??
+
+mysql -u fincarudy -pFin-ca?__74 -A
+
+Sacar script:
+mysqldump -u fincarudy -pFin-ca?__74 --events --databases karnaverde_fincarudy huevon_fincarudy ps_fincarudy equipo_fincarudy utilidades_fincarudy calendario_fincarudy sistema_fincarudy > script_fincarudy_15052023.sql
+
+
+
+scp -r -P 30 soa@soa@83.56.25.97:/home/soa/script_fincarudy_15052023.sql /home/soa/Descargas/copias_servidor/
+
+Para iniciar google-chrome.
+google-chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security --ignorer-certificate-errors
+
+Para conectarme a servidor de produccion:
+ssh -p 20330 soa@89.7.222.196
+clave: _?deS__3112
+
+
+Para conectarme a la bd del servidor de desarrollo
+mysql -h 89.7.222.196  -P3330 -u localhost -plocalhost
+
+
+Para conectarme al servidor donde estan las imagenes de instalacion de raspberry:
+ssh -p 20330 soa@77.230.94.186
+clave: _?sis_??
+
+Para copiar desde el servidor de produccion el ultimo scrip de sistema_alejandro
+scp -r -P 20330 /media/soa/ soa@77.230.94.186:/home/soa/
+
+
+
+Para compilar loa y pasarlo al servidor de produccion
+cd /var/www/htm/kernelloa/app
+scp -r -P 20330 ../api subiw@89.7.222.195:/var/www/html/loa.hometech.red
+
+cd www
+sudo rm -fr node_modules_*
+
+scp -r -P 20330 *.* subiw@89.7.222.195:/var/www/html/loa.hometech.red
+scp -r -P 20330 svg subiw@89.7.222.195:/var/www/html/loa.hometech.red
+scp -r -P 20330 assets subiw@89.7.222.195:/var/www/html/loa.hometech.red
+
+
+Para clonar el kernelsoa:
+git clone sgit@github.com:Uniquehome/kernelsoa.git
+
+Para clonar el teho:
+git clone git@github.com:Uniquehome/teho-frontend.git
+
+
+Para clonar el loa:
+git clone https://git.uniquehome.es/Uniquehome/kernelloa.git
+
+Para clonar las bds:
+git clone https://git.uniquehome.es/Uniquehome/kernelloa.git
+
+
+Para clonar la api:
+git clone https://git.uniquehome.es/Uniquehome/api-domo.git
+
+
+Para probar api desde terminal:
+curl -d '{"location_id":"4"}' -X POST http://monjas.hometech.red/api/public/index.php/Data/getConfig
+curl -d "dome_type=15&id=1&hour_init="12:12"&hour_end="13:12"" -X POST http://localhost:1517/domo/changePeriodicTime
+
+
+Paginas de demos:
+http://pruebas.uniquehometech.es/home (demo hotel)
+http://pruebas2.uniquehometech.es/ (demo penelope)
+http://demo2.uniquehometech.es/ (demo pablo)
+http://home3.uniquehometech.es/ (demo alejandro)
+
+
+Para instalar lo de los colorines::
+
+# Update
+sudo apt-get update
+# Install packages
+sudo apt-get install htop bat vim git cmake fzf automake libtool libtool-bin
+# Install LSD from source
+wget https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_arm64.deb &&
+sudo dpkg -i lsd_0.23.1_arm64.deb &&
+rm lsd_0.23.1_arm64.deb &&
+# Install neovim
+git clone https://github.com/neovim/neovim &&
+cd neovim &&
+git checkout stable &&
+make CMAKE_BUILD_TYPE=release &&
+sudo make install &&
+# Install nvchad
+git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1 &&
+nvim
+# ZSH
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# PowerLevel10K
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc

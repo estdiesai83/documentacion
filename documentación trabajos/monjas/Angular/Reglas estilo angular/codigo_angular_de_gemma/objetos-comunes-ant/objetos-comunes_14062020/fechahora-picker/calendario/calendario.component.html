@@ -1,0 +1,12 @@
+<div class="contenedor">
+   <igx-calendar
+      [hasHeader]="false"
+      #calendar 
+      [selection]="multi ? 'multi' : 'single'"
+      [locale]="locale"
+      [formatOptions]="formatOptions"
+      [formatViews]="formatViews"
+      [weekStart]="1"
+      (onSelection)="diaSeleccionado.emit($event)">
+   </igx-calendar>
+</div>

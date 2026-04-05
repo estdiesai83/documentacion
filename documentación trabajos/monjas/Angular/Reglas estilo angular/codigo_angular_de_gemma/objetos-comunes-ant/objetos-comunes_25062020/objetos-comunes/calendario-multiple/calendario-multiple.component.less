@@ -1,0 +1,138 @@
+:host{
+   width:100%;
+   height: 100%;
+   display:block;
+   background:rgb(207, 204, 204);
+
+   .contenedor{
+      width: 100%;
+      height:100%;
+      background: #fff;
+
+      .cabecera{
+         width: 100%;
+         height: 50px;
+         background: #f3f3f3;
+         border-bottom: 2px solid #e7e4e4;
+         border-top-left-radius: 20px;
+         border-top-right-radius: 20px;
+         position: relative;
+
+         .boton{
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #0088ff;
+            font-weight: bold;
+            padding: 0 20px;
+
+
+            &.cerrar{
+               left: 0;
+            }
+            &.crear{
+               right: 0;
+            }
+         }
+      }
+
+      .check{
+         width: 100%;
+         height: 60px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+      }
+
+      .contenedor-calendario{
+         width: 100%;
+
+         igx-calendar{
+            width: 100%;
+
+            ::ng-deep{
+               igx-day-item{
+                  pointer-events: none;
+                  color: #999;
+                  
+                  &.igx-calendar__date--selected {
+                     span{
+                        background: #0087ff;
+                        color: white;
+                        font-weight: bold;
+                     }
+                  }
+                  &.igx-calendar__date--selected.igx-calendar__date--range {
+                     background: #0087ff;
+
+                     span{
+                        background: #0087ff;
+                        color: white;
+                        font-weight: bold;
+                     }
+
+                     &.igx-calendar__date--first.igx-calendar__date--last{
+                        background: transparent !important;
+                        &::after{
+                           background: transparent !important;
+                        }
+                        &::before{
+                           background: transparent !important;
+                        }
+                     }
+
+                     &.igx-calendar__date--first{
+                        background: transparent !important;
+
+                        &::after{
+                           background: #0087ff;
+                        }
+                     }
+
+                     &.igx-calendar__date--last{
+                        background: transparent !important;
+                        
+                        &::before{
+                           background: #0087ff;
+                        }
+                     }
+                  }
+
+                  &.diadisponible{
+                     pointer-events: all;
+                     color: black;
+                  }
+                 
+                  &.igx-calendar__date--weekend{
+                     pointer-events: none;
+
+                     &.igx-calendar__date--selected{
+                        background: transparent;
+                        span{
+                           background: transparent;
+                           color: rgba(0,0,0,.38);
+                           font-weight: normal;
+                        }
+                     }
+                  }
+                  &.igx-calendar__date {
+
+                     &.selecionado{
+                        background: #f6f6f6;
+                        color: black;
+                        font-weight: bold;
+                        border: 1px solid #ccc;
+                        border-radius: 10px;
+                        pointer-events: auto;
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,103 @@
+<div class="cabecera">
+   <div class="boton cerrar" (click)="eventoCerrar.emit()">
+      Atrás
+   </div>
+
+   <div class="nemo">
+      Mail
+   </div>
+
+   <div class="boton enviar" (click)="terminar()">
+      Enviar
+   </div>
+</div>
+
+<div class="contenido">
+   <div class="listado">
+      <div class="item" (click)="mostrarAsunto()">
+         <span class="icono comentario">
+            <i class="fas fa-quote-right"></i>
+         </span>
+         <div class="titulo">
+            <span>ASUNTO</span>
+         </div>
+         <div class="datos">
+            <span class="dato sin" *ngIf="asunto === undefined || asunto === ''">Escribir asunto</span> 
+            <span class="dato comentario" *ngIf="asunto !== undefined && asunto !== ''">{{asunto}}</span>
+         </div>
+      </div>
+      <div class="item" (click)="mostrarComentario()">
+         <span class="icono comentario">
+            <i class="fas fa-pencil-alt"></i>
+         </span>
+         <div class="titulo">
+            <span>COMENTARIO</span>
+         </div>
+         <div class="datos">
+            <span class="dato sin" *ngIf="comentario === undefined || comentario === ''">Escribir comentario</span> 
+            <span class="dato comentario" *ngIf="comentario !== undefined && comentario !== ''">{{comentario}}</span>
+         </div>
+      </div>
+      <div class="capa-deshabilitadora-desplegable" *ngIf="desplegable" (click)="desplegable = false"></div>
+      <div class="item adjuntos" 
+         #itemAdjuntos 
+         [ngClass]="{'con-adjuntos': adjuntos.length}"
+         (click)="!adjuntos.length ? mostrarDesplegable() : null">
+         <span class="icono adjuntos" (click)="mostrarDesplegable()">
+            <i class="fas fa-paperclip"></i>
+         </span>
+         <div class="titulo">
+            <span>ADJUNTOS</span>
+         </div>
+
+         <!-- Desplegable -->
+         <div *ngIf="desplegable" @inOutMenu class="desplegable">
+            <i class="indicativo fas fa-caret-left"></i>
+            <div class="elemento" (click)="adjuntoCamara($event)">
+               <span class="texto">Cámara</span>
+               <i class="icono fas fa-camera"></i>
+            </div>
+            <div class="elemento" (click)="adjuntoVideo($event)">
+               <span class="texto">Video</span>
+               <i class="icono fas fa-video"></i>
+            </div>
+            <div class="elemento" (click)="adjuntoGaleria($event)">
+               <span class="texto">Galeria</span>
+               <i class="icono fas fa-images"></i>
+            </div>
+            <div class="elemento last" (click)="adjuntoDocumento($event)">
+               <span class="texto">Documento</span>
+               <i class="icono fas fa-file"></i>
+            </div>
+         </div>
+         <!-- Ceston adjuntos -->
+         <div 
+            class="datos adjuntos" 
+            #datosAdjuntos 
+            [ngClass]="{'sin': !adjuntos.length}">
+            <span class="dato sin" *ngIf="!adjuntos.length">Añadir adjuntos</span>
+            <app-galeria 
+               *ngIf="adjuntos.length" 
+               [adjuntos]="adjuntos" 
+               [eliminable]="true"
+               [imprimible]="false"
+               [descargable]="false">              
+            </app-galeria>
+         </div>
+      </div>
+
+      <div class="icono">
+         <i class="fas fa-mail-bulk"></i>
+      </div>
+   </div>
+</div>
+
+<!-- PIZARRA -->
+<app-pizarra
+   *ngIf="mostrar.comentario || mostrar.asunto"
+   [texto]="texto_tutoria"
+   [adjuntos]="false"
+   [readonly]="false"
+   (eventoTerminado)="anotarTexto($event)"
+   (eventoCerrar)="cerrarPizarra()">
+</app-pizarra>

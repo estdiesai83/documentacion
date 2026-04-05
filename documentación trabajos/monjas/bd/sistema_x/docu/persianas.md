@@ -1,0 +1,1 @@
+![persianas](/home/esther/git/soa/documentacion/bd/imagenes/persianas.png)

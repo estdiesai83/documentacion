@@ -1,0 +1,165 @@
+<div (click)="volverAtrasGirar()" class="atras"><span class="icono"><i class="fas fa-angle-right"></i></span></div>
+
+<!-- Filtros -->
+<div class="filtro">
+   <div class="buscar">
+      <input id="cp_buscar_filtro_historico_post_postit_teho" (keyup)="buscarPorTexto($event)" type="text"/>
+      <span class="icono"><i class="fas fa-search"></i></span>
+   </div>
+   <div (click)="mostrar.lista = !mostrar.lista; abrir = true; cerrarPost()" [ngClass]="{'filtrado': filtrado_quien.length}" class="personas">
+      <div class="boton">
+         <span class="icono">
+            <i class="fas fa-user"></i>
+            <i class="fas fa-caret-down"></i>
+         </span>
+      </div>
+      <div class="info">
+         <div *ngIf="!filtrado_quien.length" class="destinatariosinfo">Destinatarios</div>
+         <div *ngIf="filtrado_quien.length" class="lista-personas-filtradas">
+            <div *ngFor="let quien of filtrado_quien" class="elemento">
+               <div class="nombre">{{quien.nemo}} {{quien.nombre}}</div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="fechas">
+      <span class="icono"><i class="fas fa-calendar"></i></span>
+      <div class="desde">
+         <div class="titulo">Desde</div>
+         <input id="input_fecha_desde_cuando_filtro_historico_postit_teho" type="date" (change)="setFiltroFechaDesde($event)" class="dateclass placeholderclass">
+      </div>
+      <div class="hasta">
+         <div class="titulo">Hasta</div>
+         <input id="input_fecha_hasta_cuando_filtro_historico_postit_teho" type="date" (change)="setFiltroFechaHasta($event)" class="dateclass placeholderclass">
+      </div>
+   </div>
+</div>
+
+<!-- Listado del filtro quienes -->
+<div class="despegables-destinatarios no-pointer-events" (clickOutside)="onClickedOutside($event)">
+   <ul *ngIf="mostrar.lista"  class="lista en-pointer-events" [@slideInOut]>      
+      <li class="lista">
+         <ul>
+            <li [ngClass]="{activado: personas.estado}" *ngFor="let personas of quienesNuevos" (click)="personas.estado = !personas.estado; filtrar()">
+               <div class="nombre">
+                  {{personas.nemo}} {{personas.nombre}}
+               </div>
+               <span class="seleccion icono">
+                  <i *ngIf="personas.estado" class="fas fa-check"></i>
+               </span>
+            </li> 
+         </ul>
+      </li>
+      <li (click)="mostrar.lista = false; abrir = false" class="icono cerrar">
+         <div><i class="fas fa-caret-up"></i></div>
+      </li>
+   </ul>
+</div>
+
+<!-- Listado de postits -->
+<ul id="lista_historico_post_postit_teho" class="lista_historico_post_postit_teho">
+   <li (click)="selecionarPost(listado.nombre,listado.texto,listado.fecha,listado.id)" id="item-post{{listado.id}}" [ngClass]="{activado: listado.estado}" *ngFor="let listado of postitNuevos">
+      <div [ngClass]="{activado: listado.estado}"class="titulo">
+         Enviado a: {{listado.nombre}}
+      </div>
+      <div [ngClass]="{activado: listado.estado}"class="texto">
+         {{listado.texto}}
+      </div>
+      <div [ngClass]="{activado: listado.estado}"class="detalle"> {{listado.fecha}} </div>
+   </li>
+</ul>
+
+<!-- Postit seleccionado -->
+<div [@simpleFadeAnimation] *ngIf="estado.selecionadopost" class="seleccionado-post">
+   <div (click)="cerrarPost()"  class="cerrar"><i class="fa fa-times"></i></div>
+   <div class="titulo">
+      Enviado a: {{this.nombre}}
+   </div>
+   <div class="texto">
+      {{this.texto}}
+   </div>
+   <div class="detalle"> {{this.fecha}} </div>
+</div>
+
+<!-- Lengueta -->
+<div [@simpleFadeAnimation] *ngIf="estado.selecionadopost" class="lengueta" [ngClass]="{'abierto': lenguetaquienes}">
+   <div class="general">
+      <div *ngIf="!lenguetaquienes" (click)="mostrarOjo() " class="ojo"><i class="fas fa-eye"></i></div>
+      <div *ngIf="lenguetaquienes" (click)="mostrarOjo() " class="ojo"><i class="fas fa-eye-slash"></i></div>
+      <div (click)="eliminarPostSeleccionado(this.id)" class="boton">
+         <span class="icono"><i class="fas fa-trash"></i></span>Eliminar
+      </div>
+      <div (click)="reutilizar() " class="reutilizar">
+         <i class="fas fa-share-square"></i>
+      </div>
+   </div>
+
+   <div class="lengueta-quienesenviado">
+      <div class="contenedor-info">
+         <div class="elemento"   *ngFor="let personas of usuarios">
+            <!-- Desactivado -->
+            <div (click)="procesoActivar(personas._idpost, personas.nemo)"  *ngIf="personas.activo === '1'"  class="nombredesactivado">
+               <div class="nemo">{{personas.nemo}}</div>
+               <div class="estado">Desactivado</div>
+            </div>
+            <!-- Activado -->
+            <div 
+               (click)="(personas.estado === '0' || personas.estado === '1') ? procesoDesactivar(personas._idpost, personas.nemo) : null" 
+               *ngIf="personas.activo === '0'"  
+               class="nombreactivado" 
+               [ngClass]="{'leido': personas.estado === '2' || personas.estado === '3'}">
+   
+               <div class="nemo">{{personas.nemo}}</div>
+               <div *ngIf="personas.estado === '0' || personas.estado === '1'" class="estado">No Leido</div>
+               <div *ngIf="personas.estado === '2' || personas.estado === '3'" class="estado">
+                  Leido
+                  <span class="fecha">{{personas.fecha}}</span>
+               </div>
+               <div *ngIf="personas.estado === '4'" class="estado">Pendiente</div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="alerta no-pointer-events" (clickOutside)="outside_abierto.alerta || alerta = undefined; outside_abierto.alerta = false;">
+   <app-alerta-tipo2 
+      *ngIf="alerta == 1" 
+      class="en-pointer-events" 
+      (eventobotonalerta)="AceptarAlerta($event)"  
+      (eventocerraralerta)="cerrarAlerta($event)" 
+      [texto]="'¿Estas seguro?'"
+      [botontexto]="'Si'">
+   </app-alerta-tipo2>
+</div>
+
+<!-- Proceso activar/desactivar e historico proceso -->
+<div class="contenedor-proceso-activar-desactivar no-pointer-events" [ngClass]="{'abierto': proceso.historico}" (clickOutside)="proceso.abierto || proceso.tipo = undefined; proceso.abierto || proceso.historico = false; proceso.abierto = false;">
+   <div *ngIf="proceso.tipo === 'actdesact'" class="proceso-activar-desactivar en-pointer-events" [ngClass]="{'abierto': proceso.historico}">
+      <div (click)="proceso.tipo = undefined; proceso.historico = false" class="cerrar">
+         <i class="fas fa-close"></i>
+      </div>
+      <div *ngIf="proceso.modo === 'activar'" class="mensaje">
+         ¿Quiere activar el post a {{proceso.nemo}}?
+      </div>
+      <div *ngIf="proceso.modo === 'desactivar'" class="mensaje">
+         ¿Quiere desactivar el post a {{proceso.nemo}}?
+      </div>
+      <div class="botonera">
+         <div (click)="ejecutarProceso_actdesact(); proceso.historico = false" class="boton boton_si">Si</div>
+         <div (click)="leerHistoricoProceso(proceso.id); proceso.historico = !proceso.historico" class="boton boton_mas icono" [ngClass]="{'activo': proceso.historico}"><i class="fas fa-plus"></i></div>
+      </div>
+      <div class="listado-historico">
+         <div class="encabezado">
+            <div class="izquierda">Fecha</div>
+            <div class="derecha">Proceso</div>
+         </div>
+         <ul class="lista">
+            <li *ngFor="let item of historico_proceso" class="elemento">
+               <div class="fecha">{{item.fecha}}</div>
+               <div class="estado">{{item.estado}}</div>
+            </li>
+         </ul>
+      </div>
+   </div>
+</div>

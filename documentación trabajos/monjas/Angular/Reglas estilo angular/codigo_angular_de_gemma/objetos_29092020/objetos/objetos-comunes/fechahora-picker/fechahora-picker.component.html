@@ -1,0 +1,45 @@
+<div class="cabecera">
+   <div class="boton cerrar" (click)="eventoCerrar.emit()">
+      Atrás
+   </div>
+
+   <div class="nemo">
+      {{titulo}}
+   </div>
+
+   <div class="boton validar" (click)="validar()">
+      Validar
+   </div>
+</div>
+
+<div class="cuerpo">
+   <div class="calendario" *ngIf="modo === 0 || modo === 1">
+      <app-calendario
+         [ver_dia]="ver_dia"
+         [dias_marcados]="dias_marcados"
+         [dias_disponibles]="dias_disponibles"
+         [dias_seleccionados]="dias_seleccionados"
+         [dias_nuevos]="dias_nuevos"
+         [multi]="multi"
+         [rango]="rango"
+         [color_nuevo]="color_nuevo"
+         [deselect]="deselect"
+         [weekend]="weekend"
+         (diaSeleccionado)="diaSeleccionado($event)">      
+      </app-calendario>
+   </div>
+   <div class="hora" *ngIf="modo === 0 || modo === 2">
+      <span class="titulo">Hora:</span>
+      <app-time-picker 
+         [ngClass]="{'color': hora !== undefined && hora !== '', 'error': error.dia}"
+         [hora]="hora" 
+         [intervalo]="intervalo"
+         [hora_inicio]="hora_inicio"
+         [hora_fin]="hora_fin"
+         [hora_min]="hora_min"
+         [minuto_min]="minuto_min"
+         [focus]="focus"
+         (eventoSeleccion)="horaSeleccionada($event)">
+      </app-time-picker>
+   </div>
+</div>

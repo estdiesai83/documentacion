@@ -1,0 +1,61 @@
+# GLOSARIO
+
+- **Administración de Base de Datos Relacional:** Técnica de administración de bases de datos en la que la información se guarda en tablas de datos bidimensionales. El programa que funciona con dos tablas a la vez, relaciona la información mediante uniones establecidas por una columna o campos comunes entre si.
+- **Acceso:** La manera en la cual los archivos o conjunto de datos son referenciados por la computadora.
+- **Android:** Sistema operativo móvil basado en el núcleo de Linux.
+- **App:** Aplicación que puede ser instalada en dispositivos móviles y que se caracterizan por ocupar poco espacio en memoria, instalarse en poco tiempo y por su dinamismo.
+- **App Store:** Es un servicio para iPhone, el iPod Touch, el iPad y Max OS x Snow Leopard o posterior, que permite a los usuarios buscar y descargar aplicaciones.
+- **Base de Datos:** Es una serie de datos organizados y relacionados entre sí, los cuales son usados por los Sistemas de información de una empresa o negocio en particular.
+- **Campo:** Unidad básica de una base de datos, un campo puede ser, por ejemplo, el nombre de una persona. Los nombres de los campos, no pueden empezar con espacios en blanco o caracteres especiales. No pueden llevar puntos, ni signos de exclamación o corchetes. Pero si pueden tener espacios en blanco en el medio.
+- **Controlfiles:** Archivos de control con entradas que especifican la estructura física de la base de datos Oracle.
+- **Contención:** Incidencia que se produce en la base de datos por acumulación de peticiones, provocando fallos (misses), con esperas (sleeps).
+- **DBA:** Data Base Administrator o administrador de la base de datos, es el profesional que se encarga de administrar las tecnologías de la información y la comunicación, siendo de esta forma el responsable de los aspectos técnicos, tecnológicos, científicos y legales de la base de datos, asó como de la calidad de los datos.
+- **DBMS:** Es un conjunto de programas que se encargan de manejar la creación y todos los accesos a las bases de datos.
+- **DDL:** Es un lenguaje de definición de datos.
+- **DML:** Es un lenguaje de manipulación de datos.
+- **DTD:** Document Type Definition o definición de tipo de documento describe la estructura de datos y sintaxis de un documento XML o SGML para mantener una estructura común y una consistencia en todos los documentos con el mismo DTD.
+- **Entidad:** Es un objeto que presenta interés y sobre el que se recoge información que va a ser representada en un sistema de base de datos.
+- **Esquemas:** Un esquema es una colección de objetos de la base de datos. Es propiedad de un usuario de la base de datos y tiene el mismo nombre que el usuario. Los objetos de esquema son las estructuras lógicas que se refieren directamente a los datos de la base de datos.
+- **Extends:** Número de bloques de datos contiguos asignados para almacenar información.
+- **Framework: ** Es un entorno de trabajo con una estructura conceptual y tecnológica de asistencia definida, normalmente, con módulos concretos de software que sirven de base para la organización y desarrollo de software. Típicamente, puede incluir soporte de programas, bibliotecas y un lenguaje interpretado, entre otras herramientas, para así ayudar a desarrollar y unir los diferentes componentes de un proyecto.
+- **Gestor de Base de Datos:** Es un conjunto de programas que permiten crear y mantener una base de datos, asegurando su integridad, confidencialidad y seguridad.
+- **Google Play:** Plataforma de distribución digital de aplicaciones móviles para los dispositivos con sistemas operativo Android, así como una tienda desarrollada y operada por Google.
+- **Hints:** Parámetros que se pasan a las sentencias SQL para influir en el optimizador de Oracle.
+- **Índice:** una estructura de datos utilizada para acelerar ciertas operaciones sobre una tabla en base a valores que identifican cada fila.
+- **iOS:** Sistema operativo móvil de Apple Inc.
+- **Master:** Base de datos del sistema que registra toda la información del sistema para una instancia de SQL Server. Dentro de esta información se incluyen los metadatos de todas las instancias, como las cuentas de usuario, los extremos, los servidores vinculados y la configuración del sistema. Asimismo, master es la base de datos que registra las demás bases de datos, la ubicación de los archivos de las bases de datos y la información de inicialización de SQL Server.
+- **MySQL:** Base de datos relacional multiplataforma de código abierto, es muy utilizada en desarrollos web, MariaDB es un sistema de gestión de bases de datos derivado de MySQL con licencia GPL.
+- **Phonegap:** Framework para desarrollo de aplicaciones móviles.
+- **Servidor de Base de Datos:** Se utiliza para administrar los datos de una base de datos. El servidor gestiona las actualizaciones de datos, permite el acceso simultáneo de muchos clientes y garantiza la seguridad y la integridad de los datos.
+- **SQL:** lenguaje de consulta estructurado.
+- **Tablas:** Unidad básica de almacenamiento de datos en una base de datos Oracle.
+- **TableSpace:** Una base de datos tiene uno o más ficheros de datos (Data Files), estos ficheros son de tamaño fijo o variable y se establecen en el momento en que se crea la base de datos. Al conjunto de uno o más datafiles de una unida lógica de almacenamiento de la base de datos se le conoce como tablespace.
+- **Tempdb:** base de datos que proporciona un área de almacenamiento para tablas temporales, procedimientos almacenados temporales y otras necesidades de almacenamiento del trabajo temporal.
+- **Transacción:** Es una o varias sentencias SQL que se ejecutan en una base de datos.
+- **Vistas:** Presentaciones personalizadas de datos de una o más tablas u otras vistas. Una vista también se puede considerar una consulta almacenada. Las vistas en realidad no contienen datos, si no que se derivan de las tablas en las que se basan. Al igual que las tablas, las vistas se pueden consultar, actualizar, realizar inserciones y  eliminar datos con ciertas restricciones, ya que las operaciones realizadas sobre una vista afectan a las tablas base de la vista.
+- **Emisor:** Aquél que transmite la información (una persona, un grupo o un dispositivo).
+- **Receptor: ** Aquél, individual o colectivamente, que recibe la información. Puede ser un dispositivo.
+- **Código:** Relacionado con la comunicación es el conjunto o sistema de signos que el emisor utiliza para codificar el mensaje.
+- **Canal:** Elemento físico por donde el emisor transmite la información para que llegue al receptor. Se denomina canal el medio natural (aire, luz) como al medio técnico empleado (papel, telegrafía, radio, teléfono, televisión, ordenador, etc) por el cual es entregado y comprendido el mensaje transmitido por el receptor.
+- **Mensaje:** La propia información que el emisor transmite.
+- **Contexto:** Circunstancias temporales, espaciales y socioculturales que rodean el hecho o acto comunicativo y que permiten comprender el mensaje en su justa medida.
+- **Ancho de banda:** Se determina como la cantidad de datos que pueden fluir a través de una red en un periodo de tiempo.
+- **SNR:** Relación señal ruido o margen de ruido que hay entre la potencia de la señal que se transmite y la potencia del ruido que afecta a la línea de transmisión. Se mide en decibelios.
+- **Terminal:** O teléfono, es un dispositivo que transmite, a través de la red, señales acústicas.
+- **Topología:** Se entiende por topología de red la forma en que se lleva a cabo la conexión de esta.
+- **Crimpadora:** Es una herramienta que se utiliza para unir dos piezas metálicas mediante la deformación de una o ambas piezas para mantenerlas unidas.
+- **PSTN:** La red telefónica básica (RTB), en un principio diseñada solo y exclusivamente para la inteconexión de diversos usuarios que querían establecer una comunicación vocal, pasó a experimentar una evolución tal que le permite el soporte de otro tipo de servicios, como por ejemplo es la transmisión de datos, videoconferencias y la conexión a internet.
+- **Networking:** Consiste en la creación de redes de contactos, normalmente en el ámbito profesional, de cara a abrir nuevas posibilidades de negocio, encontrar posibilidades laborales y obtener algún tipo de beneficio empresarial. En el ámbito de tecnologías de redes de telecomunicaciones, el networking se refiere al conjunto de software junto con el cableado necesario para interconectar todos los dispositivos de una red y que puedan intercambiar datos entre todos ellos.
+- **PBX:** (Private Branch Exchange). Centralita automática encargada de la gestión de las líneas y extensiones de las empresas en la actualidad. Encargada de conmutar las llamadas entre las extensiones o con las líneas de la red pública conmutada PSTN.
+- **CPU:** (Central Process Unity). Alberga un conjunto de instrucciones controladas por un programa, para determinar la mejor ruta que toma una llamada y realizar procesos de gestión y control de la llamada.
+- **KTS:** (Key Telephone System). Es un terminal multilínea que normalmente tiene varias entradas para distintas extensiones, por lo que puede cursar varias llamadas simultáneamente. Este sistema no se puede conectar directamente a una red PSTN. Al ser propietario de las centralitas, tiene una alimentación específica.
+- **On hook:** Cuando un terminal se encuentra en estado "colgado".
+- **Off hook:** Cuando un terminal se encuentra en estado "descolgado".
+- **UITT:** Comité Consultivo Internacional para la Telefonía y Telegrafía. Organización encargada de crear los estándares necesarios para normalizar las transmisiones de comunicaciones.
+- **H.323:** Es un estándar muy complejo que describe una arquitectura de comunicaciones y servicios completa. Cada revisión del estándar añade nuevas funcionalidades que deben implementarse obligatoriamente. Aún así, H.323 puede ofrecer diversos servicios, pero no todos son compatibles y pueden ofrecer como mínimo un servicio básico de voz.
+- **SIP:** Es un protocolo que al ser más abierto y flexible permite una mayor interoperabilidad con otros códecs y protocolos. Por desgracia, la flexibilidad de SIP puede derivar en incompatibilidad de dispositivos y en la actualidad se ha vuelto tan complejo o mas que H.323.
+- **Telefonía SIP**: Sistema de comunicación que permite que la voz se envíe a través de Internet y/o redes de datos en general.
+-  **VoIP** O sobre voz IP, es el conjunto de recursos que permiten que la voz se pueda enviar por las redes de datos interconectando estas y la red PSTN.
+- **SDP:** Session Description Protocol. Protocolo de encriptación de los parámetros de los detalles de una sesión SIP.
+- **RFC:** Request for Comments. Son una serie de publicaciones que describen diversos aspectos del funcionamiento de Internet y otras redes de ordenadores, como protocolos y procedimientos.
+- **TCP:** Conjuntos de protocolos conocidos como TCP/IP, para las transmisiones de datos en redes de comunicaciones.

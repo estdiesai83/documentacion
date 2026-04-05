@@ -1,0 +1,56 @@
+<div class="capa-fondo" *ngIf="show" @inOutFade></div>
+
+<div class="contenedor" *ngIf="show" @inOutFromBottom>
+   <div class="device">
+          <!-- Begin custom content -->
+      <div class="cabecera">
+         <div class="cerrar" (click)="cerrar()"> <i class="fa fa-times"></i>  </div>
+         <img src="{{BASE_APP}}assets/img/fondo-firma.jpg">
+         <div class="texto">
+            <h1 class="page-title">Firma Digital</h1>
+            <!-- <div class="sub-title">Debe introducir 4 digitos numericos</div> -->
+         </div>
+      </div>
+      <div class="contenido">
+         <div class="pin-display">
+            <div class="circle-lock--container">
+               <div class="circle-lock">
+                  <i class="material-icons lock-icon">lock</i>
+               </div>
+            </div>
+            <div class="confirmation-dots" [ngClass]="{'error' : error == 1 || correcto === 1}">
+               <svg>
+                  <g>
+                     <circle [ngClass]="{'entered' : clave.length  >= 1,'success': correcto === 1, 'error' : error == 1}"class="pin-circle" cx="10" cy="10" r="8"></circle>
+                     <circle [ngClass]="{'entered' : clave.length >= 2,'success': correcto === 1, 'error' : error == 1}"class="pin-circle" cx="50" cy="10" r="8"></circle>
+                     <circle [ngClass]="{'entered' : clave.length >= 3,'success': correcto === 1, 'error' : error == 1}"class="pin-circle" cx="90" cy="10" r="8"></circle>
+                     <circle [ngClass]="{'entered' : clave.length >= 4,'success': correcto === 1, 'error' : error == 1}"class="pin-circle" cx="130" cy="10" r="8"></circle>
+                  </g>
+               </svg>
+            </div>
+            <div class="keypad">
+               <div class="keypad--row">
+                  <div (click)="pulsarDigito(1)" #digito class="keypad--button" data-value="1" [ngStyle]="{'height': digito_heigth + 'px'}">1</div>
+                  <div (click)="pulsarDigito(2)"  class="keypad--button" data-value="2" [ngStyle]="{'height': digito_heigth + 'px'}">2</div>
+                  <div (click)="pulsarDigito(3)"  class="keypad--button" data-value="3" [ngStyle]="{'height': digito_heigth + 'px'}">3</div>
+               </div>
+               <div class="keypad--row">
+                  <div (click)="pulsarDigito(4)"  class="keypad--button" data-value="4" [ngStyle]="{'height': digito_heigth + 'px'}">4</div>
+                  <div (click)="pulsarDigito(5)"  class="keypad--button" data-value="5" [ngStyle]="{'height': digito_heigth + 'px'}">5</div>
+                  <div (click)="pulsarDigito(6)"  class="keypad--button" data-value="6" [ngStyle]="{'height': digito_heigth + 'px'}">6</div>
+               </div>
+               <div class="keypad--row">
+                  <div (click)="pulsarDigito(7)"  class="keypad--button" data-value="7" [ngStyle]="{'height': digito_heigth + 'px'}">7</div>
+                  <div (click)="pulsarDigito(8)"  class="keypad--button" data-value="8" [ngStyle]="{'height': digito_heigth + 'px'}">8</div>
+                  <div (click)="pulsarDigito(9)"  class="keypad--button" data-value="9" [ngStyle]="{'height': digito_heigth + 'px'}">9</div>
+               </div>
+               <div class="keypad--row">
+                  <div (click)="borrarDigito()"  class="keypad--button keyboard--button__back-arrow" [ngStyle]="{'height': digito_heigth + 'px'}"><i class="fas fa-backspace"></i></div>
+                  <div (click)="pulsarDigito(0)"  class="keypad--button" data-value="0" [ngStyle]="{'height': digito_heigth + 'px'}">0</div>
+                  <div (click)="borrarTodo()" class="keypad--button keyboard--button__back-arrow" [ngStyle]="{'height': digito_heigth + 'px'}"><i class="fas fa-trash"></i></div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

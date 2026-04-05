@@ -1,0 +1,10 @@
+DefaultVendor= 0x12d1
+DefaultProduct=0x1433
+
+TargetVendor= 0x12d1
+TargetProduct= 0x1433
+
+CheckSuccess=5
+
+MessageContent="55534243000000000000000000000011060000000000000000000000000000"
+

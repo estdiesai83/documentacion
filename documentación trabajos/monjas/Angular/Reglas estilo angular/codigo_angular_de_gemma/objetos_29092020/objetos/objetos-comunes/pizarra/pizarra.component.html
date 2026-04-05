@@ -1,0 +1,93 @@
+<div class="capa-fondo" *ngIf="show" @inOutFade></div>
+
+<div class="contenedor-pizarra" 
+   *ngIf="show" 
+   @inOutFromBottom 
+   [ngClass]="{'formato-corto': formato === Formato.Corto}"
+   [ngStyle]="{'height': device_height + 'px'}">
+   <div class="contenido-pizarra" [ngStyle]="{'height': resultado_height + 'px'}">
+      <div class="contenedor"     [ngStyle]="{'maxHeight': viewportHeight + 'px'}">
+         <div class="cabecera">
+            <div class="boton cerrar" (click)="cerrar()">
+               Atrás
+            </div>
+
+            <div class="nemo">{{ titulo }}</div>
+
+            <div class="nemo-secundario" *ngIf="titulo_secundario !== undefined">{{ titulo_secundario }}</div>
+            <div class="boton adicional" *ngIf="icono_adicional !== undefined" (click)="emitirAdicional()">
+               <i *ngIf="icono_adicional !== undefined" class="{{icono_adicional}}"></i>
+            </div>
+         </div>
+
+         <div class="contenido"
+            [ngClass]="{
+               'solo-botonera': !adjuntos && !readonly,
+               'solo-adjuntos': adjuntos && readonly,
+               'sin-nada': !adjuntos && readonly
+            }">
+
+            <div class="input" *ngIf="formato === Formato.Corto">
+               <input #pizarra type="text" [(ngModel)]="texto" [readonly]="readonly" [maxlength]="limite" [placeholder]="placeholder" />
+            </div>
+
+            <div class="textarea"
+               *ngIf="formato === Formato.Extenso" 
+               [ngClass]="{
+                  'solo-botonera': !adjuntos && !readonly,
+                  'solo-adjuntos': adjuntos && readonly,
+                  'sin-nada': !adjuntos && readonly
+               }">
+               <textarea #pizarra [(ngModel)]="texto" [readonly]="readonly" [placeholder]="placeholder"></textarea>
+            </div>
+
+            <div class="adjuntos" 
+               *ngIf="adjuntos"
+               [ngClass]="{
+                  'solo-botonera': !adjuntos && !readonly,
+                  'solo-adjuntos': adjuntos && readonly,
+                  'sin-nada': !adjuntos && readonly
+               }">
+               <!-- Icono adjuntos -->
+               <div class="icono" (click)="desplegable = true" *ngIf="!readonly">
+                  <i class="fa fa-paperclip"></i>
+               </div>
+               <!-- Galeria -->
+               <div class="galeria" [ngClass]="{'solo-ver': readonly}" (click)="mostrarDesplegableAdjuntos()">
+                  <app-galeria
+                     [adjuntos]="cesta_adjuntos_interno" 
+                     [eliminable]="!readonly"
+                     [readonly]="readonly">
+                  </app-galeria>
+               </div>
+               <!-- Desplegable -->
+               <div *ngIf="desplegable" class="capa-deshabilitadora-desplegable" (click)="desplegable = false"></div>
+               <div *ngIf="desplegable" @inOutMenu class="desplegable">
+                  <i class="indicativo fas fa-caret-left"></i>
+                  <div class="elemento" (click)="adjuntoCamara($event)">
+                     <span class="texto">Cámara</span>
+                     <i class="icono fas fa-camera"></i>
+                  </div>
+                  <div class="elemento" (click)="adjuntoVideo($event)">
+                     <span class="texto">Video</span>
+                     <i class="icono fas fa-video"></i>
+                  </div>
+                  <div class="elemento" (click)="adjuntoGaleria($event)">
+                     <span class="texto">Galeria</span>
+                     <i class="icono fas fa-images"></i>
+                  </div>
+                  <div class="elemento last" (click)="adjuntoDocumento($event)">
+                     <span class="texto">Documento</span>
+                     <i class="icono fas fa-file"></i>
+                  </div>
+               </div>
+            </div>
+
+            <div class="botonera" *ngIf="!readonly && !( (texto === undefined || texto === '') && !cesta_adjuntos_interno.length )">
+               <div class="boton ok" (click)="terminar()">OK</div>
+               <div class="boton eliminar" *ngIf="comprobarEliminar()" (click)="alertaEliminar()"><i class="fa fa-trash"></i></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

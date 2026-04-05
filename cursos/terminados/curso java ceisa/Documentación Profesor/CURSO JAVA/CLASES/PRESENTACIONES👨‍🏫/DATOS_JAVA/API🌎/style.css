@@ -1,0 +1,18 @@
+@charset "ISO-8859-1";
+
+
+
+body{
+	background-color:darkgray;
+}
+
+.borde1{
+	background-color: tomato;
+	border: 2px solid black;
+	width: 200px;
+	margin-top: 250px;
+	margin-left: 400px;
+	padding: 5px;
+	text-align: center;
+	
+}

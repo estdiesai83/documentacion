@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Sabily
+Description=Sabily Al-Quds plymouth theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/sabily
+ScriptFile=/usr/share/plymouth/themes/sabily/sabily.script

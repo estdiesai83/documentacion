@@ -1,0 +1,16 @@
+<div class="contenido-alerta-tipo6" [ngClass]="{'show': show}">
+   <div (click)="cerrarAlerta()" class="cerrar">
+      <i class="fa fa-times"></i>
+   </div>
+   <div class="contenido-mensaje">
+      <div class="contenedor-icono">
+         <div class="icono">
+            <i class="{{icono}}"></i>
+         </div>
+      </div>
+      <div class="mensaje">{{texto}}</div>
+      <div *ngIf="mostrarboton" class="botonera">
+         <div (click)="aceptarAlerta()" class="boton aceptar">{{botontexto}}</div>
+      </div>
+   </div>
+</div>

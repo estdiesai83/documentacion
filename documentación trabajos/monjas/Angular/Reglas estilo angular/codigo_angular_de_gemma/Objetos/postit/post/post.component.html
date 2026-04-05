@@ -1,0 +1,25 @@
+
+<div id="cp_contenido_post_postit_teho">
+   <div id="cp_contenedor_textarea_post_postit_teho" class="col-xs-12" [ngClass]="{'validado': validado && quienes}">
+      <div *ngIf="estadofoco" class="cerrar icono"><i class="fas fa-time"></i></div>
+      <div id="cp_caracteres_restantes_textarea_post_postit_teho" [ngClass]="{'alrt': estado.caracteresrojo, warn: estado.caracteresparapedeo}" class="">{{resultado}}</div>
+      <textarea 
+         autofocus ="cursor" 
+         autocomplete="true" 
+         autocorrect="off" 
+         autocapitalize="on" 
+         spellcheck="true" 
+         id="txt_textarea_post_postit_teho" 
+         placeholder="Escriba su post" 
+         maxlength="140"
+         [(ngModel)]="texto"  
+         (keyup)="calcularCaracteresRestantes($event)" 
+         (focus)="establecerFoco(true)" 
+         (blur)="establecerFoco(false)">
+      </textarea>
+      <div *ngIf="((texto !== undefined && texto!=='' && quienes) || quienes ) && !validado" (click)="cogerTexto()" id="boton_ok_post_post_postit_teho">
+         <div class="texto">Validar</div>
+         <span [ngClass]="{'parpadeo': estadofoco || quienes}" class="icono"><i class="fas fa-paper-plane"></i></span>
+      </div>
+   </div>
+</div>

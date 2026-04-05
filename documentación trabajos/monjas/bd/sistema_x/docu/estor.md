@@ -1,0 +1,1 @@
+![estor](/home/esther/git/soa/documentacion/bd/imagenes/estor.png)
