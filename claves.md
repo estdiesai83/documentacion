@@ -61,7 +61,7 @@
 | Web y/o Aplicación | Usuario                                               | Contraseña | Observaciones                                                |
 | ------------------ | ----------------------------------------------------- | ---------- | ------------------------------------------------------------ |
 | trello             | [estdiesai83@gmail.com](mailto:estdiesai83@gmail.com) | 160202Es@  |                                                              |
-| GitHub             | [estdiesai83@gmail.com](mailto:estdiesai83@gmail.com) |            | repositorio remoto git                                       |
+| GitHub             | [estdiesai83@gmail.com](mailto:estdiesai83@gmail.com) | 160202Es@  | repositorio remoto git                                       |
 | linkedin           | [estdiesai83@gmail.com](mailto:estdiesai83@gmail.com) | 160202es   |                                                              |
 | Jira               | estdiesai83@gmail.com                                 | 160202Es@  | estdiesai83.atlassian.net<br>[id.atlassian.com](https://id.atlassian.com/signup/welcome) |
 | symfonycast        | estdiesai83@gmail.com                                 | 160202Es@# | curso symfonyhttps://symfonycasts.com/es/screencast/symfony  |
