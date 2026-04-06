@@ -833,11 +833,191 @@ En Symfony, verás que casi todos los componentes tienen su interfaz (ej. `UserI
 
 ## Herencia
 
-Es uno de los pilares de la Programación Orientada a Objetos (POO) en PHP. 
+Es uno de los pilares de la Programación Orientada a Objetos (POO) en PHP. Permite que una clase (llamada **hija** o subclase) adopte todas las propiedades y métodos de otra clase (llamada **padre** o superclase).
+
+Su objetivo principal es la **reutililzación de código** y la creación de jerarquías lógicas.
+
+1. **Sintaxis básica: La palabra extends**
+
+   Para heredar de una clase, utilizamos la palabra clave `extends`. En PHP, una clase solo puede heredad de **una sola clase padre** (herencia simple).
+
+   ```php
+   <?php
+   declare(strict_types=1);
+   
+   // Clase Padre (Superclase)
+   class Vehiculo {
+       public function __construct(
+           protected string $marca,
+           protected string $modelo
+       ) {}
+   
+       public function encender(): void {
+           echo "El vehículo {$this->marca} está encendido.";
+       }
+   }
+   
+   // Clase Hija (Subclase)
+   class Coche extends Vehiculo {
+       public function tocarClaxon(): void {
+           echo "¡Beep beep!";
+       }
+   }
+   
+   $miCoche = new Coche("Ford", "Mustang");
+   $miCoche->encender();    // Método heredado del padre
+   $miCoche->tocarClaxon(); // Método propio de la hija
+   ```
+
+2. **Visibilidad en la herencia**
+
+   Aquí es donde el modificador `proteted` cobra importancia.
+
+   **`private`**: La clase hija **no** puede acceder a ella. Es invisible fuera del padre.
+
+   **`protected`**: La clase hija **sí** puede acceder, pero sigue siendo invisible desde fuera de las clases (instancias).
+
+   **`public`**: Acceso total para todos.
+
+3. **Sobrescritura de Mátodos (Overriding)**
+
+   Una clase hija puede modificar un comportamiento que heredó de su padre simplemente definiendo el método con el mismo nombre.
+
+   Si necesitas ejecutar la lógica original del padre dentro del nuevo método, usas la palabra reservada `parent::`
+
+   ```php
+   class Avion extends Vehiculo {
+       public function encender(): void {
+           // Ejecutamos la lógica del padre primero
+           parent::encender(); 
+           
+           // Añadimos lógica específica
+           echo " Iniciando sistemas de vuelo y turbinas.";
+       }
+   }
+   ```
+
+4. **Clases y métodos Finales (final)**
+
+   A veces quieres evitar que alguien herede tu clase o que modifique un método específico por seguridad o diseño.
+
+   **`final class`**: Nadie puede extender esta clase.
+
+   **`final function`**: Las clases hijas pueden heredarla, pero **no** pueden sobrescribirla.
+
+   ```php
+   final class SeguridadExtrema {
+       // Esta clase no puede tener hijas
+   }
+   ```
+
+5. **Clases abstractas (abstract)**
+
+   Son clases que actúan como "plantillas incompletas". No puedes crear un objeto directamente de ellas (`new ClaseAbstracta()` dará error). Sirven para obligar a las clases hijas a implementar ciertos métodos.
+
+   ```php
+   abstract class Animal {
+       abstract public function hacerSonido(): string; // Obliga a la hija a definirlo
+       
+       public function dormir(): void {
+           echo "Zzz..."; // Un método normal que todas heredarán igual
+       }
+   }
+   
+   class Perro extends Animal {
+       public function hacerSonido(): string {
+           return "Guau!";
+       }
+   }
+   ```
+
+**Diferencia clave: ¿Herencia o Interfaz?**
+
+Es común confundirlas, pero la regla es simple:
+
+- **Herencia (`extends`)**: Se usa cuando una clase **es** un tipo de otra. (Un Coche *es* un Vehículo). Comparten **código y estado**.
+- **Interfaz (`implements`)**: Se usa cuando una clase **puede hacer** algo. (Un Coche *puede ser* Lavable). Solo comparten **la firma de los métodos**.
+
+ 
+
+En el desarrollo moderno (y muy especialmente en **Symfony**), se recomienda seguir el principio de *"Composición sobre Herencia"*. No abuses de las jerarquías de 5 niveles de profundidad; suelen volverse imposibles de mantener. Si una clase hija necesita demasiadas cosas del padre que no le corresponden, quizás debas usar un **Servicio** o un **Trait**.
+
+
 
 ## Polimorfismo
 
+En PHP, es la capacidad que tienen objetos de diferentes clases para responder al mismo "mensaje" (método) de manera específica, siempre que compartan un ancestro común (una **Interface** o una **Clase Abstracta** ). 
 
+Permite que el código sea flexible y escalable: puedes añadir nuevas funcionalidades sin cambiar el código que ya existe.
+
+
+
+**1. El concepto clave: "Escribe para la interfaz, no para la implementación"**
+
+Imagina que tienes una aplicación que envía notificaciones. No quieres escribir un código diferente para "Enviar Email", "Enviar SMS" y "Enviar WhatsApp". Quieres un código que simplemente diga "Enviar Notificación".
+
+**2. Ejemplo práctico con Interfaces**
+
+Para que haya polimorfismo, primero necesitamos un contrato común:
+
+```php
+interface NotificadorInterface {
+    public function enviar(string $mensaje): void;
+}
+
+class EmailNotificador implements NotificadorInterface {
+    public function enviar(string $mensaje): void {
+        echo "Enviando email: $mensaje\n";
+    }
+}
+
+class SMSNotificador implements NotificadorInterface {
+    public function enviar(string $mensaje): void {
+        echo "Enviando SMS: $mensaje\n";
+    }
+}
+```
+
+**3. Aplicando el Polimorfismo**
+
+Aquí es donde ocurre la "magia". Creamos una función que no sabe (ni le importa) qué tipo de notificador recibe, solo sabe que "sabe enviar".
+
+```php
+function avisarUsuario(NotificadorInterface $notificador) {
+    // Polimorfismo: el método 'enviar' se comportará distinto 
+    // según el objeto que le pasemos.
+    $notificador->enviar("Tu pedido ha llegado");
+}
+
+$email = new EmailNotificador();
+$sms = new SMSNotificador();
+
+avisarUsuario($email); // Imprime: Enviando email...
+avisarUsuario($sms);   // Imprime: Enviando SMS...
+```
+
+
+
+**4. ¿Por qué es tan importante en Symfony?**
+
+Symfony está construido casi enteramente sobre el polimorfismo a través de la **Inyección de Dependencias**.
+
+- **Ejemplo real:** Cuando usas el `LoggerInterface` en un controlador de Symfony, a tu código no le importa si los logs se guardan en un archivo (`dev.log`), si se envían a una base de datos o si se mandan a un servidor externo como Graylog.
+- Symfony decide qué objeto pasarte según la configuración, pero como todos cumplen la interfaz, tu código ` $logger->info('...')` funciona siempre.
+
+
+
+**5. Tipos de Polimorfismo en PHP**
+
+1. **Mediante Interfaces (El más común):** Diferentes clases implementan la misma interfaz. Es el más limpio y flexible.
+2. **Mediante Herencia (Clases Abstractas):** Una clase hija sobrescribe un método de la clase padre.
+3. **Duck Typing (Tipado de pato):** PHP, al ser dinámico, permite pasar objetos que no comparten interfaz pero tienen el mismo método (aunque esto **no se recomienda** en PHP moderno porque rompe el tipado estricto).
+
+**Ventajas del Polimorfismo:**
+
+- **Mantenimiento:** Si mañana quieres añadir notificaciones por Telegram, solo creas la clase `TelegramNotificador` que implemente la interfaz. **No tienes que tocar** la función `avisarUsuario`.
+- **Testing:** Puedes crear un "FalsoNotificador" (Mock) para tus pruebas con PHPUnit que no envíe nada realmente, facilitando los tests.
+- **Legibilidad:** El código se lee como una intención ("avisar") y no como una implementación técnica.
 
 
 
