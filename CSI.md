@@ -465,4 +465,4 @@ usuario: admin 	clave: foobar
 Pendiente: 
 
 - mirar nombre del controlador.
-- 
+- https://refactoring.guru/es/design-patterns/builder
