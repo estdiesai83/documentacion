@@ -359,6 +359,8 @@ La primera vez puede que te pida que ejecutes otro comando para configurar un ce
 Así tenemos un nuevo servidor web para nuestro proyecto ejecutándose en https:://127.0.0.1:8000
 
 
+Para pararlo: ``smfony serve:stop
+
 
 ## Conociendo nuestro pequeño proyecto
 
@@ -1928,8 +1930,27 @@ se tiene que poner un name a la ruta del controlador y en el template {{path()}}
 Cualquier cosa que este dentro del directorio públic/ es accesible para tu usuario final. Todo lo que no este en public no es accesible
 
 **Mapeador de Activos**
-Symfony tiene un gran componente llamado Asset Mapper
+Symfony tiene un gran componente llamado Asset Mapper, para instalarlo
+composer require symfony/asset-mapper
+Al instalarlo se nos crea el directorio assets con un archivo app.js y otro styles/app.css
+Tiene dos superpoderes:
+1. Permite añadir css y Javascript
+2. Se ha creado un archivo config/packages/asset_mapper.yaml
 
+Para que coja los cambios: composer require symfony/asset
+
+**Tailwing CSS
+
+
+Twigs parciales y para bucles
+Para llamar a un twig parcial dentro de otro, creamos la plantilla twig y desde el archivo que la queremos llamar metemos un include
+Ej: {{ include('main/_shipStatusAside.html.twig') }}
+
+Twigs parciales y bucles
+Para crear un bucle
+{% for ship in ships %}
+....
+{% endfor %}
 
 # IMPORTANTE
 
