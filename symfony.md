@@ -1880,6 +1880,26 @@ class MainController extends AbstractController
 
 ¡Vamos a probarlo! Busca en tu navegador y dirígete a la página de inicio. ¡Ya está! Vemos el barco que cambia aleatoriamente aquí abajo, y el número de barco correcto aquí arriba... porque lo estamos multiplicando por 10 en la plantilla.
 
+Hace un momento, myShip era una matriz asociativa. Pero lo hemos cambiado para que sea un objeto Starship. Y aún así, el código de nuestra página siguió funcionando. Acabamos de ver accidentalmente un superpoder de Twig. Ve atemplates/main/homepage.html.twig y desplázate hasta el final. Cuando dicesmyShip.name, Twig es realmente inteligente. Si myShip es una matriz asociativa, cogerá la clave name. Si myShip es un objeto, como lo es ahora, cogerá la propiedad name. Pero aún más, si miras Starship, la propiedad name es privada, por lo que no podemos acceder a ella directamente. Twig se da cuenta de ello. Mira la propiedadname, ve que es privada, pero también ve que hay unagetName() pública. Así que llama a esa.
+Todo lo que tenemos que decir es myShip.name... y Twig se encarga de los detalles de cómo obtenerlo.
+
+**RUTAS MAS SOFISTICADAS
+Declarar ruta: #[Route('api/starships')]
+declarar ruta dinámica: #[Route('api/starships/id')] aunque no se meta un valor entero no da error
+declarar ruta dinámica forzando entero: #[Route('api/starships/id<\+d>')]` ahora si metemos una cadena de texto nos lanza el error 404.
+
+**Restringir el método HTTP de la ruta**
+ #[Route('', methods:['GET'])] (esto ahora mismo no funcionaria) para poder ver la ruta `php bin/console debug:router
+ **Poner prefijo en una ruta**
+ Hay que poner antes de la clase el atributo 
+ #[Route('api/starships')]
+ class{
+ 
+ }
+
+
+
+
 # IMPORTANTE
 
 Cada vez que se hace referencia a un nombre de clase, se debe tener una declaración **use** correspondiente, de lo contrario PHP te dará un error diciendo que no puede encontrar la clase **Response**. 
