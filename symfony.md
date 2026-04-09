@@ -1719,11 +1719,166 @@ El archivo `dev.log`se encuentra en /var/log y mostrará:
 
 
 
+### Ver el perfilador de una petición API
+
+Para acceder al perfilador de una petición API, cambia la URL a `/_profiler`. Esto muestra las peticiones más recientes a nuestra aplicación, con la más reciente en la parte superior.
+
+http://localhost:8000/_profiler
+
+![image-20260406171526565](/home/soa/.config/Typora/typora-user-images/image-20260406171526565.png)
 
 
 
+## Crea tu propio servicio
+
+Para obtener el menú de servicios, en el que puedes pedir cualquiera de ellos añadiendo un argumento de tipo con la clase o interfaz correspondiente.
+
+```bash
+php bin/console debug:autowiring
+```
+
+### Crear la clase de servicio
+
+Vamos a trasladar el contenido de los archivos que tenemos a un servicio propio que pueda utilizar ambos controladores. En el directorio `src/` creamos un nuevo directorio `Repository` y una nueva clase PHP en su interior llamada `StarshipRepository`.
+
+El nombre no importa, le hemos puesto así porque es un nombre común de programación para una clase cuyo "trabajo" es obtener un tipo de datos, como los datos de la nave estelar.
+
+### Autocableado del nuevo servicio
+
+Vamos a ver si podemos utilizar esto dentro del controlador `StarshipApiController.php`
+
+Sólo con crear esta clase, ya está disponible para autocableado. Añade un argumento `StarshipRepository $repository` y para asegurarte de que funciona `dd($repository)`.
+
+```php
+use App\Repository\StarshipRepository;
+class StarshipApiController extends AbstractController
+{
+    public function getCollection(LoggerInterface $logger, StarshipRepository $repository): Response
+    {
+        $logger->info('Starship collection retrieved');
+        dd($repository);
+    }
+}
+```
+
+Symfony ha visto la sugerencia de tipo `StarshipRepository`, ha instanciado ese objeto y nos lo ha pasado. Borra el `dd()` y movamos los datos de la nave estelar dentro. Cópialo... y crea una nueva función pública llamada `findAll()`. Dentro return y pégala.
+
+```php
+use App\Model\Starship;
+
+class StarshipRepository
+{
+    public function findAll(): array
+    {
+        return [
+            new Starship(
+                1,
+                'USS LeafyCruiser (NCC-0001)',
+                'Garden',
+                'Jean-Luc Pickles',
+                'taken over by Q'
+            ),
+            new Starship(
+                2,
+                'USS Espresso (NCC-1234-C)',
+                'Latte',
+                'James T. Quick!',
+                'repaired',
+            ),
+            new Starship(
+                3,
+                'USS Wanderlust (NCC-2024-W)',
+                'Delta Tourist',
+                'Kathryn Journeyway',
+                'under construction',
+            ),
+        ];
+    }
+}
+```
+
+En el controlador  `StarshipApiController`, borra eso (las tres instancias a Starship)... y añade:`$starships = $repository->findAll()`.
+
+Así sigue funcionando y el código para obtener naves estelares está bien organizado en su propia clase y es reutilizable en toda nuestra aplicación.
 
 
+
+### Autocableado del Constructor
+
+Vamos a autocablear de nuevo el servicio logger en el repositorio `StarshipRepository`, la única diferencia es que no vamos a añadir el argumento a `findAll()`.
+
+En lugar de eso, añade un nuevo `public function __construct()`y realiza el autocableado allí: `private LoggerInterface $logger`.
+
+```php
+use Psr\Log\LoggerInterface;
+
+class StarshipRepository
+{
+    public function __construct(private LoggerInterface $logger)
+    {
+    }
+
+    public function findAll(): array
+    {
+        $this->logger->info('Starship collection retrieved');
+    }
+}
+```
+
+En el controlador, podemos eliminar ese argumento porque ya no lo vamos a utilizar.
+
+Para ver si se ha registrado algo, ve a `/_profiler`, haz clic en la petición superior, Registros, y... ¡ahí está!
+
+Te explicaré por qué hemos añadido el argumento de servicio al constructor. Si queremos obtener un servicio -como el registrador, una conexión a una base de datos, lo que sea-, ésta es la forma correcta de utilizar el autocableado: añadir un método `__construct` dentro de otro servicio. El truco que vimos antes -en el que añadimos el argumento a un método normal- sí, eso es especial y sólo funciona para los métodos del controlador. Es una comodidad adicional que se añadió al sistema. Es una gran característica, pero la forma del constructor... así es como funciona realmente el autocableado.
+
+Y esta forma "normal", funciona incluso en un controlador. Podrías añadir un método `__construct()`con un argumento autocableable y funcionaría perfectamente.
+
+La cuestión es: si estás en un método controlador, claro, añade el argumento al método, ¡está bien! Sólo recuerda que es algo especial que sólo funciona aquí. En cualquier otra parte, autowire a través del constructor.
+
+
+
+### **Utilizar el Servicio en otra Página**
+
+Celebremos nuestro nuevo servicio utilizándolo en la página principal. Abre`MainController`. Este `$starshipCount` codificado es tan de hace 30 minutos. Autocablea`StarshipRepository $starshipRepository`, luego di`$ships = $starshipRepository->findAll()` y cuéntalos con `count()`.
+
+
+
+archivo: src/Controller/MainController.php
+
+```php
+use App\Repository\StarshipRepository;
+class MainController extends AbstractController
+{
+    #[Route('/')]
+    public function homepage(StarshipRepository $starshipRepository): Response
+    {
+        $ships = $starshipRepository->findAll();
+        $starshipCount = count($ships);
+    }
+}
+```
+
+Ya que estamos aquí, en lugar de esta matriz `$myShip` codificada, vamos a coger un objeto `Starship` al azar. Podemos hacerlo diciendo `$myShip` igual a`$ships[array_rand($ships)]`
+
+
+
+src/Controller/MainController.php
+
+```php
+use App\Repository\StarshipRepository;
+class MainController extends AbstractController
+{
+    #[Route('/')]
+    public function homepage(StarshipRepository $starshipRepository): Response
+    {
+        $ships = $starshipRepository->findAll();
+        $starshipCount = count($ships);
+        $myShip = $ships[array_rand($ships)];
+    }
+}
+```
+
+¡Vamos a probarlo! Busca en tu navegador y dirígete a la página de inicio. ¡Ya está! Vemos el barco que cambia aleatoriamente aquí abajo, y el número de barco correcto aquí arriba... porque lo estamos multiplicando por 10 en la plantilla.
 
 # IMPORTANTE
 
@@ -1810,6 +1965,70 @@ public function crear(EntityManagerInterface $entityManager): Response {
 - **EntityManager:** Es el "gestor" (el que guarda, borra y actualiza).
 
 
+
+
+
+***dd** (Data Dump) en Symfony es una función auxiliar que significa "Dump and Die":
+
+- Dump: muestra el contenido detallado de una variable (objetos, arrays, strings) de forma estructurada y visual.
+- Die: detiene la ejecución del script inmediatamente en ese punto
+
+En Symfony viene integrada gracias al componente **VarDumper** si se quiere utilizar en php puro hay que instalarlo con composer
+
+```bash
+composer require symfony/var-dumper
+```
+
+
+
+ERRORES:
+
+Es frustrante cuando algo que funcionaba hace un segundo deja de hacerlo sin tocar el código. En Symfony, que el error de "Class not found" aparezca de repente al pulsar F5 suele deberse a cómo el framework gestiona su **caché interna** y el **mapeo de archivos**.
+
+Aquí las causas más probables de ese error "fantasma":
+
+**1. El Generador de Proxy de Doctrine**
+
+Si tu clase `Starships` es una **Entidad** (o el modelo está relacionado con una), Symfony genera archivos temporales llamados "Proxies".
+
+- **Qué pasa:** A veces, al recargar, Symfony intenta regenerar estos archivos o leer uno que se quedó a medias.
+- **Solución:** Fuerza la limpieza de los proxies con: `php bin/console doctrine:cache:clear-metadata`
+
+**2. El "Case Sensitivity" en el Autoloader**
+
+Si estás desarrollando en Windows o macOS (que no suelen distinguir entre `Starships.php` y `starships.php`) pero tu servidor o contenedor Docker es **Debian/Linux** (que sí distingue), puede que el error sea intermitente.
+
+- **El fallo:** Si en algún lugar de tu código escribiste `new starships()` (en minúscula), Windows te dejará pasar, pero al recargar en un entorno Linux, el Autoloader fallará aleatoriamente dependiendo de qué archivo haya indexado primero.
+- **Revisión:** Asegúrate de que cada `use` y cada `new` coincida exactamente con la mayúscula de la clase.
+
+**3. La Caché del Contenedor de Inyección de Dependencias**
+
+Symfony compila todas tus clases en un gran archivo PHP en `var/cache/` para ir más rápido.
+
+- **El fallo:** Si cambiaste de rama en Git, borraste un archivo o simplemente el sistema de archivos tuvo un micro-retraso al escribir, la caché puede apuntar a un lugar del disco que ya no existe o que ha cambiado.
+- **Solución rápida:** Borra la carpeta de caché manualmente (es más radical y efectivo que el comando): `rm -rf var/cache/*`
+
+**4. OpCache de PHP**
+
+PHP tiene un sistema llamado **OpCache** que guarda el código "pre-cocinado" en la memoria RAM para no leer el disco en cada F5.
+
+- **El fallo:** A veces OpCache no detecta que el archivo ha cambiado (o cree que ha desaparecido) y sirve una versión corrupta de la memoria.
+- **Solución:** Reinicia el servicio de PHP para limpiar la RAM: `sudo systemctl restart php8.x-fpm` (sustituye x por tu versión).
+
+### Resumen de supervivencia:
+
+Si te vuelve a pasar sin haber tocado nada, ejecuta este "combo" en tu terminal:
+
+```bash
+# Limpia caché de Symfony
+php bin/console cache:clear
+
+# Si usas Composer, regenera el mapa de clases
+composer dump-autoload
+
+# El último recurso: borrar a mano
+rm -rf var/cache/dev
+```
 
 
 
