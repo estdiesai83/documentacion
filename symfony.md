@@ -1892,12 +1892,43 @@ declarar ruta dinámica forzando entero: #[Route('api/starships/id<\+d>')]` ahor
  #[Route('', methods:['GET'])] (esto ahora mismo no funcionaria) para poder ver la ruta `php bin/console debug:router
  **Poner prefijo en una ruta**
  Hay que poner antes de la clase el atributo 
- #[Route('api/starships')]
+ #[Route('api/starships')] y cambiar las rutas de antes del método por:
  class{
- 
+  #[Route('api/starships')]-> #[Route('')]
+  #[Route('api/starships/id<\+d>')]`-> #[Route('/{id<\d+>}')]
  }
 
 
+**Activar una página 404**
+Para que si nos da un error por que metemos un número que no existe, nos muestre error 404 , incluimos en el controlador una expción:
+
+**Generar URL**
+Cada ruta tiene un nombre interno, si se ejecuta `php bin/console debug:router nos muestra las rutas si le queremos asignar nosotros una hay que añadir la clave `name
+Ejemplo: #[Route('/starships/{id<\d+>}', name: 'app_starship_show ')], el nombre puede ser cualquiera, pero se puede seguir la convención:
+app porque es una ruta que estoy creando en mi aplicación, y luego el nombre de la clase del controlador y el nombre del método.
+
+**Enlazar rutas**
+se tiene que poner un name a la ruta del controlador y en el template {{path()}} se puede poner dentro de un href
+{% block body %}
+<div>
+    <table>
+        <tr>
+            <th>Name</th>
+            <td>
+                <a href="{{ path('app_starship_show', {
+                    id: myShip.id
+                }) }}">{{ myShip.name }}</a>
+            </td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
+
+**CSS y JavaScript con Asset Mapper**
+Cualquier cosa que este dentro del directorio públic/ es accesible para tu usuario final. Todo lo que no este en public no es accesible
+
+**Mapeador de Activos**
+Symfony tiene un gran componente llamado Asset Mapper
 
 
 # IMPORTANTE
