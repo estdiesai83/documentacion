@@ -1995,6 +1995,18 @@ Symfony tiene 3 entornos ("modos"): dev, prod y test, también se puede crear un
 Si en en el archivo .env cambiamos de dev a prod, en el navegador desaparece la barra de depuración web, y si cambiamos algo en el código como un texto en la vista, al actualizar no ha cambiado nada, por razones de rendimiento, las plantillas se almacenan en cache
 
 
+***Más sobre los servicios
+los Servicios proceden de bundles, y cada servicio es una combinación de ID, una clase y un conjunto de argumentos necesarios para instanciarlo.
+
+Para listar todos los servisios incluso los que no tienen alias
+bin/console debug:autowiring --all
+
+**Parámetros
+Para crear parámetros: En config/services 
+
+Autoconfiguración
+Las extensiones de Twig permiten crear funciones, filtros y otros elementos personalizados para usar en tus plantillas de Twig. Antes de escribir tu propia extensión de Twig, comprueba si el filtro o la función que necesitas ya está implementado en:
+
 # IMPORTANTE
 
 Cada vez que se hace referencia a un nombre de clase, se debe tener una declaración **use** correspondiente, de lo contrario PHP te dará un error diciendo que no puede encontrar la clase **Response**. 
