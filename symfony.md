@@ -1952,6 +1952,49 @@ Para crear un bucle
 ....
 {% endfor %}
 
+
+
+10/04/2026
+Configuración de servicios
+
+bin/console cache:pool:clear cache.app
+
+
+
+
+
+***Configuración del Bundle: Configurar el servicio de Caché
+Los bundles nos proporcionan servicios, y cuando autoconectamos un servicio, nuestro bundle nos proporciona todos los detalles que necesitamos para instanciarlo. Si es otro el responsable de instanciar esos objetos, para controlarlo hay que configurar el bundle, para ello `/config/packages, todos los archivos de configuración de .yaml se cargan automáticamente al iniciar symfony, y su función es configurar todos los servicios que nos proporciona cada bundle.
+
+***Cómo funciona el autocableado
+Para listar todos los servicios que podemos tener autocableados: bin/console debug:autowiring
+bin/console debug:container lista todos los servicios, y cualquier ID de servicio que resulte ser un nombre de clase o interfaz es autocableable, esto significa que podemos indicarlo en el constructor de nuestro servicio y el contenedor de servicios inyectará ese servicio, por el contrario, si un ID de servicio no es un nombre de interfaz o de clase, no es autoconectable.
+
+**Depurar el contenedor**
+El contenedor de servicios es básicamente una matriz gigante en la que cada servicio tiene un nombre único que apunta al objeto de servicio correspondiente. En el caso de twig, por ejemplo, el contenedor sabe que para instanciar este servicio, necesita crear una instancia de esta clase Twig\Environment. Y aunque aquí no veamos los argumentos, sabe exactamente cuáles debe pasar para instanciarlo. Como ventaja, si hacemos una petición del mismo servicio en más de un sitio, el contenedor de servicios sólo crea una instancia, por lo que tendremos exactamente la misma instancia en todas partes.
+También te habrás fijado en estas clases de servicio. Este CacheInterface, por ejemplo, se utilizó antes como alias de nuestro servicio cache.app. Esto no es más que una forma de hacer que un servicio como cache.app sea autodireccionable. La gran mayoría de estos servicios utilizan la estrategia de nomenclatura snake case, así que para hacerlos autowireables en nuestro código, los bundles añaden algunos alias -nombres de clases, o interfaces- que podemos teclear en nuestro código. Así que los alias son básicamente como enlaces simbólicos que sólo hacen referencia a otros servicios. Sin embargo, puede haber ocasiones en las que haya varios servicios en el contenedor que implementen la misma clase o interfaz.
+
+Para borrar la caché de un grupo concreto sin afectar a los demás.
+bin/console cache:pool:clear iss_location_pool
+
+***Entornos symfony
+En el archivo .env (en el directorio raiz del proyecto) tenemos algunas variables de entorno , que son conjuntos de configuraciones para nuestra aplicación que podemos cambiar en función del escenario -o entorno- en el que estamos desarrollando. Symfony lee esas variables y crea ese entono.
+
+Para añadir una configuración específica del entorno, podemos poner esto en config/packages7 seguido de tu entorno, como dev o prod y luego el nombre del archivo de configuración. framewor.yam por ejemplo
+Pero symfony ha añadido una forma mejor de hacerlo, utilizando @when
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file
+
+Symfony tiene 3 entornos ("modos"): dev, prod y test, también se puede crear un entorno propio personalizado. 
+
+
+***El entorno prod
+Si en en el archivo .env cambiamos de dev a prod, en el navegador desaparece la barra de depuración web, y si cambiamos algo en el código como un texto en la vista, al actualizar no ha cambiado nada, por razones de rendimiento, las plantillas se almacenan en cache
+
+
 # IMPORTANTE
 
 Cada vez que se hace referencia a un nombre de clase, se debe tener una declaración **use** correspondiente, de lo contrario PHP te dará un error diciendo que no puede encontrar la clase **Response**. 
@@ -1973,6 +2016,7 @@ es decir, cada página es una ruta y un controlador... y que cada controlador de
 **serializador:** de Symfony toma objetos y los serializa a JSON... o toma JSON y deserializarlo de nuevo a objetos. 
 
 **Entidad:** es una clase de PHP que representa una tabla en tu base de datos. Si tu base de datos tiene por ejemplo una tabla llamada Productos, en tu código tendrás una Entidad llamada Producto. 
+**Pool:** son espacios de nombres únicos para los elementos almacenados en caché, es como si fuesen "subcarpetas" del directorio global cache
 
 Symfony utiliza un motor llamado **Doctrine** (un ORM o Object-Relational Mapper) para que no tengas que escribir SQL a mano. En lugar de eso manipulas objetos PHP y Doctrine se encarga de "traducirlos" a filas en la base de datos. 
 
