@@ -1885,32 +1885,206 @@ class MainController extends AbstractController
 Hace un momento, myShip era una matriz asociativa. Pero lo hemos cambiado para que sea un objeto Starship. Y aún así, el código de nuestra página siguió funcionando. Acabamos de ver accidentalmente un superpoder de Twig. Ve atemplates/main/homepage.html.twig y desplázate hasta el final. Cuando dicesmyShip.name, Twig es realmente inteligente. Si myShip es una matriz asociativa, cogerá la clave name. Si myShip es un objeto, como lo es ahora, cogerá la propiedad name. Pero aún más, si miras Starship, la propiedad name es privada, por lo que no podemos acceder a ella directamente. Twig se da cuenta de ello. Mira la propiedadname, ve que es privada, pero también ve que hay unagetName() pública. Así que llama a esa.
 Todo lo que tenemos que decir es myShip.name... y Twig se encarga de los detalles de cómo obtenerlo.
 
-**RUTAS MAS SOFISTICADAS
-Declarar ruta: #[Route('api/starships')]
-declarar ruta dinámica: #[Route('api/starships/id')] aunque no se meta un valor entero no da error
-declarar ruta dinámica forzando entero: #[Route('api/starships/id<\+d>')]` ahora si metemos una cadena de texto nos lanza el error 404.
+
+
+## Rutas más sofisticadas
+
+Declarar ruta: `#[Route('api/starships')]`
+declarar ruta dinámica:`#[Route('api/starships/id')]` aunque no se meta un valor entero no da error
+declarar ruta dinámica forzando entero: `#[Route('api/starships/id<\+d>')]` `ahora si metemos una cadena de texto nos lanza el error 404.
 
 **Restringir el método HTTP de la ruta**
- #[Route('', methods:['GET'])] (esto ahora mismo no funcionaria) para poder ver la ruta `php bin/console debug:router
+ #[Route('', methods:['GET'])] (esto ahora mismo no funcionaria) para poder ver la ruta 
+
+```bash
+php bin/console debug:router
+```
+
  **Poner prefijo en una ruta**
- Hay que poner antes de la clase el atributo 
- #[Route('api/starships')] y cambiar las rutas de antes del método por:
- class{
-  #[Route('api/starships')]-> #[Route('')]
-  #[Route('api/starships/id<\+d>')]`-> #[Route('/{id<\d+>}')]
- }
+
+Si todas las rutas de empiezan con la misma URL: `/api/starships` se puede prefijar la URL en cada ruta para ello hay que poner antes de la clase el atributo podemos prefijar automáticamente la URL de cada ruta. Encima de la clase, añade un atributo `#[Route('api/starships')]`.
+
+A diferencia de cuando lo ponemos encima de un método, esto no crea una ruta. Sólo dice: cada ruta de esta clase debe ir prefijada con esta URL. Así que para la primera ruta, elimina la ruta por completo. Y para la segunda, sólo necesitamos la parte del comodín.
+
+```php
+// ... lines 1 - 9
+#[Route('/api/starships')]
+class StarshipApiController extends AbstractController
+{
+    #[Route('', methods: ['GET'])]
+    public function getCollection(StarshipRepository $repository): Response
+// ... lines 15 - 20
+    #[Route('/{id<\d+>}', methods: ['GET'])]
+    public function get(int $id): Response
+// ... lines 23 - 25
+}
+```
 
 
-**Activar una página 404**
-Para que si nos da un error por que metemos un número que no existe, nos muestre error 404 , incluimos en el controlador una expción:
 
-**Generar URL**
-Cada ruta tiene un nombre interno, si se ejecuta `php bin/console debug:router nos muestra las rutas si le queremos asignar nosotros una hay que añadir la clave `name
-Ejemplo: #[Route('/starships/{id<\d+>}', name: 'app_starship_show ')], el nombre puede ser cualquiera, pero se puede seguir la convención:
-app porque es una ruta que estoy creando en mi aplicación, y luego el nombre de la clase del controlador y el nombre del método.
+**Finalizando la nueva ruta API**
 
-**Enlazar rutas**
-se tiene que poner un name a la ruta del controlador y en el template {{path()}} se puede poner dentro de un href
+Si queremos encontrar el barco que coincida con nuestro ID, como todavía no tenemos base de datos, en el repositorio StarshipRepository.php.
+
+```php
+// ... lines 1 - 7
+class StarshipRepository
+{
+// ... lines 10 - 42
+    public function find(int $id): ?Starship
+    {
+        foreach ($this->findAll() as $starship) {
+            if ($starship->getId() === $id) {
+                return $starship;
+            }
+        }
+        return null;
+    }
+}
+```
+
+ Y Luego en el controlador autocablea el repositorio añadiendo `StarshipRepository` y llámalo `$repository`. Por cierto, el orden de los argumentos en un controlador no importa.
+
+```php
+Después $starship = $repository->find($id). Termina al final conreturn $this->json($starship).
+
+
+
+29 lines
+|
+src/Controller/StarshipApiController.php
+// ... lines 1 - 10
+class StarshipApiController extends AbstractController
+{
+// ... lines 13 - 21
+    public function get(int $id, StarshipRepository $repository): Response
+    {
+        $starship = $repository->find($id);
+        return $this->json($starship);
+    }
+}
+```
+
+
+
+## **Activar una página 404**
+
+Para que si nos da un error por que metemos un número que no existe, nos muestre error 404 , incluimos en el controlador una excepción:
+
+```php
+class StarshipApiController extends AbstractController
+{
+    public function get(int $id, StarshipRepository $repository): Response
+    {
+        $starship = $repository->find($id);
+
+        if (!$starship) {
+            throw $this->createNotFoundException('Starship not found');
+        }
+
+        return $this->json($starship);
+    }
+}
+```
+
+Con la palabra clave `throw`: estamos lanzando una excepción especial que desencadena un 404. Eso está bien porque, en cuanto llegue a esta línea, no se ejecutará nada de lo que venga después.
+
+
+
+## **Generar URLs**
+
+Vamos a crear una "página de presentación" de barcos: una página que muestre los detalles de un solo barco. La página de inicio vive en `MainController`. Y así podríamos añadir otra ruta y método aquí. Pero a medida que mi sitio crezca, probablemente tendré varias páginas relacionadas con naves estelares: quizá para editarlas y eliminarlas. Así que, en lugar de eso, en el directorio `Controller/`, crea una nueva clase. Llámala `StarshipController`, y, como de costumbre, extiende`AbstractController`.
+
+### Crear la página Mostrar
+
+En el controlador StarshipController, creamos un método `show()`que retorne Response, creamos la ruta con un comodin {id} que este limitado a numeros enteros.
+
+```php
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class StarshipController extends AbstractController
+{
+    #[Route('/starships/{id<\d+>}')]
+    public function show(int $id): Response
+    {
+        dd($id);
+    }
+}
+```
+
+Pruébalo. Dirígete a `/starships/2`. ¡Estupendo!
+
+Ahora vamos a hacer algo familiar: tomar este `$id` y consultar nuestra base de datos imaginaria en busca del `Starship` coincidente. La clave para hacerlo es nuestro servicio `StarshipRepository`y su útil método `find()`.
+
+En el controlador, añade un argumento `StarshipRepository $repository`... y luego di que`$ship` es igual a `$repository->find($id)`. Y si no es `$ship`, activa una página 404 con los lanzamientos `$this->createNotFoundException()` y `starship not found`.
+
+En la parte inferior, en lugar de devolver JSON, renderiza una plantilla: devuelve `$this->render()` y sigue la convención de nomenclatura estándar para plantillas: `starship/show.html.twig.` Pasa esta variable: `$ship`.
+
+```php
+// ... lines 1 - 4
+use App\Repository\StarshipRepository;
+// ... lines 6 - 9
+class StarshipController extends AbstractController
+{
+    #[Route('/starships/{id<\d+>}')]
+    public function show(int $id, StarshipRepository $repository): Response
+    {
+        $ship = $repository->find($id);
+        if (!$ship) {
+            throw $this->createNotFoundException('Starship not found');
+        }
+        return $this->render('starship/show.html.twig', [
+            'ship' => $ship,
+        ]);
+    }
+}
+```
+
+### Crear la plantilla
+
+En el directorio templates/starship creamos `show.html.twig`. Prácticamente todas las plantillas empiezan igual: `{% extend 'base.html.twig' %}`... ¡luego anula algunos bloques! Anula `title`... y esta vez, utiliza la variable`ship`: `ship.name`. Termina con `endblock`.
+
+Y para el contenido principal, añade el bloque `body`... `endblock` y pon un `h1`dentro. Vuelve a imprimir `ship.name` y... Pegaré una tabla con algo de información
+
+```php
+<h1 class="text-[32px] font-semibold border-b border-white/10 pb-5 mb-5">
+    {{ ship.name }}
+</h1>
+```
+
+
+
+### Enlazar entre páginas
+
+Symfony tiene una manera de hacerlo, en la que si más adelante decidimos cambiar la URL de esta ruta, todos los enlaces a ella se actualizarán automáticamente.
+
+Para ver las rutas:
+
+```bash
+php bin/console debug:router
+```
+
+Cada ruta tiene un nombre interno,  y debemos tomar el control de ese nombre, para ello añadimos la clave `name`:
+
+```php
+class StarshipController extends AbstractController
+{
+    #[Route('/starships/{id<\d+>}', name: 'app_starship_show')]
+    public function show(int $id, StarshipRepository $repository): Response
+}
+```
+
+Podría tener cualquier nombre pero usamos la convención : app por que es una ruta que estoy creando en mi aplicación, luego el nombre del controlador y el nombre del método.
+
+Nombrar una ruta no cambia su funcionamiento. Pero sí nos permite generar una URL hacia ella. Abre `templates/main/homepage.html.twig`. Aquí abajo, convierte el nombre de la ruta en un enlace. Lo pondré en varias líneas y añadiré una etiqueta `a` con`href=""`. Para generar la URL, diré `{{ path() }}` y le pasaré el nombre de la ruta. Pondré la etiqueta de cierre en el otro lado.
+
+Cuando hay un comodín en la ruta, tenemos que añadir un segundo argumento a `path()`con `{}`. Esta es la sintaxis de matriz asociativa de Twig. Es exactamente igual que JavaScript: es una lista de pares clave-valor. Pasa `id` ajustado a `myShip.id`.
+
+```html
 {% block body %}
 <div>
     <table>
@@ -1925,73 +2099,1237 @@ se tiene que poner un name a la ruta del controlador y en el template {{path()}}
     </table>
 </div>
 {% endblock %}
+```
 
-**CSS y JavaScript con Asset Mapper**
-Cualquier cosa que este dentro del directorio públic/ es accesible para tu usuario final. Todo lo que no este en public no es accesible
 
-**Mapeador de Activos**
-Symfony tiene un gran componente llamado Asset Mapper, para instalarlo
+
+## **CSS y JavaScript con Asset Mapper**
+
+Cualquier cosa que este dentro del directorio **públic/** es accesible para tu usuario final. Todo lo que no este en public no es accesible
+
+**Mapeador de Activos** [LAST Stack](https://symfonycasts.com/screencast/last-stack).
+Symfony tiene un gran componente llamado **Asset Mapper**, para instalarlo
+
+```bash
 composer require symfony/asset-mapper
-Al instalarlo se nos crea el directorio assets con un archivo app.js y otro styles/app.css
+```
+
+Si actualizamos la página ahora tenemos un fondo de color azul.
+
+
+
 Tiene dos superpoderes:
-1. Permite añadir css y Javascript
-2. Se ha creado un archivo config/packages/asset_mapper.yaml
 
-Para que coja los cambios: composer require symfony/asset
+1. Permite cargar css y JavaScript
 
-**Tailwing CSS
+   Al instalarlo se nos crea el directorio **assets** con un archivo **app.js** y otro **styles/app.css**
+
+   contenido archivo app.js
+
+   ```
+   /*
+    * Welcome to your app's main JavaScript file!
+    *
+    * This file will be included onto the page via the importmap() Twig function,
+    * which should already be in your base.html.twig.
+    */
+   import './styles/app.css';
+   
+   console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+   ```
+
+   Contenido archivo app.css
+
+   ```css
+   body {
+       background-color: skyblue;
+   }
+   ```
+
+   
+
+2. Se ha creado un archivo `config/packages/asset_mapper.yaml`
+
+   ```yaml
+   framework:
+       asset_mapper:
+           # The paths to make available to the asset mapper.
+           paths:
+               - assets/
+   ```
+
+   sólo `paths` apuntando a nuestro directorio `assets/`. Pero gracias a esta línea, cualquier archivo que pongamos en el directorio `assets/` estará disponible públicamente. Es como si el directorio `assets/` viviera físicamente dentro de `public/`. Esto es útil porque, sobre la marcha, Asset Mapper añade el versionado de activo
 
 
-Twigs parciales y para bucles
+
+**Listado de activos y ruta lógica**
+
+Para mostrar todos los activos expuestos públicamente a través del mapeador de activos:
+
+```
+php bin/console debug:asset
+```
+
+Ahora mismo son solo dos: `app.css` y `app.js`. Si descargas el curso encontrarás un directorio tutorial/ con un subdirectorio images/ para luego pegarlas en assets. Asi que ahora tenemos un directorio assets/images con 5 archivos dentro. Se puede organizar el directorio asset como queramos.
+
+
+
+### Representación de una imagen
+
+Vamos a renderizar una etiqueta **img** en el logotipo. Cogemos la ruta lógica de la imagen y la metemos en el src de la etiqueta img
+
+```html
+<body>
+        <img src="{{ asset('images/starshop-logo.png') }}" alt="Starshop Logo">
+        {% block body %}{% endblock %}
+    </body>
+```
+
+Para que coja los cambios: 
+
+```bash
+composer require symfony/asset
+```
+
+
+
+**Versionado automático de activos**
+
+Ver el código fuente de la página y comprobar la URL:`/assets/images/starshop-logo-` y luego una larga cadena de letras y números, `.png`. Esta cadena se llama **hash** de la versión y se genera en función del contenido del archivo. Eso significa que si más adelante actualizamos nuestro logotipo, este hash cambiará automáticamente.
+
+Esto es superimportante. A los navegadores les gusta almacenar en caché las imágenes, el JavaScript y los archivos CSS, lo que está muy bien: ayuda al rendimiento. Pero cuando cambiamos esos archivos, queremos que nuestros usuarios descarguen la nueva versión: no que sigan utilizando la versión obsoleta, almacenada en caché.
+
+Pero como el nombre del archivo cambiará cuando actualicemos la imagen, ¡el navegador va a utilizar automáticamente el nuevo! Esto es así:
+
+- El usuario va a nuestro sitio y descarga `logo-abc123.png`. Su navegador lo almacena en caché.
+- En la siguiente visita, su navegador ve la etiqueta `img` para `logo-abc123.png`, encuentra el archivo en su caché y lo utiliza.
+- Entonces llegamos nosotros, actualizamos ese archivo y lo desplegamos.
+- La próxima vez que el usuario visite nuestro sitio, la etiqueta `img` apuntará a un nombre de archivo diferente: `logo-def456.png`. Y como el navegador no tiene ese archivo en su caché, lo descarga nuevo.
+
+Se trata de un pequeño detalle, pero también es increíblemente importante para asegurarnos de que nuestros usuarios utilizan siempre los archivos más recientes.
+
+
+
+## Tailwind CSS
+
+Tiene recursos y componentes preconstruidos, Tailwind tiene un proceso de construcción que escanea tu código en busca de todas las clases Tailwind que está utilizando. Luego vuelca un archivo CSS final que sólo contiene el código que necesitas.
+
+Para instalarlo en symfony:
+
+```bash
+composer require symfonycasts/tailwind-bundle
+```
+
+Para ponerlo en marcha:
+
+```bash
+php bin/console tailwind:init
+```
+
+Esto hace tres cosas:
+
+1. Descarga un binario de Tailwind en segundo plano, algo en lo que nunca tendrás que pensar. 
+2. Crea un archivo `tailwind.config.js`en la raíz de nuestro proyecto. Esto indica a Tailwind dónde tiene que buscar en nuestro proyecto las clases CSS de Tailwind. 
+3. Actualiza nuestro `app.css` para añadir estas tres líneas. Éstas serán sustituidas por el código real de Tailwind en segundo plano por el binario.
+
+Ejecutar Tailwind
+
+```bash
+php bin/console tailwind:build -w
+```
+
+Esto escanea nuestras plantillas y genera el archivo CSS final en segundo plano. El `-w` lo pone en modo "vigilar": en lugar de construir una vez y salir, vigila nuestras plantillas en busca de cambios. Cuando detecte alguna actualización, reconstruirá automáticamente el archivo CSS
+
+
+
+
+
+## Twigs parciales y para bucles
+
+Una gran característica de Twig es la posibilidad de tomar "trozos" de HTML y aislarlos en sus propias plantillas para que puedas reutilizarlos. Se llaman parciales de plantilla... ya que contienen el código de sólo una parte de la página.
+
+Copia este código, y en el directorio `main/` -aunque esto puede ir en cualquier sitio- añade un nuevo archivo llamado `_shipStatusAside.html.twig`.
+
+```html
+<aside
+    class="pb-8 lg:pb-0 lg:w-[411px] shrink-0 lg:block lg:min-h-screen text-white transition-all overflow-hidden px-8 border-b lg:border-b-0 lg:border-r border-white/20"
+>
+    <div class="flex justify-between mt-11 mb-7">
+        <h2 class="text-[32px] font-semibold">My Ship Status</h2>
+        <button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512"><!--!Font Awesome Pro 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc.--><path fill="#fff" d="M384 96c0-17.7 14.3-32 32-32s32 14.3 32 32V416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96zM9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L109.3 224 288 224c17.7 0 32 14.3 32 32s-14.3 32-32 32l-178.7 0 73.4 73.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-128-128z"/></svg>
+        </button>
+    </div>
+
+    <div>
+        <div class="flex flex-col space-y-1.5">
+            <div class="rounded-2xl py-1 px-3 flex justify-center w-32 items-center" style="background: rgba(255, 184, 0, .1);">
+                <div class="rounded-full h-2 w-2 bg-amber-400 blur-[1px] mr-2"></div>
+                <p class="uppercase text-xs">in progress</p>
+            </div>
+            <h3 class="tracking-tight text-[22px] font-semibold">
+                <a class="hover:underline" href="{{ path('app_starship_show', {
+                    id: myShip.id
+                }) }}">{{ myShip.name }}</a>
+            </h3>
+        </div>
+        <div class="flex mt-4">
+            <div class="border-r border-white/20 pr-8">
+                <p class="text-slate-400 text-xs">Captain</p>
+                <p class="text-xl">{{ myShip.captain }}</p>
+            </div>
+
+            <div class="pl-8">
+                <p class="text-slate-400 text-xs">Class</p>
+                <p class="text-xl">{{ myShip.class }}</p>
+            </div>
+        </div>
+    </div>
+</aside>
+```
+
+Y borralo de  `homepage.html.twig`
+
+
+
 Para llamar a un twig parcial dentro de otro, creamos la plantilla twig y desde el archivo que la queremos llamar metemos un include
-Ej: {{ include('main/_shipStatusAside.html.twig') }}
 
-Twigs parciales y bucles
-Para crear un bucle
+```twig
+{{ include('main/_shipStatusAside.html.twig') }}
+```
+
+**Para crear un bucle de la matriz que tenemos**
+
+```twig
 {% for ship in ships %}
 ....
 {% endfor %}
+```
+
+
+
+## Enums PHP
+
+En el directorio **Model/** (aunque puede vivir en cualquier sitio) creamos una nueva clase  `StarshipStatusEnum`. En cuanto escribí la palabra enum, PhpStorm cambió la plantilla de `class` a una`enum`. Así que no estamos creando una clase, como puedes ver, creamos una `enum`
+
+```php
+<?php
+
+namespace App\Model;
+
+enum StarshipStatusEnum: string
+{
+    case WAITING = 'waiting';
+    case IN_PROGRESS = 'in progress';
+    case COMPLETED = 'completed';
+}
+```
+
+Añade un `: string` al enum para hacer lo que se llama un "enum respaldado por cadena"
+
+A continuación: abre la clase `Starship`. El último argumento es actualmente un estado `string`. Cámbialo para que sea un `StarshipStatusEnum`. Y en la parte inferior, el método `getStatus` devolverá ahora un `StarshipStatusEnum`
+
+Por último en el repositorio, donde creamos cada `Starship`, cambia lo correspondiente al estado por  `StarshipStatusEnum::`
+
+```php
+use App\Model\StarshipStatusEnum;
+class StarshipRepository
+{
+    public function findAll(): array
+    {
+        return [
+            new Starship(
+                StarshipStatusEnum::IN_PROGRESS
+            ),
+            new Starship(
+                StarshipStatusEnum::COMPLETED
+            ),
+            new Starship(
+                StarshipStatusEnum::WAITING
+            ),
+        ];
+    }
+}
+```
+
+Y ahora en el Twig añadir en el `ship.status` `.value`
+
+```twig
+ <p class="uppercase text-xs text-nowrap">{{ ship.status.value }}</p>
+```
+
+Como hemos hecho que nuestro enum esté respaldado por una cadena, tiene una propiedad `.value`, que será la cadena que asignamos al estado actual.
+
+
+
+## Métodos del modelo inteligente y dinamización del diseño. 
+
+### Añadir métodos de modelo inteligentes
+
+Para obtener el estado de la cadena de un `Starship` se puede añadir un método llamado getStatusString(), esto devolverá un string y dentro, devolverá `$this->status->value.
+
+archivo: src/Model/Starship.php
+
+```php
+class Starship
+{
+    public function getStatusString(): string
+    {
+        return $this->status->value;
+    }
+}
+```
+
+Gracias a esto, en la plantilla podemos acortar a `ship.statusString
+
+```twig
+<p class="uppercase text-xs text-nowrap">{{ ship.statusString }}</p>
+```
+
+Ah, ¡y esto es más inteligencia Twig! ¡No hay ninguna propiedad llamada `statusString`en `Starship`! Pero a Twig no le importa. Ve que hay un método `getStatusString()`y lo llama.
+
+### Terminando nuestra plantilla Dinámica
+
+Mostramos el resto de valores y el enlace a la url de show
+
+```twig
+{% extends 'base.html.twig' %}
+
+{% block title %}Starshop: Beam up some parts!{% endblock %}
+
+{% block body %}
+    <main class="flex flex-col lg:flex-row">
+        {{ include('main/_shipStatusAside.html.twig') }}
+
+        <div class="px-12 pt-10 w-full">
+            <h1 class="text-4xl font-semibold mb-8">
+                Ship Repair Queue
+            </h1>
+
+            <div class="space-y-5">
+                {% for ship in ships %}
+                    <div class="bg-[#16202A] rounded-2xl pl-5 py-5 pr-11 flex flex-col min-[1174px]:flex-row min-[1174px]:justify-between">
+                        <div class="flex justify-center min-[1174px]:justify-start">
+                            <img class="h-[83px] w-[84px]" src="/images/status-in-progress.png" alt="Status: {{ ship.statusString }}">
+                            <div class="ml-5">
+                                <div class="rounded-2xl py-1 px-3 flex justify-center w-32 items-center bg-amber-400/10">
+                                    <div class="rounded-full h-2 w-2 bg-amber-400 blur-[1px] mr-2"></div>
+                                    <p class="uppercase text-xs text-nowrap">{{ ship.statusString }}</p>
+                                </div>
+                                <h4 class="text-[22px] pt-1 font-semibold">
+                                    <a
+                                        class="hover:text-slate-200"
+                                        href="{{ path('app_starship_show', { id: ship.id }) }}"
+                                    >{{ ship.name }}</a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="flex justify-center min-[1174px]:justify-start mt-2 min-[1174px]:mt-0 shrink-0">
+                            <div class="border-r border-white/20 pr-8">
+                                <p class="text-slate-400 text-xs">Captain</p>
+                                <p class="text-xl">{{ ship.captain }}</p>
+                            </div>
+
+                            <div class="pl-8 w-[100px]">
+                                <p class="text-slate-400 text-xs">Class</p>
+                                <p class="text-xl">{{ ship.class }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <p class="text-lg mt-5 text-center md:text-left">
+                Looking for your next galactic ride?
+                <a href="#" class="underline font-semibold">Browse the {{ ships|length * 10 }} starships for sale!</a>
+            </p>
+        </div>
+    </main>
+{% endblock %}
+```
+
+### Ruta de imagen dinámicas
+
+Para referenciar imágenes en lugar del directorio `assets/`poner `{{asset() }}` y pasa la ruta relativa al directorio `assets`, llamada ruta "lógica".
+
+Añadimos en el Modelo un método `public function getStatusImageFilename()` que devuelva una cadena.
+
+```php
+class Starship
+{
+    public function getStatusImageFilename(): string
+    {
+        return match ($this->status) {
+            StarshipStatusEnum::WAITING => 'images/status-waiting.png',
+            StarshipStatusEnum::IN_PROGRESS => 'images/status-in-progress.png',
+            StarshipStatusEnum::COMPLETED => 'images/status-complete.png',
+        };
+    }
+}
+```
+
+return match: es parecido al switch
+
+Y exactamente igual que antes, como tenemos un método `getStatusImageFilename()`, podemos, en Twig, hacer como si tuviéramos una propiedad `statusImageFilename`.
+
+**Últimos detalles para dinamizar el diseño**
+
+Ponemos un enlace en el logotipo para que vaya a la página de inicio, para ello definimos el nombre de la ruta en el controlador MainController
+
+```php
+class MainController extends AbstractController
+{
+    #[Route('/', name: 'app_homepage')]
+    public function homepage(StarshipRepository $starshipRepository): Response
+}
+```
+
+Para enlazar el logo, en `base.html.twig` utilizamos `{{ path('app_homepage') }}`.
+
+```twig
+<header class="h-[114px] shrink-0 flex flex-col sm:flex-row items-center sm:justify-between py-4 sm:py-0 px-6 border-b border-white/20 shadow-md">
+                    <a href="{{ path('app_homepage') }}">
+// ... line 19
+                    </a>
+// ... lines 21 - 34
+                </header>
+```
+
+
+
+## Stimulus: Escribir JavaScript profesional
+
+En el archivo `app.js`podemos añadir el JavaScript que queramos, pero es mejor utilizar la biblioteca JavaScript Stimulus. Tomas una parte de tu HTML existente y lo concectas a un pequeño archivo Javacript, llamado **controlador**.
+
+**Instalar Stimulus**
+
+```bash
+composer require symfony/stimulus-bundle
+```
+
+Al instalar añadió en assets/app.js un `import` en la parte superior - `./bootstrap.js` - a un nuevo archivo que vive justo al lado de éste.
+
+En el archivo assets/bootstrap.js
+
+```javascript
+import { startStimulusApp } from '@symfony/stimulus-bundle';
+
+const app = startStimulusApp();
+// register any custom, 3rd party controllers here
+// app.register('some_controller_name', SomeImportedController);
+```
+
+El propósito de este archivo es iniciar el motor Stimulus. Además, en`importmap.php`, la receta añadió el paquete JavaScript `@hotwired/stimulus` junto con otro archivo que ayuda a arrancar Stimulus dentro de Symfony.
+
+```php
+return [
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
+    ],
+    '@symfony/stimulus-bundle' => [
+        'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
+    ],
+];
+```
+
+Por último, la receta creó un directorio `assets/controllers/`. Aquí es donde vivirán nuestros controladores personalizados. ¡E incluía un controlador de demostración para que pudiéramos empezar! 
+
+archivo: assets/controllers/hello_controller.js
+
+```javascript
+import { Controller } from '@hotwired/stimulus';
+
+/*
+ * This is an example Stimulus controller!
+ *
+ * Any element with a data-controller="hello" attribute will cause
+ * this controller to be executed. The name "hello" comes from the filename:
+ * hello_controller.js -> "hello"
+ *
+ * Delete this file or adapt it for your use!
+ */
+export default class extends Controller {
+    connect() {
+        this.element.textContent = 'Hello Stimulus! Edit me in assets/controllers/hello_controller.js';
+    }
+}
+```
+
+Estos archivos de controlador tienen una importante convención de nombres. Como se llama `hello_controller.js`, para conectarlo con un elemento de la página, utilizaremos `data-controller="hello"`.
+
+**Cómo funciona Stimulus**
+
+Así es como funciona. En cuanto Stimulus vea un elemento en la página con`data-controller="hello"`, instanciará una nueva instancia de este controlador y llamará al método `connect()`. Así, este controlador `hello` cambiará automática e instantáneamente el contenido del elemento al que está unido.
+
+La cuestión es: no importa cómo llegue un elemento `data-controller` a tu página, Stimulus lo ve. Así que si hacemos una llamada Ajax que devuelva HTML y ponemos eso en la página... sí, Stimulus va a verlo y nuestro JavaScript va a funcionar. Ésa es la clave: cuando escribes JavaScript con Stimulus, tu JavaScript siempre funcionará, independientemente de cómo y cuándo se añada ese HTML a la página.
+
+### Crear un controlar Stimulus que se pueda cerrar
+
+Utilicemos Stimulus para activar nuestro botón de cierre. En el directorio `assets/controller/`, duplica `hello_controller.js` y crea uno nuevo llamado`closeable_controller.js`.
+
+importa`Controller` de Stimulus... y luego crea una clase que lo extienda.
+
+Archivo: assets/controller/closeable_controller.js
+
+```javascript
+import { Controller } from '@hotwired/stimulus';
+
+export default class extends Controller {
+}
+```
+
+Esto no hace nada, pero ya podemos adjuntarlo a un elemento de la página. Éste es el plan: vamos a adjuntar el controlador a todo el elemento `aside`. Luego, cuando pulsemos este botón, eliminaremos el elemento `aside`.
+
+Ese elemento vive en `templates/main/_shipStatusAside.html.twig`. Para adjuntar el controlador, añade `data-controller="closeable"`.
+
+archivo: templates/main/_shipStatusAside.html.twig
+
+```twig
+<aside
+    data-controller="closeable"
+>
+</aside>
+```
+
+Stimulus añade útiles mensajes de depuración: que se está iniciando y luego - lo que es importante - `closeable initialize`,`closeable connect`.
+
+Esto significa que sí vio el elemento `data-controller` e inicializó ese controlador.
+
+cuando pulsemos este botón, queremos llamar a código dentro del controlador cerrable que elimine el `aside`. En `closeable_controller.js`, añade un nuevo método llamado, qué tal, `close()`. Dentro, digamos `this.element.remove()`
+
+archivo: assets/controllers/closeable_controller.js
+
+```javascript
+export default class extends Controller {
+    close() {
+        this.element.remove();
+    }
+}
+```
+
+En Stimulus, `this.element` será siempre el elemento al que esté unido tu controlador. Por tanto, este elemento `aside`. Pero por lo demás, este código es JavaScript estándar: cada Elemento tiene un método `remove()`.
+
+Para llamar al método `close()`, en el botón, añade `data-action=""` luego el nombre de nuestro controlador - `closeable` - un signo `#`, y el nombre del método: `close`.
+
+archivo: templates/main/_shipStatusAside.html.twig
+
+```twig
+<aside
+    data-controller="closeable"
+>
+    <div class="flex justify-between mt-11 mb-7">
+        <button data-action="closeable#close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512"><!--!Font Awesome Pro 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc.--><path fill="#fff" d="M384 96c0-17.7 14.3-32 32-32s32 14.3 32 32V416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96zM9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L109.3 224 288 224c17.7 0 32 14.3 32 32s-14.3 32-32 32l-178.7 0 73.4 73.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-128-128z"/></svg>
+        </button>
+    </div>
+</aside>
+```
+
+### Animar el cierre
+
+Sobre el elemento `aside`, añade una nueva clase CSS -puede ir en cualquier sitio- llamada`transition-all`.
+
+Es una clase Tailwind que activa las transiciones CSS. Esto significa que si cambian ciertas propiedades de estilo -como que la anchura se ponga de repente a 0- hará una transición de ese cambio, en lugar de cambiarlo instantáneamente.
+
+También añade `overflow-hidden` para que, al reducirse la anchura, no cree una extraña barra de desplazamiento.
+
+Si probamos esto ahora, se sigue cerrando instantáneamente. Eso es porque no hay nada que transicionar: no estamos cambiando la anchura... sólo eliminando el elemento.
+
+Pero fíjate en esto. Inspecciona el elemento y busca el `aside`: aquí está. Cambia manualmente la anchura a 0. ¡Genial! ¡Vas pequeñito, grande, pequeñito, grande, pequeñito! El lado CSS de las cosas está funcionando.
+
+De vuelta en nuestro controlador, en lugar de eliminar el elemento, tenemos que cambiar la anchura a cero, esperar a que termine la transición CSS y luego eliminar el elemento. Podemos hacer lo primero con `this.element.style.width = 0`.
+
+archivo: templates/main/_shipStatusAside.html.twig
+
+```twig
+<aside
+    data-controller="closeable"
+>
+    <div class="flex justify-between mt-11 mb-7">
+        <button data-action="closeable#close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512"><!--!Font Awesome Pro 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc.--><path fill="#fff" d="M384 96c0-17.7 14.3-32 32-32s32 14.3 32 32V416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96zM9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L109.3 224 288 224c17.7 0 32 14.3 32 32s-14.3 32-32 32l-178.7 0 73.4 73.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-128-128z"/></svg>
+        </button>
+    </div>
+</aside>
+```
+
+La parte complicada es esperar a que termine la transición CSS antes de eliminar el elemento. Para ayudarte con eso, voy a pegar un método en la parte inferior de nuestro controlador.
+
+archivo: assets/controllers/closeable_controller.js
+
+```javascript
+export default class extends Controller {
+    async close() {
+        this.element.style.width = '0';
+    }
+
+    #waitForAnimation() {
+        return Promise.all(
+            this.element.getAnimations().map((animation) => animation.finished),
+        );
+    }
+}
+```
+
+Si no estás familiarizado, el signo `#` hace que éste sea un método privado en JavaScript: un pequeño detalle. La función de este código es pedir al elemento que nos diga cuándo han terminado todas sus animaciones CSS.
+
+Gracias a eso, aquí arriba, podemos decir `await this.#waitForAnimation()`. Y siempre que utilices `await`, tienes que poner `async` en la función alrededor de esto. No entraré en detalles sobre `async`, pero eso no cambiará el funcionamiento de nuestro código.
+
+archivo: assets/controllers/closeable_controller.js
+
+```javascript
+export default class extends Controller {
+    async close() {
+        this.element.style.width = '0';
+
+        await this.#waitForAnimation();
+        this.element.remove();
+    }
+
+    #waitForAnimation() {
+        return Promise.all(
+            this.element.getAnimations().map((animation) => animation.finished),
+        );
+    }
+}
+```
+
+## Turbo: tu aplicación de una sóla página
+
+Una gran pieza de una interfaz elegante es eliminar las recargas de página completa. Ahora mismo, cuando hago clic, mira: es rápido, pero son recargas de página completa. Eso no ocurre si utilizas algo como React o Vue.
+
+Para eliminarlas, vamos a utilizar otra biblioteca llamada **Turbo,** cuya función principal es eliminar los refrescos de página completa. Al igual que Stimulus, es una biblioteca de JavaScript que tiene un bundle que ayuda a integrarla.
+
+**Instalación de Turbo**
+
+```
+composer require symfony/ux-turbo
+```
+
+Esto añade en importmap.php el paquete de javaScript `@hotwired/turbo`
+
+```php
+composereturn [
+    '@hotwired/turbo' => [
+        'version' => '7.3.0',
+    ],
+];
+```
+
+y añade en assets/controllers.json
+
+```json
+{
+    "controllers": {
+        "@symfony/ux-turbo": {
+            "turbo-core": {
+                "enabled": true,
+                "fetch": "eager"
+            },
+            "mercure-turbo-stream": {
+                "enabled": false,
+                "fetch": "eager"
+            }
+        }
+    },
+    "entrypoints": []
+}
+```
+
+El paquete que acabamos de instalar tiene dentro un controlador JavaScript llamado turbo-core.  Y como tenemos `enabled: true` aquí, significa que ese controlador está ahora registrado y disponible: es como si viviera en nuestro directorio `assets/controllers/`.
+
+**Se acabaron los refrescos de página completa**
+
+Ahora se acabaron las recargas de página completa, todo ocurre a través de Ajax. cuando hacemos clic en este enlace, Turbo intercepta el clic, y en lugar de recargar toda la página, hace una llamada Ajax a esa página, esa llamada devuelve el HTML completo de esa página y luego Turbo lo pone es esta página.
+
+Esa pequeña cosa transforma nuestro proyecto en una aplicación de una sola página y marca una gran diferencia en la rapidez de nuestro sitio.
+
+## Llamadas AJAX y la barra de herramientas de depuración web
+
+ Cada vez que haces una llamada Ajax en una aplicación Symfony - ya sea a través de Turbo o de cualquier otra forma - la Barra de Herramientas de Depuración Web lo nota
+
+En Turbo 8 la última versión, todavía va más rápido, gracias a una nueva función llamada Clic Instantáneo, con ella, cuando pasas el ratón por encima de un enlace, Turbo hace una llamada Ajax a esa página antes de que hagas clic, entonces cuando hagas clic, se cargará instantánemente. [Tutorial LAST Stack](https://symfonycasts.com/screencast/last-stack)
+
+**Turbo requier un buen JavaScript**
+
+Como las recargas de página completa, ya no existen, el JavaScript debe estar diseñado para gestionarlas, para ello escribe el JavaScript en Stimulus
+
+
+
+## Maker bundle: Generemos algo de código
+
+### Los comandos Maker
+
+Lo principal que nos proporcionan los Bundles son servicios, esta vez son servicios de consola. Gracias al nuevo bundle, tenemos un montón de comandos que empiezan por `make`! Comandos para generar un sistema de seguridad, hacer un controlador, generar entidades de doctrina para hablar con la base de datos, formularios, oyentes, un formulario de registro...
+
+### Generar un comando de consola
+
+```bash
+symfony console make:command
+```
+
+Esto nos preguntará interactivamente por nuestro comando. Llamémoslo: `app:ship-report`. ¡Listo!
+
+Esto ha creado exactamente un archivo: `src/Command/ShipReportCommand.php`.
+
+```php
+namespace App\Command;
+
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+#[AsCommand(
+    name: 'app:ship-report',
+    description: 'Add a short description for your command',
+)]
+class ShipReportCommand extends Command
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+        ;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $arg1 = $input->getArgument('arg1');
+
+        if ($arg1) {
+            $io->note(sprintf('You passed an argument: %s', $arg1));
+        }
+
+        if ($input->getOption('option1')) {
+            // ...
+        }
+
+        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+
+        return Command::SUCCESS;
+    }
+}
+```
+
+Esta es una clase normal - es un servicio, por cierto - pero con un atributo encima: `#[AsCommand]`. Esto le dice a Symfony:
+
+> ¡Eh! ¿Ves este servicio? No es sólo un servicio: Me gustaría que lo incluyeras en la lista de comandos de la consola.
+
+El atributo incluye el nombre del comando y una descripción. Además, la propia clase tiene un método `configure()` en el que podemos añadir argumentos y opciones. Pero la parte principal es que, cuando alguien llame a este comando, Symfony llamará a `execute()`.
+
+Esta variable `$io` es genial. Nos permite mostrar cosas -como `$this->note()`o `$this->success()` - con diferentes estilos. Y aunque no lo veamos aquí, también podemos hacer preguntas al usuario de forma interactiva.
+
+Para probarla: 
+
+```bash
+symfony console app:ship-report
+```
+
+### Construir una barra de progreso
+
+Para ello, decimos `$io->progressStart()`y le pasamos el número de filas de datos que estemos recorriendo y manejando. Imaginemos que estamos haciendo un bucle sobre 100 filas de datos para este informe.
+
+En lugar de hacer un bucle sobre datos reales, crea un bucle falso con `for`. ¡Incluso voy a incluir la variable `$i` en el medio! Dentro, para hacer avanzar la barra de progreso, di `$io->advance()`. Entonces, aquí es donde haríamos nuestra consulta pesada o trabajo pesado. Finge eso con un `usleep(10000)` para crear una breve pausa.
+
+Después del bucle, termina con `$io->progressFinish()`.
+
+
 
 
 
 10/04/2026
-Configuración de servicios
+
+# 2. Servicios, Configuración y Entornos
+
+## Configuración, servicios y el contenedor de servicios
+
+Un servicio es una clase PHP (objeto) que hace un trabajo, por ejemplo, un logger que te ayuda a registrar mensajes es un servicio. O un mailer que envia correos electrónicos a tus clientes. O un objeto de conexión a la base de datos que utilizas para ejecutar consultas a la base de datos.
+
+Tenemos objetos que contienen datos como la clase Starship, que la instanciamos de la manera habitual, pero los servicios (objetos que hacen un trabajo), son diferentes, se podrían instanciar de manera manual, pero lo hace el **contenedor de servicios.** Lo sabe todo sobre ellos, desde el nombre de la clase hasta cada argumento del constructor. Si le pides un servicio, lo instanciará por ti y te devolverá un objeto PHP listo para usar. Y es inteligente si le pides un servicio varias veces, sólo lo crea una vez. Por ejemplo, nuestra aplicación sólo necesita un registrador. Si pides el logger 5 veces, se crea sólo una vez 
+
+Para saber los servicios que tenemos:
+
+```bash
+bin/console debug:container
+```
+
+Algunos servicios proceden de nuestro código , pero la gran mayoría proceden de bundles. Los bundles son plugins que puedes añadir a las aplicaciones Symfony
+
+ Cada bundle tiene un archivo de configuración que dice:
+
+> Quiero tener un servicio llamado `logger` que debería ser una instancia de "Logger", y que debe instanciarse con estos argumentos.
+
+Así que los servicios son herramientas y los bundles nos dan herramientas. En nuestro código, abre `config/bundles.php`. Este es el archivo responsable de registrar los bundles en nuestra aplicación
+
+## KnpTimeBundle: Instala el bundle, obtén su servicio
+
+hemos añadido un nuevo campo `$arrivedAt`a nuestra clase `Starship` con algunos getters y setters. Queremos imprimir este campo en la página de inicio.
+
+archivo: src/MOdel/Starship.php
+
+```php
+class Starship
+{
+    public function __construct(
+        private \DateTimeImmutable $arrivedAt,
+    ) {
+    }
+    public function getArrivedAt(): \DateTimeImmutable
+    {
+        return $this->arrivedAt;
+    }
+}
+```
+
+Si has olvidado qué controlador es responsable de la página de inicio, siempre puedes pasar el ratón por encima de la información de la página en la barra de herramientas de depuración web y... ¡boom! Dice "MainController :: homepage". Abramos eso - `MainController.php` - y busquemos la acción `homepage()`. Aquí abajo, podemos ver que genera una plantilla: `main/homepage.html.twig`. Ábrela, busca la "Ship Repair Queue" y, aquí abajo, después de `{{ ship.name }}`, añade una nueva `<div>` con `Arrived at: {{ ship.arrivedAt }}`.
+
+Para mostrar el valor, hay que decir en que formato queremos la fecha para ello añadimos |date
+
+archivo: templates/main/homepage.html.twig
+
+```html
+<div>
+    Arrived at: {{ ship.arrivedAt|date }}
+</div>
+```
+
+Para mirar la configuración por defecto del formato fecha:
+
+```bash
+bin/console config:dump twig
+```
+
+El nombre completo del comando es `config:dump-reference`. Con los comandos Symfony, puedes acortar el nombre todo lo que quieras siempre que no sea ambiguo con el nombre de otro comando. Si coinciden varios comandos, la consola te preguntará cuál quieres ejecutar.
+
+ Hemos impreso nuestra fecha, pero sería mucho más guay si pudiéramos decir algo como "hace 2 horas" en lugar de esta fecha tan larga. Para ello utilizamos el bundle **KnpTimeBundle**
+
+```bash
+composer require knplabs/knp-time-bundle
+```
+
+Cada vez que instalamos un nuevo bundle, cambia nuestros archivos `composer.json`,`composer.lock`, `symfony.lock`, y `bundles.php`.
+
+Ejecutamos: `bin/console debug:container time` y seleccionamos la opción de **datetime_formatter**
+
+Para ver el autocableado: `bin/console debug:autowiring time`
+
+Este bundle tiene bonitos filtros y funciones y para verlos:
+
+```bash
+bin/console debug:twig
+```
+
+y buscamos ago
+
+```html
+<div>
+    Arrived at: {{ ship.arrivedAt|ago }}
+</div>
+```
+
+
+
+## El servicio cliente HTTP
+
+Symfony es una colección de un montón de minúsculas librerías PHP independientes, llamadas "componentes".
+
+Para comprobar si nuestra aplicación ya tiene un cliente HTTP que nos ayude a ejecutar algunas peticiones a la API.
+
+```bash
+bin/console debug:autowiring http
+```
+
+Para instalar el cliente HTTP.
+
+```bash
+composer require symfony/http-client
+bin/console debug:autowiring http
+```
+
+`FrameworkBundle`. Es un bundle básico de Symfony, y ha estado en nuestra aplicación desde el principio, busca componentes Symfony recién instalados y registrar automáticamente sus servicios. 
+
+Abre `MainController.php` y, en `homepage()`, escribamos hint nuestro nuevo servicio. Lo trasladaré a varias líneas... escribe `HttpClientInterface`... y llámalo `$client`.
+
+```php
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+class MainController extends AbstractController
+    public function homepage(
+        HttpClientInterface $client,
+    ): Response {
+    }
+}
+```
+
+Antes del return, escribimos `$client->`. Tenemos unos cuantos métodos para elegir, así que selecciona `request()`. Dentro, escribe `GET`, y luego tenemos que enviar una petición a esta URL. Para ahorrarte algo de tiempo, puedes copiar este enlace de la página que hay debajo de este vídeo. Por aquí, añade `$response`... y debajo, escribe `$response->toArray()`. Ese es un práctico método que descodifica JSON en una matriz. Y por último, añadiremos esta variable `$issData`. Para ver si funciona, podemos seguir adelante y escribir `dump($issData)` aquí.
+
+```php
+public function homepage(
+    ): Response {
+        $response = $client->request('GET', 'https://api.wheretheiss.at/v1/satellites/25544');
+        $issData = $response->toArray();
+        dump($issData);
+}
+```
+
+En tu navegador, actualiza la página de inicio y, aquí abajo, si pasas el ratón por encima de este icono... ¡qué bien! ¡Esos son nuestros datos! Justo al lado hay otro icono que habrás notado. Es el Cliente HTTP, y nos muestra el número total de peticiones que se han ejecutado en esta página. Haz clic en este icono de Depuración para abrir el Perfilador Symfony e inspeccionarlo. Nuestro Cliente HTTP está integrado con la barra de herramientas de depuración web, y podemos ver que nuestra petición se ha ejecutado. 
+
+Elimina el `dump()` y pasa esos datos a la plantilla.
+
+archivo: src/Controller/MainController.php
+
+```php
+public function homepage(
+): Response {
+    return $this->render('main/homepage.html.twig', [
+        'issData' => $issData,
+    ]);
+}
+```
 
 bin/console cache:pool:clear cache.app
 
+En `homepage.html.twig`, aquí abajo al final, añade otro `<div>`. Dentro, añade un `<h2>`, y llamémoslo `ISS Location`.
+
+```twig
+{% block body %}
+    <main class="flex flex-col lg:flex-row">
+        <div class="px-12 pt-10 w-full">
+            <div>
+                <h2 class="text-4xl font-semibold my-8">ISS Location</h2>
+
+                <p>Time: {{ issData.timestamp|date }}</p>
+                <p>Altitude: {{ issData.altitude }}</p>
+                <p>Latitude: {{ issData.latitude }}</p>
+                <p>Longitude: {{ issData.longitude }}</p>
+                <p>Visibility: {{ issData.visibility }}</p>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+```
+
+Con esto nos mostrará la ubicación en tiempo real de la Estación espacial, con todos los datos que acabamos de renderizar.
+
+ahora cada vez que alguien navega a nuestra página de inicio, estamos haciendo una petición HTTP a la API, y las peticiones HTTP son lentas. Para solucionarlo, vamos a aprovechar otro servicio de Symfony: el servicio de caché.
 
 
 
+## Servicio de Caché y Pools de Caché
 
-***Configuración del Bundle: Configurar el servicio de Caché
-Los bundles nos proporcionan servicios, y cuando autoconectamos un servicio, nuestro bundle nos proporciona todos los detalles que necesitamos para instanciarlo. Si es otro el responsable de instanciar esos objetos, para controlarlo hay que configurar el bundle, para ello `/config/packages, todos los archivos de configuración de .yaml se cargan automáticamente al iniciar symfony, y su función es configurar todos los servicios que nos proporciona cada bundle.
+Las peticiones HTTP son lentas, para ello almacenamos esos datos en caché, para ver si tenemos algun servicio relacionado con la cache:
 
-***Cómo funciona el autocableado
-Para listar todos los servicios que podemos tener autocableados: bin/console debug:autowiring
-bin/console debug:container lista todos los servicios, y cualquier ID de servicio que resulte ser un nombre de clase o interfaz es autocableable, esto significa que podemos indicarlo en el constructor de nuestro servicio y el contenedor de servicios inyectará ese servicio, por el contrario, si un ID de servicio no es un nombre de interfaz o de clase, no es autoconectable.
+```bash
+bin/console debug:autowiring cache
+```
 
-**Depurar el contenedor**
-El contenedor de servicios es básicamente una matriz gigante en la que cada servicio tiene un nombre único que apunta al objeto de servicio correspondiente. En el caso de twig, por ejemplo, el contenedor sabe que para instanciar este servicio, necesita crear una instancia de esta clase Twig\Environment. Y aunque aquí no veamos los argumentos, sabe exactamente cuáles debe pasar para instanciarlo. Como ventaja, si hacemos una petición del mismo servicio en más de un sitio, el contenedor de servicios sólo crea una instancia, por lo que tendremos exactamente la misma instancia en todas partes.
-También te habrás fijado en estas clases de servicio. Este CacheInterface, por ejemplo, se utilizó antes como alias de nuestro servicio cache.app. Esto no es más que una forma de hacer que un servicio como cache.app sea autodireccionable. La gran mayoría de estos servicios utilizan la estrategia de nomenclatura snake case, así que para hacerlos autowireables en nuestro código, los bundles añaden algunos alias -nombres de clases, o interfaces- que podemos teclear en nuestro código. Así que los alias son básicamente como enlaces simbólicos que sólo hacen referencia a otros servicios. Sin embargo, puede haber ocasiones en las que haya varios servicios en el contenedor que implementen la misma clase o interfaz.
+Otra cosa a tener en cuenta es esto `CacheItemPoolInterface`. Los pools no son más que espacios de nombres únicos para los elementos almacenados en caché. Puedes pensar en ellos como en "subcarpetas" del directorio de caché global, lo que significa que puedes borrar un grupo de caché sin afectar a los demás. 
 
-Para borrar la caché de un grupo concreto sin afectar a los demás.
+Dentro de `homepage()`, escribe `CacheInterface` (el de Contratos) y llámalo `$cache`.
+
+archivo: src/Controller/MainController.php
+
+```php
+use Symfony\Contracts\Cache\CacheInterface;
+class MainController extends AbstractController
+{
+    public function homepage(
+        CacheInterface $cache,
+    ): Response {
+    }
+}
+```
+
+Ahora, aquí abajo, copia estas dos líneas, bórralas y escribe `$issData = $cache->get()`. El primer argumento debe ser la clave de caché, que llamaremos `iss_location_data`. El segundo argumento debe ser un anónimo `function ()`.en lugar de establecer la variable, vamos a poner `return`. Pero antes de poder utilizar esta variable `$client` en una función anónima, tenemos que utilizarla. Escribe `use($client): array`.
+
+archivo: src/Controller/MainController.php
+
+```php
+public function homepage(
+    ): Response {
+        $issData = $cache->get('iss_location_data', function (ItemInterface $item) use ($client): array {
+            $response = $client->request('GET', 'https://api.wheretheiss.at/v1/satellites/25544');
+
+            return $response->toArray();
+        });
+    }
+```
+
+actualizamos... seguimos haciendo la petición del Cliente HTTP y, por aquí, ahora tenemos un icono de caché que nos muestra si se ha escrito algo en la caché. ¡Ya lo tenemos! Haré clic en este icono de caché para abrir el perfilador,ahora esta utilizando el pool por defecto.
+
+Si volvemos a la página de inicio y la actualizamos... la petición HTTP ha desaparecido. Y si pasamos el ratón por encima del icono de la caché... no se ha escrito nada. Y ahora, la carga de nuestra página es notablemente más rápida. Ahora mismo, esos datos se almacenan en caché para siempre a menos que borremos la caché, pero por motivos de desarrollo, vamos a cambiar eso en nuestra función. Añade `ItemInterface` como primer argumento y llámalo `$item`. Dentro, escribe `$item->expiresAfter()` y pasa `time: 5`.
+
+archivo: src/Controller/MainController.php
+
+```php
+    public function homepage(
+    ): Response {
+        $issData = $cache->get('iss_location_data', function (ItemInterface $item) use ($client): array {
+            $item->expiresAfter(5);
+        });
+    }
+```
+
+Este número está en segundos, transcurridos los cuales expirará la caché. De vuelta a nuestro navegador, si actualizamos, nada cambia porque el valor ya estaba en la caché. Para ver nuestros cambios, tenemos que borrarlo manualmente para que se vuelva a almacenar en caché con nuestro nuevo plazo de cinco segundos.
+
+El adaptador de caché por defecto es un sistema de archivos, lo que significa que la caché se almacena en el directorio `var/cache/dev/pools/`. Aquí podemos ver nuestra carpeta `/app`, que corresponde a nuestra caché `app`. Podríamos eliminar este directorio manualmente, pero hay una forma mejor. En tu terminal, ejecuta:
+
+```bash
+bin/console cache:pool:list
+```
+
+Esta es la lista de pools disponibles en nuestra aplicación. Para borrar el pool `cache.app`, podemos utilizar otro comando:
+
+```bash
+bin/console cache:pool:clear cache.app
+```
+
+Y... ¡cache borrada! Si volvemos a nuestro navegador y refrescamos ahora... aquí está nuestra petición HTTP. Si volvemos a actualizar rápidamente... ahora los datos que tenemos proceden de nuestra caché. Si refrescamos una vez más después de que hayan pasado cinco segundos... ¡aquí está de nuevo nuestra petición HTTP!
+
+
+
+## Configuración del Bundle: Configurar el servicio de Caché
+
+Los bundles nos proporcionan servicios, y cuando autoconectamos un servicio, nuestro bundle nos proporciona todos los detalles que necesitamos para instanciarlo. Si es otro el responsable de instanciar esos objetos, para controlarlo hay que configurar el bundle, para ello `/config/packages`, todos los archivos de configuración de .yaml se cargan automáticamente al iniciar symfony, y su función es configurar todos los servicios que nos proporciona cada bundle.
+
+ En nuestro método `homepage()`, justo al principio, vamos a `dd($cache)` para que podamos ver el nombre de la clase del objeto que estamos obteniendo.
+
+src/Controller/MainController.php
+
+```php
+class MainController extends AbstractController
+{
+    public function homepage(
+    ): Response {
+        dd($cache);
+    }
+}
+```
+
+Por ejemplo, para el servicio de caché, `FrameworkBundle` le dice al contenedor de servicios:
+
+> Cuando te pida el `CacheInterface`, quiero quiero que instancies este `TraceableAdapter` objeto con un conjunto específico de argumentos que necesite.
+
+Así que parece que nuestro servicio de caché es sólo este `TraceableAdapter`, pero si miramos más de cerca, podemos ver que en realidad es una envoltura alrededor de un `FilesystemAdapter`, y la caché se almacena dentro del sistema de archivos. Eso está bien, pero ¿y si en lugar de eso queremos almacenar la caché en la memoria? ¿O en algún otro lugar del sistema de archivos? Aquí es donde brilla la configuración del bundle. Abre `framework.yaml` y encuentra esta clave raíz `framework`. Esto significa que estamos pasando configuración a `FrameworkBundle`, y que utilizará esa configuración para cambiar cómo instanciar sus servicios. Por cierto, el nombre del archivo aquí no es importante. Podríamos llamarlo `pizza.yaml` y funcionaría igual.
+
+config/packages/framework.yaml
+
+```yaml
+framework:
+    secret: '%env(APP_SECRET)%'
+```
+
+Bien, dirígete a tu terminal y ejecuta.
+
+
+
+## Configuración de depuración
+
+Para ver la configuración actual
+
+```bash
+bin/console debug:config framework
+```
+
+Para ver la configuración completa_
+
+```bash
+bin/console config:dump framework
+```
+
+Para ver la configuración se un servicio: 
+
+```bash
+bin/console config:dump framework nombr_servicio
+```
+
+## Adaptador de matriz de cache
+
+En `cache.yaml`, podemos ver que sigue formando parte de la configuración de `framework`, sólo que separada en archivos diferentes para su organización. Debajo de este ejemplo, vamos a poner `app` en `cache.adapter.array`
+
+archivo: config/packages/cache.yaml
+
+```yaml
+framework:
+    cache:
+        app: cache.adapter.array
+```
+
+Actualiza el navegador:  Esto ha cambiado a `ArrayAdapter`. Dirígete y elimina `dd($cache)` para que podamos ver `cache.array.adapter` en acción. Vuelve a actualizar la página, y... ¡ah! Cada vez que actualizamos la página, estamos ejecutando la petición HTTP, por lo que la caché sólo está activa durante la petición. Cuando iniciamos una nueva petición, la caché se invalida y volvemos a ver esa petición HTTP.
+
+
+
+## Cómo funciona el autocableado
+
+Para listar todos los servicios que podemos tener autocableados: 
+
+```bash
+bin/console debug:autowiring
+```
+
+```
+bin/console debug:container
+```
+
+Este nos lista todos los servicios, y cualquier ID de servicio que resulte ser un nombre de clase o interfaz es autocableable, esto significa que podemos indicarlo en el constructor de nuestro servicio y el contenedor de servicios inyectará ese servicio, por el contrario, si un ID de servicio no es un nombre de interfaz o de clase, no es autoconectable.
+
+
+
+## **Depurar el contenedor**
+
+El contenedor de servicios es básicamente una matriz gigante en la que cada servicio tiene un nombre único que apunta al objeto de servicio correspondiente. En el caso de `twig`, por ejemplo, el contenedor sabe que para instanciar este servicio, necesita crear una instancia de esta clase `Twig\Environment`. Y aunque aquí no veamos los argumentos, sabe exactamente cuáles debe pasar para instanciarlo. Como ventaja, si hacemos una petición del mismo servicio en más de un sitio, el contenedor de servicios sólo crea una instancia, por lo que tendremos exactamente la misma instancia en todas partes.
+También te habrás fijado en estas clases de servicio. Este `CacheInterface`, por ejemplo, se utilizó antes como alias de nuestro servicio `cache.app`. Esto no es más que una forma de hacer que un servicio como `cache.app` sea autodireccionable. La gran mayoría de estos servicios utilizan la estrategia de nomenclatura snake case, así que para hacerlos autowireables en nuestro código, los bundles añaden algunos alias -nombres de clases, o interfaces- que podemos teclear en nuestro código. Así que los alias son básicamente como enlaces simbólicos que sólo hacen referencia a otros servicios. Sin embargo, puede haber ocasiones en las que haya varios servicios en el contenedor que implementen la misma clase o interfaz.
+
+## Grupo de caché personalizado
+
+Creamos una reserva de caché personalizada. En `config/packages/cache.yaml`, aquí abajo, descomenta la clave `pools`, y en lugar de este ejemplo, di `iss_location_pool: null`.
+
+```yaml
+framework:
+    cache:
+        pools:
+            iss_location_pool: null
+```
+
+Ahora en la terminal ejecuta:
+
+```bash
+bin/console debug:autowiring
+```
+
+Esta configuración ha añadido un nuevo servicio - `iss_location_pool` - que tiene el mismo `CacheInterface`que `cache.app`. Volvamos a `src/Controller/MainController.php`, dentro de `homepage()`, cambiemos el nombre de esta variable por `$issLocationPool` y mantengamos el mismo typehint `CacheInterface`. Copia ese nombre de variable y, aquí abajo, pégalo:
+
+archivo: src/Controller/MainController.php
+
+```php
+class MainController extends AbstractController
+{
+    public function homepage(
+        CacheInterface $issLocationPool,
+    ): Response {
+        $issData = $issLocationPool->get('iss_location_data', function (ItemInterface $item) use ($client): array {
+        });
+    }
+}
+```
+
+Esto se llama "autocableado con nombre": nuestro contenedor de servicios mira el nombre de la variable y su typehint para inyectar el servicio correcto. Es bastante raro, pero también podemos verlo con nuestro servicio `logger`.
+
+De vuelta a nuestro navegador, actualiza la página y comprueba el perfil de caché. Aquí está nuestro `iss_location_pool` y nuestro `iss_location_data` está escrito en ese pool. Si alguna vez necesitamos borrar la caché de este pool, en nuestro terminal, ejecuta:
+
+```bash
 bin/console cache:pool:clear iss_location_pool
+```
 
-***Entornos symfony
+También podemos configurar este pool de forma diferente a los demás. Por ejemplo, vamos a establecer el tiempo de caducidad de nuestro nuevo pool en el archivo de configuración. En `cache.yaml`, en lugar de `null`, en una nueva línea, escribe `default_lifetime: 5`.
+
+archivo: config/packages/cache.yaml
+
+```yaml
+framework:
+    cache:
+        pools:
+            iss_location_pool:
+                default_lifetime: 5
+```
+
+El `5` está en segundos. Esto debería afectar a todos los elementos de caché de esta reserva. Ahora, en `MainController.php`, podemos eliminar `$item->expiresAfter()`. También podemos deshacernos por completo de este argumento `$item`.
+
+archivo: src/Controller/MainController.php
+
+```php
+class MainController extends AbstractController
+{
+    public function homepage(
+    ): Response {
+        $issData = $issLocationPool->get('iss_location_data', function () use ($client): array {
+            $response = $client->request('GET', 'https://api.wheretheiss.at/v1/satellites/25544');
+
+            return $response->toArray();
+        });
+    }
+}
+```
+
+
+
+## Entornos symfony
+
 En el archivo .env (en el directorio raiz del proyecto) tenemos algunas variables de entorno , que son conjuntos de configuraciones para nuestra aplicación que podemos cambiar en función del escenario -o entorno- en el que estamos desarrollando. Symfony lee esas variables y crea ese entono.
 
-Para añadir una configuración específica del entorno, podemos poner esto en config/packages7 seguido de tu entorno, como dev o prod y luego el nombre del archivo de configuración. framewor.yam por ejemplo
-Pero symfony ha añadido una forma mejor de hacerlo, utilizando @when
+archivo: .env
+
+```
+APP_ENV=dev
+APP_SECRET=930f26d714e6fa9188943d7e037a63fa
+```
+
+Por el momento, sólo tenemos unas pocas variables de entorno aquí, como esta variable `APP_ENV` establecida en `dev`. Esto le dice a Symfony que nuestra aplicación debe cargarse en modo desarrollo.
+
+Después de desplegar nuestra aplicación en producción, querremos cambiar esto a `prod`, que está optimizado para el rendimiento y evita la fuga de datos sensibles. 
+
+¿Dónde se utiliza exactamente?
+
+Abre `/public/index.php`. Este es nuestro controlador frontal, que se ejecuta en cada petición y arranca nuestra aplicación.
+
+archivo: public/index.php
+
+```php
+use App\Kernel;
+
+require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+
+return function (array $context) {
+    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+};
+```
+
+Crea una instancia de `App\Kernel`, y ésta tiene algunos métodos. Mantén pulsado "comando" y haz clic en `Kernel()` para abrirlo. Esta clase está bastante vacía, aparte de esta línea `use MicroKernelTrait;`, y de ese trait procede la mayor parte del código.
+
+
+
+Symfony por defecto tiene tres entornos (o "modos") que podemos utilizar en nuestra app: `dev` `prod` y `test`. También puedes crear tu propio entorno personalizado si es necesario, pero normalmente, esos tres son más que suficientes para hacer el trabajo.
+
+En `config/bundles.php`.
+
+```php
+return [
+    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
+    Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
+    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+];
+```
+
+Tiene una matriz de bundles habilitados en nuestra aplicación, donde la clave es la clase de bundle y el valor es una matriz de entornos disponibles para ese bundle. Por ejemplo, este `WebProfilerBundle` sólo está disponible para los entornos `dev`y `test`. Mientras tanto, `DebugBundle` y `MakerBundle` sólo están disponibles para el entorno `dev`. Son súper útiles mientras desarrollamos, pero definitivamente no queremos utilizarlos en producción y arriesgarnos a filtrar información sensible.
+
+
+
+Para añadir una configuración específica del entorno, podemos poner esto en config/packages7 seguido de tu entorno, como dev o prod y luego el nombre del archivo de configuración. framework.yam por ejemplo
+Pero symfony ha añadido una forma mejor de hacerlo, utilizando **@when**
+
+```
 when@test:
     framework:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+```
 
-Symfony tiene 3 entornos ("modos"): dev, prod y test, también se puede crear un entorno propio personalizado. 
 
 
-***El entorno prod
+## El entorno prod
+
 Si en en el archivo .env cambiamos de dev a prod, en el navegador desaparece la barra de depuración web, y si cambiamos algo en el código como un texto en la vista, al actualizar no ha cambiado nada, por razones de rendimiento, las plantillas se almacenan en cache
 
 
@@ -2162,7 +3500,9 @@ rm -rf var/cache/dev
 
 
 
-**Comandos Composer**
+
+
+## **Comandos Composer**
 
 composer recipes: lista los paquetes instalados
 
@@ -2170,9 +3510,39 @@ composer recipes nombre_paquete: da información de un paquete concreto.
 
 composer require nombre_paquete: instala un paquete
 
+Para instalar asset mapper:
+
+composer require symfony/asset-mapper
+
+composer require symfony/asset: 
 
 
-Webs importantes;
+
+## Comandos php/bin 
+
+Listar rutas: php bin/console debug:router
+
+Mostrar los activos expuestos públicamente a través del mapeador de activos: php bin/console debug:asset
+
+Listar contenido de asset: php bin/console debug:asset
+
+Mostrar los servicios: bin/console debug:container
+
+ver la configuración: bin/console debug:config framework
+
+ver la configuración completa: bin/console config:dump framework
+
+ver la configuración se un servicio: bin/console config:dump framework nombr_servicio
+
+listar los servicios que podemos autocablear:  bin/console debug:autowiring
+
+listar los servicios: bin/console debug:container
+
+borrar la cache de un grupo en concreto: bin/console cache:pool:clear iss_location_pool
+
+
+
+Webs importantes:
 
 https://symfonycasts.com/es/screencast/symfony/route-controller#play
 
