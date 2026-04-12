@@ -1,6 +1,4 @@
-# CSI
-
-www.c17.net
+# CSI 
 
 ## Configuración personal:
 
@@ -13,17 +11,13 @@ www.c17.net
 | bitbucket (Atlassian) | ediesai (usuario)     | 160202Es@ | bucked name : ediez@maude |
 | fichme                | ediez@c17.net         | 160202Es@ | web para fichar           |
 
-ALARMA
+**ALARMA**
 
-clave: 1602	clave coacción: 1604
+clave: **1602**	clave coacción: 1604
 
-botón derecha poner
-
-botón izquierda quitar
+botón derecha **poner**		botón izquierda **quitar**
 
 botón mitad negro/blanco -> alarma parcial, la alarma solo esta puesta para los accesos (puertas, ventanas) pero te puedes mover.
-
-
 
 
 
@@ -40,6 +34,113 @@ Es el registro oficial en la nube de **Docker**, una biblioteca gigante que cont
 **Yakuake**: Consola que utilizan: F12 o desde la terminal yakuake&
 
 Yakuake (Yet another Kuake) es un emulador de terminal desplegable diseñado para el entorno de escritorio KDE en Linux, incluido Debian. Su principal característica es que permanece oculto y aparece deslizándose desde la parte superior de la pantalla al presionar una tecla de acceso rápido (por defecto **F12**), lo que permite un acceso rápido a la línea de comandos sin cambiar de ventana. 
+
+
+
+## Estructura proyecto symfony
+
+c17 (workspace) -> www.c17.net
+
+ReadModel (Ingles)
+
+WriteModel (español)
+
+
+
+Hay 3 directorios con el archivo composer.lock.
+
+1. **ansible:** proceso de despliege
+
+   1. deploy_prod: la de producción
+   2. deploy_staging: la de preproducción
+
+2. **web/**
+
+   1. **portal**: aplicación para los usuarios
+
+      1. **teenants:** (cliente), contiene personalizaciones por cliente. Ej: logo, particularidades específicas. Cada cliente tiene una carpeta. Aquí los clientes son siempre instituciones, que pueden tener 1 o varias bibliotecas.
+
+         Cada teenant tiene sus usuarios, si un usuario cambia de teenant, se tiene que volver a registrar (NO lo movemos a otro).
+
+   2. **sf17**: orientada a las bibliotecas, contiene la llamada al código antiguo (r17) desde el controlador SegullAppWrapper.
+
+   3. **r17**: proyecto antiguo (LEGACY) 
+
+3. **lib/**
+
+   1. **c17-cqrs-bundle:** para que funcione (autocableado) de c17-cqrs
+
+   2. **c17-cqrs:** conceptos básicos. Ej: command bus, command queue
+
+   3. **c17-db-test**: está definida la base de datos de desarrollo para hacer las pruebas.
+
+      Con el comando: composer pre-test y composes pre-dev restablece las bases de datos. Ejecuta el bin para limpiar las bds. Los datos de desarrollo y test son los mismos, pero son dos bases de datos.
+
+      1. /files/fixtures/003-usuarios.yaml contiene los datos de los usuarios.
+
+   4. **c17-domain-bundle**: para que funcione (autocableado) de c17-domain
+
+   5. **c17-domain-doctrine**
+
+   6. **c17-domain**: Es LEGACY por ahora no lo vemos, se tocará si hay algún error, esto ha ido avanzando a c17_model.
+
+   7. **c17-model-bundle**
+
+   8. **c17-model/src:** Es el nucleo, aquí va lo nuevo que vamos haciendo
+
+      1. **Application**: casi siempre hay un archivo paralelo en cada carpeta de Command y CommandHandler
+
+         1. **Command**
+         2. **CommandHandler**
+
+      2. **Dto**: (Data Transfer Object), parecido a ValueObject pero NO tienen Identidad, pasan información de un lado a otro.
+
+      3. **Event**: Ej: cuando se da de alta y se quiere programar la baja, entonces se crea el evento
+
+         1. **DomainEvent:** (se notifican dentro del sistema, todavía no ha terminado (modelo))
+         2. **IntegrationEvent:** (se notifican hacia fuera, ej: enviar email, este es cuando todo ha terminado y no hay error)
+
+         Del domain pasa al integration.
+
+      4. **EventHandler**: Ej: ProgramadorBaja.php
+
+         1. **DomainEventHandler**
+         2. **IntegrationEventHandler**
+
+      5. **Infraestructure**:
+
+         1. **Doctrine:**
+         2. **Elastica:**
+            1. **Projection/IllRequest**
+               1. FolderAgencyRowStore.php (biblioteca)
+               2. FolderRequesterRowStore.php
+            2. **ReadModel/IllRequest**
+               1. AgencyBalanceReader.php
+               2. FolderRowReader.php
+
+      6. **Projection**: (son proyecciones de los datos), nosotros sólo tenemos 1 proyección, cuando hacemos una petición, cada biblioteca ve una proyección diferente (Máx 3 proyecciones)
+
+      7. **ReadModel (Ingles)**
+
+      8. **ValueObject**: objeto sin identidad, se identifica por sus propiedades (Reglas de Validación), siempre tiene que tener todo. 
+
+         1. **BillingData**
+         2. **CoverageYear**: (cobertura)
+         3. **EmailAddress:**
+         4. **Isbn:**
+         5. **Issn:**
+         6. **Locale:**
+         7. **Url:**
+
+      9. **WriteModel (español)**
+
+   9. **c17-openurl-bundle**
+
+   10. **c17-shared-bundle**: son bundles que se utilizan en el desarrollo nuevo para que se pueda utilizar tanto en portal como en sf17.
+
+   11. **papi:** autentificación (enlace simbólico, ya lo veremos)
+
+4. **patches:** es las versiones LEGACY se han añadido parches para que código antiguo funcione con las versiones nuevas de php.
 
 
 
@@ -316,11 +417,11 @@ La estructura de desarrollo queremos que sea parecida a la de producción por el
 
 Siempre desde docker: 
 
-levantar docker: docker compose up -d (-d detach)
+levantar docker: `docker compose up -d `(-d detach)
 
-para entrar en la máquina: compose exec -u 1000:1000 php bash
+para entrar en la máquina: `compose exec -u 1000:1000 php bash`
 
-parar docker: compose down
+parar docker: `compose down`
 
 
 
@@ -334,7 +435,134 @@ composer pre-test
 
 
 
+**Cuando se crea una etiqueta:**
 
+1. Llama al controlador (utilizan objetos): c17_shared_bundle/src/Controller/Ill17/IllRequest/IllRequestActionController.php -> al método **tag**.
+
+   ```php
+   #[IsGranted(IllRequestActionVoterAttribute::TAG->value, 'illRequest')]
+       #[Route(path: '/{id<%routing.int%>}/tag', name: '_tag', options: ['expose' => true])]
+       public function tag(Request $request, IllRequest $illRequest, LibraryInterface $library): Response
+       {
+           $commandBuilder = new TagIllRequestCommandBuilder($illRequest, $library);
+           $form = $this->createForm(TagIllRequestFormType::class, $commandBuilder);
+           $form->handleRequest($request);
+   
+           if ($form->isSubmitted() && $form->isValid()) {
+               $this->application->execute($commandBuilder->buildCommand());
+   
+               $this->addFlash('success', 'message.ill_request_tagged_ok');
+   
+               return $this->turboAwareRedirectToRoute($request, 'app_c17_ill-request', ['id' => $illRequest->getId()]);
+           }
+   
+           return $this->render(
+               '@C17Shared/ill17/ill-requests/actions/_tag.html.twig',
+               [
+                   'form' => $form,
+                   'illRequest' => $illRequest,
+               ]
+           );
+       }
+   ```
+
+   LibraryInterface $library retorna un ReadableCollection
+
+   1. Crea el commandBuilder con el TagIllRequestCommandBuilder, obtiene el id de la biblioteca la petición (biblio Origen)
+   2. Crea el formulario (create form)
+   3. Asigna el handle (sería la etiqueta en este caso)
+   4. ejecuta el command builder
+   5. muestra mensaje
+
+
+
+2. Crea un comando y lo manda a ejecutar.
+3. Busca el handler que en este caso es Etiqueta y le paso el comando.
+4. Hace el sql y manda un evento a la grabadora de Eventos DomainEvent. Todo esto se hace en la misma transacción, para asegurarnos de que o se hace todo o nada. 
+5. Hasta que no termina la transacción no se hacen los eventos de Integración.
+6. En los modelos de lectura relacionamos con objetos y en los modelos de escritura , en lugar de utilizar objetos como tal utilizamos identificadores, porque queremos que ese proceso sea más atómico, con los parámetros imprescindibles.
+
+
+
+**Eventos**: 
+
+- **Eventos de dominio:** están en la misma transacción.
+- **Eventos de integración:** no se ejecutan hasta que no termina la transacción.
+
+
+
+Cuando desde la web pulsamos en Etiqueta envía una petición, cada biblioteca tiene sus etiquetas.
+
+En nuestro código en c-17-model/src/WriteModel/ cada directorio suele tener un agregado, algún caso especial tiene dentro de un directorio 2 agregados. EJ: cuentaUsuario sería un agregado, en cambio en FondoRevista hay dos agregados (fondo y revista).
+
+Cuando tienen una agregado, tienen un archivo nombreAgregado y otro nombreAgregadoId. Ej: cuentaUsuario
+
+
+
+El modelo de lectura de doctrine está por atributos 
+
+```php
+#[ORM\Table(name: 'libros')]
+#[ORM\Entity(repositoryClass: BookRepository::class, readOnly: true)]
+class Book implements BookInterface
+{
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    private int $id;
+
+    #[ORM\Column(type: 'string', length: 512, name: 'titulo')]
+    private string $title;
+    ....
+```
+
+El modelo de escritura de doctrine está por archivo .xml (c17-model/src/infraestructure(Doctrine/ORM/WritteModel/Mapping)) Ej: biblioteca.Biblioteca.orm.xml
+
+```xml
+<doctrine-mapping
+    xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
+>
+
+    <entity name="C17\Model\WriteModel\Biblioteca\Biblioteca" table="biblioteca" repository-class="C17\Model\Infrastructure\Doctrine\Orm\WriteModel\BibliotecaRepositorio">
+
+        <id name="id" column="organisation_id" type="integer">
+            <generator strategy="NONE" />
+        </id>
+
+        <many-to-one field="institucion" target-entity="C17\Model\WriteModel\Institucion\Institucion">
+            <join-column name="institucion_id" referenced-column-name="id" />
+        </many-to-one>
+
+    </entity>
+
+</doctrine-mapping>
+```
+
+Aquí se dice los campos que quiere.
+
+
+
+Las **Entidades de Doctrine**, no tiene que ver con lo que nosotros queremos mostrar. Ej: en la tabla preferencias solo utilizamos en el código locale y email, no todos los campos que hay en la bd.
+
+ 
+
+**FORMULARIOS**
+
+Usamos un CommandBuilder para poder cambiar un formulario, porque construye un comando (puede construir todos los que necesite, pero ese comando es immutable).
+
+El formulario no ataca directamente al comando, sino al commandBuilder. Se cambia al objeto al que engloba el campo del formulario.
+
+** Para que todo el funcionamiento esté OK Siempre que se hace un POST hay que hacer un `$this ->redirect, no con un render, para que no se pueda dar atrás.
+
+
+
+**Arquitectura Hexagonal:** por un lado en la lectura tiene la interfaz y la implementación está en doctrine.
+
+Llamamos reader a los que llama a las consultas. 
+
+En c17-model/src/infraestructure se hacen las implementaciones con ORM, Dbal o Elastic
 
 
 
@@ -352,7 +580,7 @@ Creados por nosotros, están guardados en el proyecto en el  composer.json princ
 - **composer pre-dev:** prepara el entorno de desarrollo.
 - **composer pre-test:** prepara el entorno de test, (limpia las bases de datos)
 - **composer fix-cs:** organiza el código.
-- **composer ci:** ejecuta todas las pruebas (se tiene que ejecutar siempre antes de subir una rama, es decir se hace git add, composer ci y luego el git commit).
+- **composer ci:** ejecuta todas las pruebas (se tiene que ejecutar siempre antes de subir una rama, es decir se hace git **add, composer ci y luego el git commit)**.
 
 
 
@@ -388,115 +616,141 @@ En VS Code: instalar todas las extensiones predefinidas y container tools ( dise
 
 
 
-Utilizan:
+**Utilizamos**:
 
-elasticsearch: motor de búsqueda "bd".
+**elasticsearch**: motor de búsqueda "bd".
 
-elasticvue: utilizamos la versión 8. Cada columna es una tabla. Las bandejas son las que utilizan elacticvue, una vez que se hace clic, ya si se va a la BD.
+**elasticvue**: utilizamos la versión 8. Cada columna es una tabla. Las bandejas son las que utilizan elacticvue, una vez que se hace clic, ya si se va a la BD.
 
-mailer (mailpit): para el correo. el correo no sale del sistema, puerto 8025
+Las bandejas son el objeto grande con las filas con las pestañas (pendiente,...) en cualquiera de las dos apps.
 
-adminer: entorno gráfico para ver las bases de datos, puerto 8080.
+**mailer (mailpit)**: para el correo. el correo no sale del sistema, puerto 8025
 
-
-
-
+**adminer**: entorno gráfico para ver las bases de datos, puerto 8080.
 
 
 
-## Estructura proyecto symfony
+**GIT**
 
-c17 (workspace)
+- **git stash:** guarda los cambios de manera temporal sin tener que hacer un commit para limpiar tu espacio de trabajo.
 
-ReadModel (Ingles)
+  Imagina que estás trabajando en una funcionalidad nueva y, de repente, surge un error urgente que debes corregir en otra rama.
 
-WriteModel (español)
+  - No quieres hacer commit de tu trabajo a medias (porque está incompleto o "roto").
+  - Git no te deja cambiar de rama porque tienes archivos modificados.
 
+  **Solución:** Haces un `git stash`, tus cambios se guardan a buen recaudo, tu carpeta se queda limpia, arreglas el error y luego recuperas lo que tenías. 
 
+- k --all &: es un visor gráfico de historial para git.
 
-Hay 3 directorios con el archivo composer.lock.
+- git flow: comando que permite hacer el funcionamiento de manera sencilla, 
 
-1. **web/**
-   
-   1. **portal**: aplicación para los usuarios
-   
-      1. **teenants:** (cliente), contiene personalizaciones por cliente. Ej: logo, particularidades específicas. Cada cliente tiene una carpeta. Aquí los clientes son siempre instituciones, que pueden tener 1 o varias bibliotecas.
-   
-         Cada teenant tiene sus usuarios, si un usuario cambia de teenant, se tiene que volver a registrar (NO lo movemos a otro).
-   
-   2. **sf17**: orientada a las bibliotecas, contiene la llamada al código antiguo (r17) desde el controlador SegullAppWrapper.
-   
-   3. **r17**: proyecto antiguo (LEGACY) 
-   
-2. **lib/**
-   
-   1. **c17-cqrs-bundle:** para que funcione (autocableado) de c17-cqrs
-   
-   2. **c17-cqrs:** conceptos básicos. Ej: command bus, command queue
-   
-   3. **c17-db-test**: está definida la base de datos de desarrollo para hacer las pruebas.
-   
-      Con el comando: composer pre-test y composes pre-dev restablece las bases de datos. Ejecuta el bin para limpiar las bds. Los datos de desarrollo y test son los mismos, pero son dos bases de datos.
-   
-      1. /files/fixtures/003-usuarios.yaml contiene los datos de los usuarios.
-   
-   4. **c17-domain-bundle**: para que funcione (autocableado) de c17-domain
-   
-   5. **c17-domain-doctrine**
-   
-   6. **c17-domain**: Es LEGACY por ahora no lo vemos
-   
-   7. **c17-model-bundle**
-   
-   8. **c17-model/src:** Es el nucleo, aquí va lo nuevo que vamos haciendo
-   
-      1. **Application**: casi siempre hay un archivo paralelo en cada carpeta de Command y CommandHandler
-   
-         1. **Command**
-         2. **CommandHandler**
-   
-      2. **Dto**: (Data Transfer Object), parecido a ValueObject pero NO tienen Identidad, pasan información de un lado a otro.
-   
-      3. **Event**: Ej: cuando se da de alta y se quiere programar la baja, entonces se crea el evento
-   
-         1. **DomainEvent:** (se notifican dentro del sistema, todavía no ha terminado (modelo))
-         2. **IntegrationEvent:** (se notifican hacia fuera, ej: enviar email, este es cuando todo ha terminado y no hay error)
-   
-         Del domain pasa al integration.
-   
-      4. **EventHandler**: Ej: ProgramadorBaja.php
-   
-         1. **DomainEventHandler**
-         2. **IntegrationEventHandler**
-   
-      5. **Infraestructure**:
-   
-         1. **Doctrine:**
-         2. **Elastica:**
-   
-      6. **Projection**: (son proyecciones de los datos), nosotros sólo tenemos 1 proyección, cuando hacemos una petición, cada biblioteca ve una proyección diferente (Máx 3 proyecciones)
-   
-      7. **ReadModel (Ingles)**
-   
-      8. **ValueObject**: objeto sin identidad, se identifica por sus propiedades (Reglas de Validación), siempre tiene que tener todo. 
-   
-         1. **BillingData**
-         2. **CoverageYear**: (cobertura)
-         3. **EmailAddress:**
-         4. **Isbn:**
-         5. **Issn:**
-         6. **Locale:**
-         7. **Url:**
-   
-      9. **WriteModel (español)**
-   
-   9. **c17-openurl-bundle**
-   
-   10. **c17-shared-bundle**: son bundles que se utilizan en el desarrollo nuevo para que se pueda utilizar tanto en portal como en sf17.
-   
-   11. **papi:** autentificación (enlace simbólico, ya lo veremos)
+  2 ramas principales: 
+
+  - main: contiene la última versión de nuestro proyecto y usaremos para desplegar en producción.
+  - develop: rama principal de desarrollo
+
+   varias ramas de soporte:
+
+  - feature: para desarrollar nuevas funcionalidades, se crean a partir de la rama develop y al terminar se fusiona con develop.
+  - release: se usa para lanzar una nueva versión de nuestro proyecto y se fusionaran tanto con master como con develop.
+  - hotfix: se usa para cambios rápidos sobre la rama main y se fusiona con main y develop. Ej: porque haya un error que corregir
+
+  ![image-20260412174502414](/home/soa/.config/Typora/typora-user-images/image-20260412174502414.png)
+
+  develop: rama principal de desarrollo
+
+  ```bash
+  git flow init
+  git flow feature start prueba
+  cuando termino git flow feature finish prueba
+  git flow release start 20260407123400 (nombre fecha inversa)
+  git flow release finish -n (no usamos tag)
+  gir merge tool
+  ```
+
+  ```bash
+  git flow hotfix start 20250407135353
+  git stash pop (recupera los últimos cambios)
+  git flow hotfix finish -n 20250407135353
+  ```
+
+  Para actualizar dos ramas en el servidor (`origin`) al mismo tiempo, pero aplicando **cinturones de seguridad** para no borrar el trabajo de tus compañeros por accidente.
+
+  ```bash
+  git push origin develop main --force-with-lease --force-if-includes
+  ```
+
+Si me quiero bajar los cambios **NUNCA HACER GIT PULL**, para que no haya conflictos en su lugar: git fetch o git rebase.
+
+- **git fetch:** descarga el historial del servidor, pero no toca tu código de trabajo.
+
+- **git rebase**: mueve o combina una serie de commits sobre una nueva base.
+
+- **git merge tool:** utilidad externa que se configura para resolver conflictos de fusión de manera visual. Utilizamos **Kdiff3**: tiene 4 paneles para ver los conflictos.
+- **git nah**: resetea todo. No es un comando oficial de Git, sino un alias (atajo personalizado) popular entre desarrolladores. Se utiliza para decir: "Olvida todo lo que acabo de hacer, limpia el desorden y vuelve al estado del último commit". (Es el botón del pánico para cuando has hecho cambios experimentales que no funcionan y quieres borrarlos todos de un plumazo)
+
+*Desde VS Code en SOURCE CONTROL nos deja hacer los git add, git commit (es mejor que desde consola por que se ven los cambios que se van  a subir). **SIEMPRE HACERLO EN ESTE ORDEN**
+
+```bash
+git add
+composer fix-cs
+git commit
+```
 
 
+
+**FRONTEND**
+
+- **webpack encore:** biblioteca de PHP para symfony para gestionar los assets (recursos) de tu aplicación web: archivos JavaScript, estilos CSS, imágenes y fuentes.
+
+- bootstrap:
+
+  - v3 (la utiliza la versión LEGACY)
+  - v5 (lo nuevo app portal) 
+
+  Si la barra de abajo está siempre visible es la v5 y si no es la v3.
+
+- **SCSS:** (Sassy Cascading Style Sheets) Es mejor para el anidamiento, luego con nodejs pasa a CSS.
+
+  Es un preprocesador de CSS. Es una versión más potente del CSS convencional. Permite usar herramientas lógicas (variables, funciones, ciclos) para escribir estilos de forma más rápida, organizada y fácil de mantener.
+
+- **Workspaces**: contiene la sf17_legacy
+
+
+
+Cuando haya cambios en un fichero, pasos a seguir:
+
+```
+git add
+composer fix-cs
+git commit
+```
+
+
+
+**TEST**
+
+- rector: actualiza el código con los cambios de versión
+- phpUnit: es lo último que se ejecuta. tenemos dos tipos:
+  - portal: ejecuta un navegador real para probar javascript, para eso se utiliza el ejecutable que está en drivers y se ejecuta con composer ci.
+- phpXtam: detecta errores para arraglarlos antes de subirlos a producción
+
+
+
+Los test se ejecutan en orden aleatorio, tenemos 8 test configurados.
+
+bin/phpunit --exclude
+
+
+
+**DEBUG**
+
+Ponemos interrupciones en el código hay que tener abierto VS Code y el navegador pulsada la mariquita , para ello hay que instalar una extensión de firefox: `Xdebug_ext` 
+
+Para lanzarlo en VS Code pulsar F5 y en el navegador pulsar la Mariquita.
+
+debug location -> seleccionar docked
 
 
 
@@ -735,12 +989,6 @@ El **Comando** es el detonante y el **Evento** es la onda expansiva que permite 
 
 
 
-
-
-
-
-
-
 ## **Lógica de Negocio:**
 
 Por el catálogo c17 es como nos conocen.
@@ -758,11 +1006,9 @@ A partir del catálogo c17 hay varios módulos:
 
 Cuando en la URL www.c17..... poner /index.php/ nos indica que está en la aplicación LEGACY (r17 controlardor SegullApp) 
 
+**bvcsm**: es la de la Comunidad de Madrid
 
-
-bvcsm: es la de la Comunidad de Madrid
-
-JAMA: es una revista.
+**JAMA**: es una revista.
 
 
 
@@ -770,9 +1016,9 @@ JAMA: es una revista.
 
 Base de datos de Medicina de EEUU con un ID para cada artículo (ese id lo cogen para trabajar).
 
-PMID: Identificados en PubMed (id único y secuencial, es un entero secuencial).
+**PMID**: Identificados en PubMed (id único y secuencial, es un entero secuencial).
 
-DOI: identificador único para cada artículo, también es una URL única que va al proveedor raiz. 
+**DOI**: identificador único para cada artículo, también es una URL única que va al proveedor raiz. 
 
 No todo tiene que tener DOI, pero si PMID que es lo que nosotros utilizamos (lo metemos en la web de usuarios para filtrar). 
 
@@ -784,7 +1030,7 @@ Una vez que se hace una petición en la web c17 aparece en la bandeja de pendien
 
 **Instituciones**:  agrupan bibliotecas. Ej: Consejería de Madrid.
 
-**Fondos:** cobertura que tiene una biblioteca para una revista.
+**Fondos:** cobertura que tiene una biblioteca para una revista. Relaciona una cobertura con una revista.
 
 **Colección:** hay tres tipos:
 
@@ -794,11 +1040,21 @@ Una vez que se hace una petición en la web c17 aparece en la bandeja de pendien
 
 **Balance:** equilibrio respecto a las otras bibliotecas ( es la diferencia entre las propias y las ajenas). 
 
-**Cobertura:** es cuando empieza y cuando acaba, (es un año por ejemplo).
+**Cobertura:** es cuando empieza y cuando acaba, (es un año por ejemplo). Ej: años de cobertura de una revista. (1975,1978-89,(1990-93),1998-2002,(2025-23),2025.
+
+*si acaba en . la colección esta cerrada y si acaba en - está abierta
+
+- en papel
+
+- electrónico
+
+  
 
 fondo-> catálogo colección -> n revistas -> máz 1 papel y 1 electronica.
 
 Cuando se crea se le pone la fecha.
+
+**preprint:** un artículo puede estar disponible suelto antes de estar en la revista. Las revistas se publican cada cierta peridiocidad, pero 
 
 **Tupla:** conjunto de papel y/o electrónico
 
@@ -810,13 +1066,38 @@ Cuando se crea se le pone la fecha.
 
 
 
+**Petición:** Una petición puede ser:
+
+- propia:
+  - interna
+  - externa
+- ajena
+
+Dependiendo de quien la vea estará en una bandeja o en otra.
+
+Petición -> Biblioteca A -> lo tengo (interna)
+
+Petición -> Biblioteca A -> NO lo tengo (externa, la pido a otra biblioteca B) *Para la Biblioteca B la petición es ajena.
+
+
+
+**FeatureFlag**: activa o desactiva comportamientos. Ej: algunos usuarios pueden ver la vista nueva y/o antigua.
+
+
+
+**Backoficce:** web donde nosotros vamos implementando acciones para facilitar
+
+Actualización de fondos es con lo que están trabajando ahora.
+
+
+
 ## **Pruebas**: 
 
 Web pruebas:
 
 www.c17.localhost: la web del catálogo para las bibliotecas.
 
-www.csi.c17.localhost: la web de los usuarios
+www.csi.c17.localhost: la web de los usuarios (nuestra)
 
 
 
@@ -824,32 +1105,15 @@ www.csi.c17.localhost: la web de los usuarios
 
 Desde la web para navegar y probar
 
-csi: es la web nuestra
+usuario: **MANTON**
 
-usuario: MANTON
-
-usuario: manager10: biblioteca de prueba (lo que ven bibliotecario)
+usuario: **manager10**: biblioteca de prueba (lo que ven bibliotecario)
 
 Todos los usuarios tienen la misma clave: foobar (coincide con el nombre de la bd)
 
+**user100**: usuario de prueba de la web de usuarios csi
 
-
-user100: usuario de prueba de la web de usuarios csi
-
-
-
-usuario: admin 	clave: foobar
-
-
-
-
-
-Pendiente: 
-
-- mirar nombre del controlador.
-- https://refactoring.guru/es/design-patterns/builder
-
-
+usuario: **admin** 	clave: **foobar**
 
 
 
@@ -880,11 +1144,11 @@ Cuando el agregado genera eventos el EventBus los distribuye a las proyecciones.
 
 
 
-- CQRS: Comman Query Responsibility Segregatión: separa las operaciones que modifican el estado del sistema (comandos) de aquellas que únicamente consultan información (queries).
+- **CQRS**: Comman Query Responsibility Segregatión: separa las operaciones que modifican el estado del sistema (comandos) de aquellas que únicamente consultan información (queries).
 
-- CQS: Comman Query Separation: Un método debe hacer una sola cosa: modificar estado o devolver datos, pero no ambos.
+- **CQS**: Comman Query Separation: Un método debe hacer una sola cosa: modificar estado o devolver datos, pero no ambos.
 
-- DDD: Domain-Driven-Desing: Representa el conocimiento del dominio dentro del código, encapsulando reglas e invariantes del negocio en agregados coherentes.
+- **DDD: Domain-Driven-Desing:** Representa el conocimiento del dominio dentro del código, encapsulando reglas e invariantes del negocio en agregados coherentes.
 
   Los modelos de lectura tienen que estar sincronizados con los eventos de escritura. 
 
@@ -897,8 +1161,6 @@ Cuando el agregado genera eventos el EventBus los distribuye a las proyecciones.
   - **ValueObject**: aspectos del dominio que **no tienen identidad propia**, lo que importa son sus atributos. Si cambias un atributo, tienes un objeto nuevo.
 
 - **Eventos de integración:** se utilizan para comunicar cambios de estado entre diferentes microservicios, sistemas externos
-
-
 
 
 
@@ -971,6 +1233,12 @@ Es una **interfaz de usuario (GUI)** gratuita y de código abierto para gestiona
 | **Analogía**       | El motor de un coche.              | El tablero de instrumentos (velocímetro, luces). |
 
 
+
+**Ansible**: proceso de despliege. es una herramienta de código abierto que sirve para automatizar tareas de TI, como configurar servidores, instalar software y desplegar aplicaciones.
+
+```bash
+sudo apt get install ansible
+```
 
 
 

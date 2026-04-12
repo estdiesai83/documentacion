@@ -3345,6 +3345,12 @@ Para crear parámetros: En config/services
 Autoconfiguración
 Las extensiones de Twig permiten crear funciones, filtros y otros elementos personalizados para usar en tus plantillas de Twig. Antes de escribir tu propia extensión de Twig, comprueba si el filtro o la función que necesitas ya está implementado en:
 
+
+
+
+
+
+
 # IMPORTANTE
 
 Cada vez que se hace referencia a un nombre de clase, se debe tener una declaración **use** correspondiente, de lo contrario PHP te dará un error diciendo que no puede encontrar la clase **Response**. 
