@@ -4,12 +4,28 @@ www.c17.net
 
 ## Configuración personal:
 
-| nombre equipo         | ediez@maude       | 160202    |                           |
-| --------------------- | ----------------- | --------- | ------------------------- |
-| correo thunderbird    | ediez@c17.net     | 160202    |                           |
-| ssh                   |                   | 172223    |                           |
-| cuenta gitHub         | ediez@c17.net     | 160202Es@ |                           |
-| bitbucket (Atlassian) | ediesai (usuario) | 160202Es@ | bucked name : ediez@maude |
+| nombre equipo         | ediez@maude           | 160202    |                           |
+| --------------------- | --------------------- | --------- | ------------------------- |
+| correo thunderbird    | ediez@c17.net         | 160202    |                           |
+| ssh                   |                       | 172223    |                           |
+| cuenta gitHub         | ediez@c17.net         | 160202Es@ |                           |
+| cuenta gitHub mia     | estdiesai83@gmail.com | 160202Es@ |                           |
+| bitbucket (Atlassian) | ediesai (usuario)     | 160202Es@ | bucked name : ediez@maude |
+| fichme                | ediez@c17.net         | 160202Es@ | web para fichar           |
+
+ALARMA
+
+clave: 1602	clave coacción: 1604
+
+botón derecha poner
+
+botón izquierda quitar
+
+botón mitad negro/blanco -> alarma parcial, la alarma solo esta puesta para los accesos (puertas, ventanas) pero te puedes mover.
+
+
+
+
 
 docker Hub conectado automáticamente con la cuenta de GitHub.
 
@@ -97,6 +113,12 @@ Yakuake (Yet another Kuake) es un emulador de terminal desplegable diseñado par
   | **Complejidad**    | Sensible a espacios (peligroso). | Más rígido pero robusto.       |
   | **Uso principal**  | Configuración manual.            | APIs y transferencia de datos. |
 
+
+
+
+
+
+
 ## Docker
 
 Es un sistema de contenedores de transporte de software, empaqueta las bases de datos, las librerias....
@@ -160,8 +182,6 @@ Como vimos antes, es la herramienta para gestionar varios contenedores a la vez 
 
 
 
-### 
-
 Arrancar docker: `docker compose up -d`, donde:
 
 - **docker compose**: llama a la herramienta de orquestación de Docker que lee el archivo docker-compose.yml
@@ -184,11 +204,11 @@ Cuando lanzas este comando, Docker sigue este orden lógico:
 
 
 
-## 3. ¿Cómo se configura? (Paso a paso)
+**3. ¿Cómo se configura? (Paso a paso)**
 
 Para configurar un entorno de desarrollo (por ejemplo, para PHP/Symfony), normalmente seguimos estos pasos:
 
-### Paso A: El Dockerfile (Define tu entorno)
+**Paso A: El Dockerfile (Define tu entorno)**
 
 Crea un archivo llamado `Dockerfile` en la raíz de tu proyecto:
 
@@ -246,10 +266,6 @@ Una vez configurados los archivos, solo necesitas la terminal:
 - **Volúmenes:** En el archivo `.yml`, la línea `- .:/var/www/html` hace magia: permite que los cambios que hagas en tu código en VS Code se vean **instantáneamente** dentro del contenedor.
 - **Redes:** El contenedor `app` puede hablar con el contenedor `db` simplemente usando el nombre `db` como si fuera una dirección web.
 
-### 
-
-
-
 
 
 **Comandos útiles relacionados**
@@ -263,10 +279,6 @@ Si acabas de lanzar un `up -d`, estos comandos te servirán para gestionar lo qu
 
 
 
-- 
-
-
-
 ## Utilizar proyecto
 
 Para entrar en la raiz del proyecto:`docker compose up -d` (-d = detach) , se coloca automáticamente en la raiz del proyecto.
@@ -275,21 +287,52 @@ Para entrar en la raiz del proyecto:`docker compose up -d` (-d = detach) , se co
 user@
 ```
 
-Para poner la terminal:
+Para poner la terminal: se utiliza para poner un comando dentro de un contenedor que ya está corriendo, pero forzando una identidad de usuario específica.
 
+```bash
+docker compose exec -u 1000:1000
 ```
-docker compose exec -u
-```
+
+**Desglose del comando:**
+
+- **`docker compose exec`**: Indica que quieres entrar a un contenedor activo. A diferencia de `run`, este comando no crea un contenedor nuevo, sino que se "mete" en uno que ya existe.
+- **`-u` (o `--user`)**: Es la bandera para especificar el usuario.
+- **`1000:1000`**: Define el **UID** (User ID) y el **GID** (Group ID).
+  - El primer `1000` es el ID del usuario.
+  - El segundo `1000` es el ID del grupo.
+
+**¿Por qué es importante el 1000:1000?**
+
+En la gran mayoría de las distribuciones de Linux (incluyendo Ubuntu, Debian y las imágenes comunes de Docker), el **ID 1000** es el que se le asigna por defecto al **primer usuario no-root** que se crea en el sistema.
+
+**¿Para qué se utiliza principalmente?**
+
+1. **Evitar problemas de permisos (Permissions Mismatch):** Si tu usuario en tu computadora física (host) tiene el ID 1000 y creas archivos dentro del contenedor como `root` (que es el default de Docker), luego no podrás editar esos archivos desde tu editor de código fuera del contenedor porque "pertenecen a otro dueño". Al usar `-u 1000:1000`, los archivos que generes dentro pertenecerán a tu usuario de fuera.
+2. **Seguridad:** Ejecutar procesos como `root` dentro de un contenedor es una mala práctica de seguridad. Si el proceso se ve comprometido, el atacante tiene privilegios totales. Forzar un usuario con ID 1000 limita lo que se puede hacer.
 
 
 
-Para ejecutar los 3 comandos especificos, colocarnos en la raiz de la aplicación  `cd web/portal` : 
+La estructura de desarrollo queremos que sea parecida a la de producción por ello utilizamos enlaces simbólicos.
+
+Siempre desde docker: 
+
+levantar docker: docker compose up -d (-d detach)
+
+para entrar en la máquina: compose exec -u 1000:1000 php bash
+
+parar docker: compose down
+
+
+
+Para ejecutar los 3 comandos especificos, colocarnos en la raiz de la aplicación Ej:  `cd web/portal` : 
 
 ```bash
 composer fix-devps
-comporser pre-dev
+composer pre-dev
 composer pre-test
 ```
+
+
 
 
 
@@ -341,21 +384,360 @@ Composer gestiona las dependencias de php mediante dos archivos:
 
 ## **Configuración sistema**
 
-En VS Code: instalar todas las extensiones predefinidas.
+En VS Code: instalar todas las extensiones predefinidas y container tools ( diseñada para que no tengas que salir del editor para gestionar tus contenedores)
 
 
 
-## Estructura proyecto simfony
+Utilizan:
+
+elasticsearch: motor de búsqueda "bd".
+
+elasticvue: utilizamos la versión 8. Cada columna es una tabla. Las bandejas son las que utilizan elacticvue, una vez que se hace clic, ya si se va a la BD.
+
+mailer (mailpit): para el correo. el correo no sale del sistema, puerto 8025
+
+adminer: entorno gráfico para ver las bases de datos, puerto 8080.
+
+
+
+
+
+
+
+## Estructura proyecto symfony
 
 c17 (workspace)
 
+ReadModel (Ingles)
+
+WriteModel (español)
+
+
+
 Hay 3 directorios con el archivo composer.lock.
 
-1. web
+1. **web/**
+   
    1. **portal**: aplicación para los usuarios
+   
+      1. **teenants:** (cliente), contiene personalizaciones por cliente. Ej: logo, particularidades específicas. Cada cliente tiene una carpeta. Aquí los clientes son siempre instituciones, que pueden tener 1 o varias bibliotecas.
+   
+         Cada teenant tiene sus usuarios, si un usuario cambia de teenant, se tiene que volver a registrar (NO lo movemos a otro).
+   
    2. **sf17**: orientada a las bibliotecas, contiene la llamada al código antiguo (r17) desde el controlador SegullAppWrapper.
+   
    3. **r17**: proyecto antiguo (LEGACY) 
-2. lib/c17-db-test/files/fixtures/003-usuarios.yaml contiene los datos de los usuarios.
+   
+2. **lib/**
+   
+   1. **c17-cqrs-bundle:** para que funcione (autocableado) de c17-cqrs
+   
+   2. **c17-cqrs:** conceptos básicos. Ej: command bus, command queue
+   
+   3. **c17-db-test**: está definida la base de datos de desarrollo para hacer las pruebas.
+   
+      Con el comando: composer pre-test y composes pre-dev restablece las bases de datos. Ejecuta el bin para limpiar las bds. Los datos de desarrollo y test son los mismos, pero son dos bases de datos.
+   
+      1. /files/fixtures/003-usuarios.yaml contiene los datos de los usuarios.
+   
+   4. **c17-domain-bundle**: para que funcione (autocableado) de c17-domain
+   
+   5. **c17-domain-doctrine**
+   
+   6. **c17-domain**: Es LEGACY por ahora no lo vemos
+   
+   7. **c17-model-bundle**
+   
+   8. **c17-model/src:** Es el nucleo, aquí va lo nuevo que vamos haciendo
+   
+      1. **Application**: casi siempre hay un archivo paralelo en cada carpeta de Command y CommandHandler
+   
+         1. **Command**
+         2. **CommandHandler**
+   
+      2. **Dto**: (Data Transfer Object), parecido a ValueObject pero NO tienen Identidad, pasan información de un lado a otro.
+   
+      3. **Event**: Ej: cuando se da de alta y se quiere programar la baja, entonces se crea el evento
+   
+         1. **DomainEvent:** (se notifican dentro del sistema, todavía no ha terminado (modelo))
+         2. **IntegrationEvent:** (se notifican hacia fuera, ej: enviar email, este es cuando todo ha terminado y no hay error)
+   
+         Del domain pasa al integration.
+   
+      4. **EventHandler**: Ej: ProgramadorBaja.php
+   
+         1. **DomainEventHandler**
+         2. **IntegrationEventHandler**
+   
+      5. **Infraestructure**:
+   
+         1. **Doctrine:**
+         2. **Elastica:**
+   
+      6. **Projection**: (son proyecciones de los datos), nosotros sólo tenemos 1 proyección, cuando hacemos una petición, cada biblioteca ve una proyección diferente (Máx 3 proyecciones)
+   
+      7. **ReadModel (Ingles)**
+   
+      8. **ValueObject**: objeto sin identidad, se identifica por sus propiedades (Reglas de Validación), siempre tiene que tener todo. 
+   
+         1. **BillingData**
+         2. **CoverageYear**: (cobertura)
+         3. **EmailAddress:**
+         4. **Isbn:**
+         5. **Issn:**
+         6. **Locale:**
+         7. **Url:**
+   
+      9. **WriteModel (español)**
+   
+   9. **c17-openurl-bundle**
+   
+   10. **c17-shared-bundle**: son bundles que se utilizan en el desarrollo nuevo para que se pueda utilizar tanto en portal como en sf17.
+   
+   11. **papi:** autentificación (enlace simbólico, ya lo veremos)
+
+
+
+
+
+## CQS y CQRS
+
+Uno es un principio de buenas prácticas al escribir funciones, mientras que el otro es un patrón para diseñar sistemas completos.
+
+**CQS** (Command Query Separation) es un principio de diseño de software. Su idea es tan simple como poderosa: **un método deber ser un comando o una consulta pero nunca ambos.** 
+
+Para entender CQS, hay que dividir las operaciones en dos categorías estrictas.
+
+- **Commands (Comandos):** acciones que cambian el estado del sistema (modifican la base de datos, cambian una variable, etc), pero no devuelven datos, devuelve `void`.
+- **Queries (Consultas):** Son acciones que devuelven datos pero no tienen efectos secundarios (no modifican nada).
+
+En resumen: "Hacer una pregunta no debe cambiar la respuesta".  Al leer el código, sabes con certeza que si una función devuelve un valor, puedes llamarla 10 veces y el sistema seguirá igual.
+
+**Beneficios de usar CQS:**
+
+- **Claridad mental:** Al leer el código, sabes que si un método devuelve algo, es seguro llamarlo. Si no devuelve nada, sabes que algo va a cambiar.
+- **Facilidad de testing:** Las consultas son extemandamente fáciles de probar porque no ensucian el estado del sistema
+- **Mantenibilidad:** Reduce los "efectos secundarios" sorpresa que suelen causar bugs (error de software) difíciles de rastrear. 
+
+
+
+**CQRS (Command Query Responsibility Segregation)**
+
+Es un patrón de arquitectura que lleva el concepto de CQS al nivel de **objetos o servicios**. En lugar de solo separar métodos, separas los modelos de datos para lectura y escritura.
+
+- **Lado de Escritura (Commands):** Optimizado para la validación de reglas de negocio y consistencia.
+- **Lado de Lectura (Queries):** Optimizado para la velocidad y la presentación (vistas).
+
+**¿Para qué sirve?** * **Escalabilidad:** Puedes escalar el servidor de lectura independientemente del de escritura (normalmente se lee mucho más de lo que se escribe).
+
+- **Rendimiento:** Puedes usar una base de datos relacional para escribir y una NoSQL (o una caché) para leer.
+- **Flexibilidad:** El modelo que usas para guardar un usuario no tiene por qué ser el mismo modelo complejo que usas para mostrar su perfil con estadísticas.
+
+**¿Cómo se utiliza?** Generalmente se implementa usando un **Bus de Mensajes** y separando los modelos:
+
+1. **Command:** Un objeto DTO que describe la intención (`CrearPedido`).
+2. **Command Handler:** Procesa el comando y guarda en la BD de escritura.
+3. **Query:** Un objeto que pide datos (`ObtenerDetallesPedido`).
+4. **Query Handler:** Consulta una BD de lectura (que puede ser una versión simplificada de la de escritura) y devuelve un DTO.
+
+
+
+**CQS vs CQRS (diferencia clave)**
+
+Es común confundirlos, pero no son lo mismo:
+
+1. **CQS**: Es a nivel de métodos y clases. Es una disciplina de programación simple.
+2. **CQRS** (Command Query Responsibility Segregation): Es un patrón de arquitectura. Lleva el concepto de CQS al extremo, separando incluso los modelos de datos o las bases de datos (uno para lectura y otro para escritura). 
+
+| **Característica** | **CQS**                            | **CQRS**                                 |
+| ------------------ | ---------------------------------- | ---------------------------------------- |
+| **Nivel**          | Código (Métodos/Funciones)         | Arquitectura (Sistemas/Servicios)        |
+| **Foco**           | Evitar efectos secundarios         | Escalabilidad y rendimiento              |
+| **Modelos**        | Comparte el mismo objeto/clase     | Modelos de lectura y escritura distintos |
+| **Complejidad**    | Baja (esencial para código limpio) | Alta (solo para sistemas complejos)      |
+
+**¿Cuándo usar cada uno?**
+
+- **CQS:** **Siempre.** Es una regla de oro para que tu código sea predecible y fácil de mantener.
+- **CQRS:** **Solo cuando sea necesario.** Si tu aplicación tiene mucha carga, modelos de lectura muy distintos a los de escritura, o si estás trabajando con microservicios. No lo uses en proyectos pequeños porque añade mucha complejidad innecesaria.
+
+
+
+## Command y CommandHandler
+
+En el contexto de **Symfony (PHP)**, el patrón Command/CommandHandler es el estándar moderno para manejar la lógica de negocio de forma desacoplada. Symfony facilita esto enormemente a través de un componente llamado **Messenger**.
+
+### **1. ¿Qué es cada pieza?**
+
+**El Command (El "Qué")**
+
+Es una clase PHP simple (un DTO) que representa una instrucción. Solo contiene los datos necesarios para ejecutar una acción.
+
+- **No tiene lógica.**
+- **Es inmutable** (solo tiene propiedades y un constructor).
+
+**El Command Handler (El "Cómo")**
+
+Es el servicio encargado de ejecutar la lógica cuando recibe un Command específico.
+
+- **Tiene las dependencias:** Aquí inyectas el EntityManager, servicios de email, APIs, etc.
+- **Solo hace una cosa:** Ejecuta la acción que dicta el Command.
+
+### 2. ¿Para qué sirve?
+
+1. **Desacoplamiento:** Tu controlador no sabe *cómo* se registra un usuario, solo envía el "ticket" (Command) al bus.
+2. **Reutilización:** Puedes lanzar el mismo Command desde un controlador, desde un comando de consola (CLI) o desde un cron job.
+3. **Procesamiento Asíncrono:** Con Symfony Messenger, puedes enviar un Command a una **cola** (RabbitMQ, Redis) para que se procese en segundo plano sin hacer esperar al usuario.
+
+### 3. ¿Cómo se utiliza en Symfony?
+
+Para usar esto, asegúrate de tener instalado el componente: `composer require symfony/messenger`.
+
+**Paso A: Crear el Command**
+
+Imagina que queremos registrar un usuario.
+
+```php
+// src/Message/RegisterUserCommand.php
+namespace App\Message;
+
+class RegisterUserCommand
+{
+    public function __construct(
+        public readonly string $email,
+        public readonly string $password,
+    ) {}
+}
+```
+
+**Paso B: Crear el Command Handler**
+
+Symfony detecta automáticamente los handlers si implementan `AsMessageHandler`.
+
+```php
+// src/MessageHandler/RegisterUserHandler.php
+namespace App\MessageHandler;
+
+use App\Message\RegisterUserCommand;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+
+#[AsMessageHandler]
+class RegisterUserHandler
+{
+    public function __invoke(RegisterUserCommand $command)
+    {
+        // 1. Aquí va la lógica de negocio
+        // 2. Persistir en base de datos
+        // 3. Enviar email de bienvenida, etc.
+        echo "Registrando a: " . $command->email;
+    }
+}
+```
+
+**Paso C: Usarlo en un Controlador**
+
+Para "disparar" el proceso, usamos el **MessageBusInterface**.
+
+```php
+// src/Controller/RegistrationController.php
+namespace App\Controller;
+
+use App\Message\RegisterUserCommand;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class RegistrationController
+{
+    #[Route('/register', name: 'app_register')]
+    public function register(MessageBusInterface $bus): Response
+    {
+        // Creamos el comando con los datos del request
+        $command = new RegisterUserCommand('user@example.com', '123456');
+
+        // Lo enviamos al bus
+        $bus->dispatch($command);
+
+        return new Response('¡Usuario enviado a procesar!');
+    }
+}
+```
+
+### 4. El Flujo de Trabajo en Symfony
+
+1. **El Bus:** Recibe el mensaje (`dispatch`).
+2. **Middleware:** Symfony puede aplicar lógica intermedia (logs, transacciones de base de datos).
+3. **Transporte:** Decide si se ejecuta **ahora mismo** (síncrono) o si se manda a una **cola** (asíncrono).
+4. **Handler:** Finalmente, el bus encuentra al "manejador" correcto y le pasa el comando.
+
+
+
+CQRS se une con Event-Driven Architecture (Arquitectura dirigida por eventos).
+
+Cuando decimos que "los comandos producen eventos", nos referimos a la cadena de causalidad en el sistema: el **Comando** es la intención ("haz esto") y el **Evento** es el resultado ("esto ya pasó").
+
+**1. La diferencia conceptual: Intención vs. Hecho**
+
+- **Command (Comando):** Es una orden. Puede ser rechazada (si falla la validación o las reglas de negocio).
+  - *Ejemplo:* `ConfirmarPedido`.
+- **Event (Evento):** Es algo que **ya sucedió** en el pasado. No se puede rechazar, es un hecho histórico.
+  - *Ejemplo:* `PedidoConfirmado`.
+
+**2. ¿Cómo funciona el flujo con un EventBus?**
+
+El **EventBus** es el cartero que lleva la noticia a otras partes del sistema que no sabían lo que el CommandHandler acaba de hacer.
+
+1. **Llega el Comando:** El `ConfirmarPedidoHandler` recibe el comando.
+2. **Se ejecuta la lógica:** El handler actualiza la base de datos (pone el pedido como "pagado").
+3. **Se dispara el Evento:** Una vez que la base de datos se guarda con éxito, el handler publica un mensaje `PedidoConfirmado` en el **EventBus**.
+4. **Reacción:** Otros servicios que están escuchando el EventBus reaccionan de forma independiente:
+   - El **Servicio de Email** envía el ticket al cliente.
+   - El **Servicio de Logística** empieza a preparar el paquete.
+   - El **Servicio de Estadísticas** actualiza el gráfico de ventas.
+
+**3. ¿Por qué se hace así? (Desacoplamiento total)**
+
+Sin eventos, el `ConfirmarPedidoHandler` tendría que conocer a todos los demás servicios:
+
+```php
+// MAL: El handler sabe demasiado
+public function handle(ConfirmarPedido $cmd) {
+    $this->db->save($pedido);
+    $this->emailService->send(...);
+    $this->logisticaService->notificar(...);
+    $this->statsService->update(...);
+}
+```
+
+Con eventos y **EventBus**, el handler solo se encarga de lo suyo:
+
+```php
+// BIEN: El handler solo cumple la orden y avisa que terminó
+public function handle(ConfirmarPedido $cmd) {
+    $this->db->save($pedido);
+    
+    // El EventBus se encarga de repartir la noticia
+    $this->eventBus->publish(new PedidoConfirmado($pedido->getId()));
+}
+```
+
+**4. Resumen técnico en Symfony**
+
+Si usas **Symfony Messenger**, esto se traduce en tener dos buses:
+
+1. **CommandBus:** Síncrono. Ejecuta la acción principal.
+2. **EventBus:** A menudo asíncrono. Despacha los eventos a "Listeners" o "Subscribers" que realizan tareas secundarias sin bloquear al usuario.
+
+**En pocas palabras:**
+
+El **Comando** es el detonante y el **Evento** es la onda expansiva que permite que el resto del sistema se entere y reaccione sin que el proceso principal se vuelva lento o complejo.
+
+
+
+
+
+
+
 
 
 
@@ -438,7 +820,7 @@ www.csi.c17.localhost: la web de los usuarios
 
 
 
-Usuarios pruebas:
+**Usuarios pruebas:**
 
 Desde la web para navegar y probar
 
@@ -466,3 +848,134 @@ Pendiente:
 
 - mirar nombre del controlador.
 - https://refactoring.guru/es/design-patterns/builder
+
+
+
+
+
+## GLOSARIO
+
+**Los comando producen eventos (eventbus)**
+
+**No usamos event sourcing**
+
+**La estructura de carpetas del event es parecida a la de command ** (Command y CommadHandler) (Event y EventHandler)
+
+Command bus: hace de intermediario entre quien envia un comando y quien lo procesa.
+
+- Recibe un comando
+- Encuentra el handler asociado
+- Invoca el handler con el comando.
+
+El **handler** contiene la lógica de procesamiento del comando. Recibe el comando, ejecuta la lógica de negocio y persiste los cambios.
+
+- Crea o recupera el agregado.
+- Ejecuta la operación de negocio
+- persiste el agregado
+- publica los eventos generados.
+
+Algunos comandos pueden producir eventos (EventBus), es importante ya que es el mecanismo que conecta el WriteModel con los ReadModels.
+
+Cuando el agregado genera eventos el EventBus los distribuye a las proyecciones.
+
+
+
+- CQRS: Comman Query Responsibility Segregatión: separa las operaciones que modifican el estado del sistema (comandos) de aquellas que únicamente consultan información (queries).
+
+- CQS: Comman Query Separation: Un método debe hacer una sola cosa: modificar estado o devolver datos, pero no ambos.
+
+- DDD: Domain-Driven-Desing: Representa el conocimiento del dominio dentro del código, encapsulando reglas e invariantes del negocio en agregados coherentes.
+
+  Los modelos de lectura tienen que estar sincronizados con los eventos de escritura. 
+
+  https://www.netmentor.es/entrada/domain-driven-design
+
+  Contiene el concepto de Domain Events. Un ejemplo de evento de dominio (recorder). Un "dominio" no es el código, es el acto físico de mover paquetes de un punto A a un punto B.
+
+  -  **Entidades**: objeto relacionado que **tiene** una **identidad única que persiste en el tiempo** independientemente de si sus atributos cambian.
+  - **Agregado**: Tiene ID (se puede identificar). Es el único punto de entrada, si hay que hacer algo es el encargado.
+  - **ValueObject**: aspectos del dominio que **no tienen identidad propia**, lo que importa son sus atributos. Si cambias un atributo, tienes un objeto nuevo.
+
+- **Eventos de integración:** se utilizan para comunicar cambios de estado entre diferentes microservicios, sistemas externos
+
+
+
+
+
+- **DTO** (Data Transfer Object) es un patrón de diseño cuyo único propósito es **transportar datos** entre procesos o partes de un sistema.
+
+  En términos sencillos: imagina que el DTO es un sobre. No le importa la carta que lleva dentro ni quién la escribió; su única función es asegurar que la información llegue de un punto A a un punto B de forma organizada.
+
+  El DTO es un **mensajero**. Su única misión es mover datos de un sitio a otro (por ejemplo, de tu base de datos a una pantalla de celular).
+
+  - **Identidad:** No le importa quién es. Si tienes dos DTOs con los mismos datos, para el sistema siguen siendo solo dos paquetes de datos.
+  - **Mutabilidad:** Suelen ser mutables (puedes cambiar sus valores después de crearlos), aunque es buena práctica hacerlos inmutables.
+  - **Lógica:** **Cero lógica**. Solo tiene atributos, *getters* y *setters*.
+  - **Uso:** En las fronteras de tu aplicación (API, controladores, servicios externos).
+
+  
+
+- **Value Object (Objeto de Valor): (VO)** es una pieza de tu **lógica de negocio**. Representa un concepto descriptivo del dominio que no tiene una identidad única, sino que se define por lo que vale.
+
+  - **Identidad por valor:** Si dos Value Objects tienen los mismos atributos, **son el mismo objeto**.
+    - *Ejemplo:* Un billete de 10 USD. No te importa el número de serie (identidad), te importa que vale "10" y es "USD". Si lo cambias por otro de 10 USD, tienes lo mismo.
+
+  - **Inmutabilidad:** Esto es sagrado. Un VO **nunca cambia**. Si quieres "modificarlo", creas uno nuevo con el valor diferente.
+
+  - **Lógica:** Tiene **lógica de validación**. Un VO se asegura de que los datos sean correctos desde que nace.
+    - *Ejemplo:* Un VO llamado `Email` lanzará un error si intentas crearlo sin un "@".
+
+  - **Uso:** Dentro del núcleo de tu aplicación (el Dominio).
+
+
+
+**Comparativa Rápida DTO y ValueObject**
+
+| **Característica** | **DTO**                        | **Value Object**                    |
+| ------------------ | ------------------------------ | ----------------------------------- |
+| **Propósito**      | Transportar datos (Mensajero). | Representar un concepto (Lógica).   |
+| **Identidad**      | No tiene identidad propia.     | Su identidad es su valor.           |
+| **Validación**     | No suele validar nada.         | Se auto-valida (siempre es válido). |
+| **Cambios**        | Se pueden cambiar sus campos.  | Es 100% inmutable.                  |
+| **Ubicación**      | Capas externas (API/Red).      | Capa interna (Dominio/Negocio).     |
+
+
+
+**1. Elasticsearch: El Motor (Backend)**
+
+Es un **motor de búsqueda y analítica** distribuido. Imaginalo como una base de datos superpotente diseñada para buscar entre millones de datos en milisegundos.
+
+- **¿Qué hace?** Almacena, busca y analiza grandes volúmenes de datos.
+- **¿Cómo se usa?** Principalmente a través de código o peticiones técnicas (API REST). No tiene una "cara" o interfaz visual propia por defecto; es puro código y terminal.
+- **Instalación:** Se instala en servidores (locales o en la nube).
+
+
+
+**2. Elasticvue: La Herramienta Visual (Frontend)**
+
+Es una **interfaz de usuario (GUI)** gratuita y de código abierto para gestionar Elasticsearch. No es una base de datos, es una herramienta para que los humanos puedan interactuar con Elasticsearch sin escribir tanto código.
+
+- **¿Qué hace?** Te permite ver tus índices, realizar búsquedas, editar documentos y revisar el estado de tu servidor de Elasticsearch de forma gráfica.
+- **¿Cómo se usa?** Se instala como una **extensión de navegador** (Chrome, Firefox) o como una aplicación de escritorio/Docker.
+- **Relación:** Necesitas tener Elasticsearch funcionando para que Elasticvue sirva de algo.
+
+
+
+**Comparativa Directa ElasticSearch y Elasticvue**
+
+| **Característica** | **Elasticsearch**                  | **Elasticvue**                                   |
+| ------------------ | ---------------------------------- | ------------------------------------------------ |
+| **Naturaleza**     | Motor de base de datos / Búsqueda. | Interfaz de usuario (Visualizador).              |
+| **Función**        | Almacenar y procesar datos.        | Ver y administrar los datos.                     |
+| **Interfaz**       | Línea de comandos / API JSON.      | Botones, tablas y menús visuales.                |
+| **Analogía**       | El motor de un coche.              | El tablero de instrumentos (velocímetro, luces). |
+
+
+
+
+
+Webs para buscar info:
+
+https://siemprelisto.cl/tecnologias/cqrs/07-command-bus/
+
+https://www.netmentor.es/entrada/domain-driven-design
