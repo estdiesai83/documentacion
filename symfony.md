@@ -2912,7 +2912,7 @@ bin/console config:dump twig
 
 El nombre completo del comando es `config:dump-reference`. Con los comandos Symfony, puedes acortar el nombre todo lo que quieras siempre que no sea ambiguo con el nombre de otro comando. Si coinciden varios comandos, la consola te preguntará cuál quieres ejecutar.
 
- Hemos impreso nuestra fecha, pero sería mucho más guay si pudiéramos decir algo como "hace 2 horas" en lugar de esta fecha tan larga. Para ello utilizamos el bundle **KnpTimeBundle**
+Hemos impreso nuestra fecha, pero sería mucho más guay si pudiéramos decir algo como "hace 2 horas" en lugar de esta fecha tan larga. Para ello utilizamos el bundle **KnpTimeBundle**
 
 ```bash
 composer require knplabs/knp-time-bundle

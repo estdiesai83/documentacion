@@ -146,8 +146,6 @@ PHP tiene variables especiales que están disponibles en cualquier parte de tu c
 
 PHP permite algo muy loco: usar el valor de una variable como el nombre de otra. No se usa mucho porque puede volver loco a cualquiera que lea tu código, pero es bueno saber que existe:
 
-PHP
-
 ```
 $bebida = "cafe";
 $$bebida = "con leche"; // Se crea la variable $cafe
@@ -285,7 +283,7 @@ Su función principal es "preparar" el objeto: asignarle valores iniciales a sus
    $fido = new Perro(); // Imprime: Soy un animal. Y soy un perro.
    ```
 
-   ------
+   
 
    **Puntos clave a recordar**
 
@@ -340,7 +338,7 @@ $juan->saludar(); // Imprime: Hola, mi nombre es Juan
   - Incorrecto: `$this->$nombre` (esto buscaría una propiedad con el nombre que guarde la variable `$nombre`).
 - **Encadenamiento de métodos:** Se usa mucho para retornar el propio objeto y permitir llamadas seguidas.
 
-------
+
 
 ### 3. Diferencia entre `$this` y `self::`
 
