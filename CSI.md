@@ -2649,6 +2649,134 @@ Las **Entidades de Doctrine**, no tiene que ver con lo que nosotros queremos mos
 
 ## **FORMULARIOS**
 
+```bash
+symfony composer require form
+```
+
+Crear un formulario: 
+
+```bash
+symfony console make:form
+```
+
+Este comando crea la clase con el nombre que le digamos, con los métodos buildForm y configureOptiosn
+
+
+
+La opción 'data_class' vincula el formulario con una clase específica (usualmente una entidad Doctrine, DTO), permitiendo que los datos del formulario se mapeen automáticamente a las propiedades del objeto.
+
+Vinculación directa: $form->getData() (Esto pasa una entidad mapeada) en nuestro caso StarshipPart, si se corresponde con un campo que no está en la entidad se dice que no está mapeado.
+
+```bash
+symfony console debug:form (nombre tipo) opcional
+```
+
+**Tipos de formulario:**
+
+Symfony organiza los campos en tipos de campo (Field Types), formualrios de datos y formularios sin datos
+
+Tipos de campo integrados (Built-in):
+
+- **Texto:** TextType, EmailType, TextareaType, PasswordType, SearchType, UrlType, TelType, ColorType
+
+- **Numérico**: IntegerType, NumberType, MoneyType, RangeType, PercentType
+
+- **Elección:** ChoiceType, EntityType, EnumType, CountryType, LanguageType, LocaleType, CurrencyType, TimezoneType
+
+- **Fecha/Hora:**DateType, TimeType,DateTimeType, DateIntervalType, BirthdayType
+
+- **Binario:** CheckboxType, RadioType.Para valores booleanos y selecciones simples
+
+- **Archivo:**FileType. Para subida de archivos, mapea a UploadedFile
+
+- **Colección:**CollectionType, RepeatedType para campos repetidos (ej: confirmar contraseña)
+
+- **Oculto/Botón**: HiddenType, ButtonType, SubmitType, ResetType. FormType (base de todos)
+
+
+
+**Categorías según propósito:**
+
+- **Formulario con data_class:** vinculado a una entidad u objeto. Los datos se mapean automáticamente a las propiedades del objeto.
+
+  ```php
+  // Datos → Producto $producto
+  configureOptions(['data_class' => Producto::class]
+  ```
+
+  
+
+- **Formulario sin data_class:** Trabaja con arrays simples. Útil para búsquedas, filtros, contacto, sin entidad asociada.
+
+  ```bash
+  // Retorna array de datos
+  $data = $form->getData();
+  // ['nombre' => 'Ana', ...
+  ```
+
+
+
+**Como se crean:**
+
+- **Cómo se crean** — siempre sigues el mismo flujo: clase `XxxType extends AbstractType` → `createForm()` en el controlador → `handleRequest()` → `isSubmitted() && isValid()` → renderizar en Twig.
+
+- **Temas (Themes)** — controlan el HTML generado. El más usado en proyectos nuevos es `bootstrap_5_layout.html.twig`, que añade automáticamente las clases de Bootstrap. Puedes crear tu propio tema extendiendo cualquiera de los oficiales y sobreescribiendo bloques Twig con el patrón `_{formulario}_{campo}_widget`.
+
+  Para añadir un tema de formulario en la vista añadir 
+
+  ```twig
+  Ej: {% form_theme form 'bootstrap_5_layout.html.twig' %}
+  ```
+
+- **data_class:**  úsalo cuando el formulario crea o edita una entidad o DTO. Symfony mapea automáticamente los campos a los getters/setters del objeto. Sin él, el formulario devuelve un array. Con PHP 8 funciona perfectamente con constructor promotion y propiedades tipadas.
+
+- **Archivo `XxxType`** — es la práctica estándar. `configureOptions()` es donde defines `data_class` y también puedes declarar opciones personalizadas con `setDefaults()` + `setAllowedTypes()`, pasándolas desde el controlador al crear el formulario. Si necesitas un campo reutilizable (como "precio siempre en euros"), creas otro Type con `getParent()`.
+
+
+
+1. **Crear la clase del formulario (Form Type)**
+
+   ```php
+   namespace App\Form;
+   
+   use Symfony\Component\Form\AbstractType;
+   use Symfony\Component\Form\FormBuilderInterface;
+   use Symfony\Component\Form\Extension\Core\Type\TextType;
+   use Symfony\Component\Form\Extension\Core\Type\EmailType;
+   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+   use Symfony\Component\OptionsResolver\OptionsResolver;
+   use App\Entity\Usuario;
+   
+   class UsuarioType extends AbstractType
+   {
+       public function buildForm(FormBuilderInterface $builder, array $options): void
+       {
+           $builder
+               ->add('nombre', TextType::class, [
+                   'label' => 'Nombre completo',
+                   'attr'  => ['placeholder' => 'Ej: Ana García'],
+               ])
+               ->add('email', EmailType::class)
+               ->add('guardar', SubmitType::class, [
+                   'label' => 'Guardar usuario'
+               ]);
+       }
+   
+       public function configureOptions(OptionsResolver $resolver): void
+       {
+           $resolver->setDefaults([
+               'data_class' => Usuario::class,
+           ]);
+       }
+   }
+   ```
+
+   
+
+2. 
+
+
+
 Usamos un **CommandBuilder** para poder cambiar un formulario, porque construye un comando (puede construir todos los que necesite, pero ese comando es **immutable**).
 
 El formulario no ataca directamente al comando, sino al commandBuilder. Se cambia al objeto al que engloba el campo del formulario.
@@ -2794,9 +2922,65 @@ Las bandejas son el objeto grande con las filas con las pestañas (pendiente,...
 
   ```bash
   git flow hotfix start 20250407135353
-  git stash pop (recupera los últimos cambios)
+  git stash pop (recupera los últimos cambios temporalmente y los aplica a la rama)
   git flow hotfix finish -n 20250407135353
   ```
+  
+  El stash es un espacio temporal donde guardas cambios sin commitear cuando se necesita cambiar de contexto rápidamente.
+  
+  ```bash
+  # Guardas tus cambios temporalmente
+  git stash
+  
+  # Tu working directory queda limpio
+  # Cambias de rama, arreglas algo, etc.
+  
+  # Recuperas tus cambios
+  git stash pop
+  ```
+  
+  ```bash
+  # Guardar cambios en el stash
+  git stash
+  
+  # Guardar con un nombre descriptivo
+  git stash push -m "formulario de login sin terminar"
+  
+  # Ver todos los stashes guardados
+  git stash list
+  # stash@{0}: WIP on feature/login: abc123 Add form
+  # stash@{1}: On main: formulario de login sin terminar
+  
+  # Recuperar un stash específico (no el último)
+  git stash pop stash@{1}
+  
+  # Aplicar sin eliminar
+  git stash apply stash@{0}
+  
+  # Eliminar un stash sin aplicarlo
+  git stash drop stash@{0}
+  
+  # Eliminar todos los stashes
+  git stash clear
+  ```
+  
+  Flujo típico de uso
+  
+  ```bash
+  # Estás a medias en feature/login y te piden urgente fix en main
+  git stash                     # guardas tu trabajo
+  
+  git checkout main
+  git checkout -b hotfix/bug    # arreglas el bug
+  git commit -m "fix: bug crítico"
+  git checkout feature/login    # vuelves a tu rama
+  
+  git stash pop                 # recuperas tu trabajo
+  ```
+  
+  
+
+
 
 
 
@@ -2991,6 +3175,68 @@ Si me quiero bajar los cambios **NUNCA HACER GIT PULL** (a no ser que tenga los 
   git push --force-with-lease # Necesario si ya habías publicado la rama
   ```
 
+- **git rebase -i developt**: rebase interactivo. Permite reescribir el historial de commits de tu rama actual romando como base otra rama (develop) en este caso. Es como "reorganizar"  tus commits antes de integrarlos.
+
+  **¿Cuándo y para qué se usa?**
+
+  **1. Limpiar commits antes de hacer merge/PR** Cuando has trabajado en una feature y tienes commits sucios como:
+
+  ```
+  fix typo
+  wip
+  fix again
+  more fixes
+  feature: add login
+  ```
+
+  Con rebase interactivo los conviertes en un historial limpio y coherente.
+
+  **2. Actualizar tu rama con los últimos cambios de `develop`** Si `develop` avanzó mientras trabajabas, replanta tus commits *encima* del último estado de `develop`, evitando un merge commit innecesario.
+
+  **3. Reorganizar el orden de commits** Si lógicamente un commit debería ir antes que otro.
+
+  **¿Cómo se usa?**
+
+  ```bash
+  # 1. Asegúrate de estar en tu rama de feature
+  git checkout feature/mi-rama
+  
+  # 2. Lanzar el rebase interactivo contra develop
+  git rebase -i develop
+  ```
+
+  Se abrirá tu editor con algo así:
+
+  ```bash
+  pick a1b2c3 Add login form
+  pick d4e5f6 fix typo
+  pick g7h8i9 wip: validation
+  pick j0k1l2 fix validation
+  pick m3n4o5 Add tests for login
+  
+  # Commands:
+  # p, pick   = usar el commit tal cual
+  # r, reword = usar pero cambiar el mensaje
+  # e, edit   = pausar para modificar el commit
+  # s, squash = fusionar con el commit anterior
+  # f, fixup  = como squash pero descarta el mensaje
+  # d, drop   = eliminar el commit
+  ```
+
+  **Ejemplo de uso real** — aplastar commits sucios:
+
+  ```bash
+  pick a1b2c3 Add login form
+  f    d4e5f6 fix typo          ← se fusiona silenciosamente
+  f    g7h8i9 wip: validation   ← se fusiona silenciosamente
+  f    j0k1l2 fix validation    ← se fusiona silenciosamente
+  r    m3n4o5 Add tests for login  ← cambia el mensaje
+  ```
+
+  Resultado: solo **2 commits limpios** en lugar de 5.
+
+  
+
 - **git merge tool:** utilidad externa que se configura para resolver conflictos de fusión de manera visual. Utilizamos **Kdiff3**: tiene 4 paneles para ver los conflictos.
 
 - **git nah**: resetea todo. No es un comando oficial de Git, sino un alias (atajo personalizado) popular entre desarrolladores. Se utiliza para decir: "Olvida todo lo que acabo de hacer, limpia el desorden y vuelve al estado del último commit". (Es el botón del pánico para cuando has hecho cambios experimentales que no funcionan y quieres borrarlos todos de un plumazo)
@@ -3019,7 +3265,7 @@ Si me quiero bajar los cambios **NUNCA HACER GIT PULL** (a no ser que tenga los 
 
   Ej: git branch -f develop origin/develop
 
-- git cheery-pick: Copia commits concretos de cualquier rama y los aplica en la rama actual, en lugar de fusionar ramas enteras, selecciona commits individuales y los "replanta" donde estás.
+- **git cheery-pick:** Copia commits concretos de cualquier rama y los aplica en la rama actual, en lugar de fusionar ramas enteras, selecciona commits individuales y los "replanta" donde estás.
 
   ```bach
   Antes:                        Después de cherry-pick C:
@@ -3099,6 +3345,87 @@ Si me quiero bajar los cambios **NUNCA HACER GIT PULL** (a no ser que tenga los 
 | Historial    | Conserva todo  | Reescribe         | Añade copias          |
 | Uso típico   | Integrar ramas | Limpiar historial | Mover commits sueltos |
 | Granularidad | Baja           | Media             | Alta                  |
+
+- **git flow feature publish:** Sube tu rama de feature al repositorio remoto (origin) y la configura para hacer tracking. Es el equivalente a :
+
+  ```bash
+  git push -u origin feature/mi-feature
+  ```
+
+  Pero integrado en el flujo de git-flow:
+
+  ```bash
+  git flow feature publish <nombre-feature>
+  
+  # Ejemplo
+  git flow feature publish login
+  # → sube y trackea origin/feature/login
+  ```
+
+  **¿Cuándo usarlo?**
+
+  **1. Compartir tu feature con el equipo** Cuando otro desarrollador necesita trabajar en la misma feature que tú.
+
+  **2. Hacer backup en remoto** Para no perder tu trabajo local.
+
+  **3. Abrir un Pull Request / Code Review** Necesitas la rama en remoto antes de poder abrir un PR en GitHub/GitLab/Bitbucket.
+
+  **4. Trabajar desde varias máquinas** Publicas desde casa y continúas en la oficina.
+
+  
+
+  **Flujo típico:**
+
+  ```bash
+  # 1. Creas la feature
+  git flow feature start login
+  
+  # 2. Trabajas y commiteas
+  git add .
+  git commit -m "feat: add login form"
+  
+  # 3. La publicas para compartirla o hacer PR
+  git flow feature publish login
+  
+  # 4. Tu compañero la descarga
+  git flow feature track login
+  
+  # 5. Cuando está lista, la finalizas
+  git flow feature finish login
+  ```
+
+
+
+***Tracking:** establecer una relación permanente entre tu rama local y una rama remota. Le dices a Git "estas dos ramas están vinculadas".
+
+Establecer tracking manualmente:
+
+```bash
+# Al hacer push por primera vez
+git push -u origin feature/login
+
+# En una rama ya existente
+git branch --set-upstream-to=origin/feature/login feature/login
+
+# Al hacer checkout de una rama remota
+git checkout --track origin/feature/login
+```
+
+Resumen visual:
+
+```bash
+Sin tracking                    Con tracking
+─────────────────────────────────────────────────
+local: feature/login            local: feature/login
+remota: origin/feature/login         ↕  vinculadas
+                                remota: origin/feature/login
+
+git push  → ¿a dónde?          git push  → sabe solo
+git pull  → ¿de dónde?         git pull  → sabe solo
+git status → sin info remota   git status → ahead/behind
+```
+
+En una frase: **tracking = decirle a Git que dos ramas son la misma cosa en local y en remoto.**
 
 
 
@@ -3262,11 +3589,25 @@ Test específicos que hemos creado:
   php bin/console
   ```
 
+
+
+
+**Crear Test**
+
+
+
+**Probar los test:**
+
+- para pasar test a una carpeta entera
+
+  ```bash
+  cd lib/c17-shared-bundle
+  vendor/bin/phpstan
+  ```
+
   
 
 - 
-
-
 
 
 

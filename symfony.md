@@ -3349,6 +3349,337 @@ Las extensiones de Twig permiten crear funciones, filtros y otros elementos pers
 
 
 
+## **FORMULARIOS**
+
+```bash
+symfony composer require form
+```
+
+Crear un formulario: 
+
+```bash
+symfony console make:form
+```
+
+Este comando crea la clase con el nombre que le digamos, con los métodos buildForm y configureOptions
+
+
+
+
+
+Vinculación directa: $form->getData() (Esto pasa una entidad mapeada) en nuestro caso StarshipPart, si se corresponde con un campo que no está en la entidad se dice que no está mapeado.
+
+```bash
+symfony console debug:form (nombre tipo) opcional
+```
+
+**Tipos de formulario:**
+
+Symfony organiza los campos en tipos de campo (Field Types), formualrios de datos y formularios sin datos
+
+Tipos de campo integrados (Built-in):
+
+- **Texto:** TextType, EmailType, TextareaType, PasswordType, SearchType, UrlType, TelType, ColorType
+
+- **Numérico**: IntegerType, NumberType, MoneyType, RangeType, PercentType
+
+- **Elección:** ChoiceType, EntityType, EnumType, CountryType, LanguageType, LocaleType, CurrencyType, TimezoneType
+
+- **Fecha/Hora:**DateType, TimeType,DateTimeType, DateIntervalType, BirthdayType
+
+- **Binario:** CheckboxType, RadioType.Para valores booleanos y selecciones simples
+
+- **Archivo:**FileType. Para subida de archivos, mapea a UploadedFile
+
+- **Colección:**CollectionType, RepeatedType para campos repetidos (ej: confirmar contraseña)
+
+- **Oculto/Botón**: HiddenType, ButtonType, SubmitType, ResetType. FormType (base de todos)
+
+
+
+### **Temas (Themes)**
+
+Un tema es una plantilla Twig que define cómo se renderiza cada parte del formulario (widgets, labels, errrores, filas), controlan el HTML generado. El más usado en proyectos nuevos es `bootstrap_5_layout.html.twig`, que añade automáticamente las clases de Bootstrap. 
+
+Para aplicar un tema de formulario:
+
+- Globalmente (confif)
+
+  ```yaml
+  # config/packages/twig.yaml
+  twig:
+      form_themes: ['bootstrap_5_layout.html.twig']
+  ```
+
+- Sólo en una plantilla twig:
+
+  ```twig
+  {% form_theme form 'bootstrap_5_layout.html.twig' %}
+  {{ form(form) }}
+  ```
+
+  
+
+**Temas oficiales incluidos:**
+
+- Por defecto: form_div_layout.html.twig
+
+  Envuelve cada campo en un `<div>`. Sin clases CSS adicionales.
+
+- Bootstrap 5: bootstrap_5_layout.html.twig
+
+  Añade clases de Bootstrap 5: `form-control`, `form-label`, `is-invalid`, etc.
+
+- Bootstrap 4: bootstrap_4_layout.html.twig
+
+  Clases de Bootstrap 4. Disponible pero Bootstrap 5 es recomendado.
+
+- Foundation: foundation_5_layout.html.twig
+
+  Para proyectos que usan Zurb Foundation como framework CSS.
+
+Crear un tema personalizado:
+
+```twig
+{# templates/form/mi_tema.html.twig #}
+{% extends 'form_div_layout.html.twig' %}
+
+{# Personalizar cómo se renderiza un TextType #}
+{% block text_widget %}
+    {% set attr = attr|merge({'class': (attr.class|default('')) ~ ' input-personalizado'}) %}
+    {{- parent() -}}
+{% endblock %}
+
+{# Personalizar cualquier campo de un formulario específico #}
+{% block _usuario_nombre_widget %}
+    <input {{ block('widget_attributes') }} type="text" class="campo-especial">
+{% endblock %}
+```
+
+Puedes crear tu propio tema extendiendo cualquiera de los oficiales y sobreescribiendo bloques Twig con el patrón `_{nombreformulario}_{campo}_widget`. o `{tipo}_widget` para todos los campos de ese tipo.
+
+
+
+### Estructura de bloques en un tema
+
+- **form_row**:  Wrapper completo: label + widget + errores
+- **form_label**: Etiqueta `<label>` del campo
+- **form_widget:** El input en sí (`<input>`, `<select>`…)
+- **form_errors:** Lista de mensajes de error del campo.
+- **form_start:** apertura del `<form>` con atributos
+- **form_end:** CIerre del <form> y campos ocultos.
+
+
+
+
+
+### data_class: 
+
+Es la opción que vincula un formulario a una clase PHP (normalmente una entidad doctrine o DTO) permitiendo que los datos del formulario se mapeen automáticamente a las propiedades del objeto (los campos getters/setters del objeto). Sin él, el formulario devuelve un array. Con PHP 8 funciona perfectamente con constructor promotion y propiedades tipadas.
+
+Cuando el formularios se envía, Symfony rellena automáticamente las propiedades del objeto.
+
+```php
+// Datos → Producto $producto
+configureOptions(['data_class' => Producto::class
+```
+
+
+
+**Formulario con data_class:** retorna el objeto:
+
+```php
+// $form->getData() retorna:
+Usuario {
+  nombre: 'Ana',
+  email:  'ana@mail.com'
+}
+```
+
+**Formulario sin data_class:** Trabaja con arrays simples. Útil para búsquedas, filtros, contacto, sin entidad asociada.
+
+```php
+// Retorna array de datos
+// $form->getData() retorna:
+[
+  'nombre' => 'Ana',
+  'email'  => 'ana@mail.com',
+]
+```
+
+
+
+Cuando uar data_class:
+
+- Con Entidades Doctrine: crear o editar registros de base de datos. Symfony llama a getter/setters automáticamente.
+
+  ```php
+  // src/Entity/Producto.php
+  class Producto
+  {
+      private ?string $nombre = null;
+      private ?float  $precio = null;
+  
+      public function getNombre(): ?string { return $this->nombre; }
+      public function setNombre(string $nombre): static
+      {
+          $this->nombre = $nombre;
+          return $this;
+      }
+      // … getPrecio / setPrecio …
+  }
+  
+  // src/Form/ProductoType.php
+  public function configureOptions(OptionsResolver $resolver): void
+  {
+      $resolver->setDefaults([
+          'data_class' => Producto::class, // ← aquí
+      ]);
+  }
+  
+  // En el controlador, Symfony auto-rellena el objeto:
+  $producto = new Producto();
+  $form = $this->createForm(ProductoType::class, $producto);
+  $form->handleRequest($request);
+  // Después del POST: $producto->getNombre() ya tiene el valor enviado
+  ```
+
+- DTOs y Value Objects: Objetos de transferencia de datos que no son entidades pero tienen una estructura definida.
+
+  ```php
+  // PHP 8: constructor promotion + data_class funciona igual
+  class CrearProductoDTO
+  {
+      public function __construct(
+          public string $nombre = '',
+          public float  $precio = 0.0,
+      ) {}
+  }
+  
+  // data_class funciona con propiedades públicas también
+  $resolver->setDefaults(['data_class' => CrearProductoDTO::class]);
+  ```
+
+
+
+Si usas propiedades privadas, la clase **debe tener getters y setters** con el nombre estándar (getNombre/setNombre) para que Symfony pueda mapear los campos.
+
+
+
+Cuando no usar data_class:
+
+- Formularios de búsqueda: filtros, búsquedas, contacto. Trabajan con datos temporales sin necesidad de objeto. (nosotros en CSI se utiliza con data_class)
+- Formularios de login: Symfony gestiona los formularios de autenticación por separado con el security component.
+
+
+
+
+
+### **Crear formulario:**
+
+Siempre se sigue el mismo flujo: clase `XxxType extends AbstractType` → `createForm()` en el controlador → `handleRequest()` → `isSubmitted() && isValid()` → renderizar en Twig.
+
+- **Archivo `XxxType`** — es la práctica estándar. `configureOptions()` es donde defines `data_class` y también puedes declarar opciones personalizadas con `setDefaults()` + `setAllowedTypes()`, pasándolas desde el controlador al crear el formulario. Si necesitas un campo reutilizable (como "precio siempre en euros"), creas otro Type con `getParent()`.
+
+
+
+1. **Crear la clase del formulario (Form Type)**
+
+   ```php
+   namespace App\Form;
+   
+   use Symfony\Component\Form\AbstractType;
+   use Symfony\Component\Form\FormBuilderInterface;
+   use Symfony\Component\Form\Extension\Core\Type\TextType;
+   use Symfony\Component\Form\Extension\Core\Type\EmailType;
+   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+   use Symfony\Component\OptionsResolver\OptionsResolver;
+   use App\Entity\Usuario;
+   
+   class UsuarioType extends AbstractType
+   {
+       public function buildForm(FormBuilderInterface $builder, array $options): void
+       {
+           $builder
+               ->add('nombre', TextType::class, [
+                   'label' => 'Nombre completo',
+                   'attr'  => ['placeholder' => 'Ej: Ana García'],
+               ])
+               ->add('email', EmailType::class)
+               ->add('guardar', SubmitType::class, [
+                   'label' => 'Guardar usuario'
+               ]);
+       }
+   
+       public function configureOptions(OptionsResolver $resolver): void
+       {
+           $resolver->setDefaults([
+               'data_class' => Usuario::class,
+           ]);
+       }
+   }
+   ```
+
+2. **Usar el formulario en el controlador**
+
+   ```php
+   use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+   use Symfony\Component\HttpFoundation\Request;
+   use App\Form\UsuarioType;
+   use App\Entity\Usuario;
+   
+   class UsuarioController extends AbstractController
+   {
+       public function nuevo(Request $request, EntityManagerInterface $em): Response
+       {
+           $usuario = new Usuario();
+           $form = $this->createForm(UsuarioType::class, $usuario);
+   
+           $form->handleRequest($request);
+   
+           if ($form->isSubmitted() && $form->isValid()) {
+               $em->persist($usuario);
+               $em->flush();
+               return $this->redirectToRoute('usuario_lista');
+           }
+   
+           return $this->render('usuario/nuevo.html.twig', [
+               'form' => $form,
+           ]);
+       }
+   }
+   ```
+
+3. **Renderizar en Twig**
+
+   ```twig
+   {{ form_start(form) }}
+       {{ form_row(form.nombre) }}   {# label + widget + errores #}
+       {{ form_row(form.email) }}
+       {{ form_row(form.guardar) }}
+   {{ form_end(form) }}
+   
+   {# O renderizar todo de una vez #}
+   {{ form(form) }}
+   
+   {# O control total campo a campo #}
+   {{ form_label(form.nombre) }}
+   {{ form_widget(form.nombre, {'attr': {'class': 'mi-clase'}}) }}
+   {{ form_errors(form.nombre) }}
+   ```
+
+1. Se crea la clase `XxxType extends AbstractType`
+2. El controlador instancia la entidad y llama a `createForm(XxxType::class, $entidad)`
+3. `handleRequest($request)` procesa el POST automáticamente
+4. `isSubmitted() && isValid()` confirma envío y validaciones
+5. Twig renderiza con `form(form)` o `form_row(form.campo)
+
+
+
+
+
+
+
 
 
 # IMPORTANTE
