@@ -3569,11 +3569,10 @@ Si usas propiedades privadas, la clase **debe tener getters y setters** con el n
 Cuando no usar data_class:
 
 - Formularios de búsqueda: filtros, búsquedas, contacto. Trabajan con datos temporales sin necesidad de objeto. (nosotros en CSI se utiliza con data_class)
+
 - Formularios de login: Symfony gestiona los formularios de autenticación por separado con el security component.
 
-
-
-
+  
 
 ### **Crear formulario:**
 
@@ -3676,9 +3675,134 @@ Siempre se sigue el mismo flujo: clase `XxxType extends AbstractType` → `creat
 
 
 
+### Archivo OptionsType
+
+Crear un Form Type personalizado (el archivo XxxType.php) es la  práctica estándar en Symfony  de encapsular y reutilizar formularios.
+
+Cuando crear un archivo TypePropio
+
+- **Formularios reutilizables:** Si el formulario se usa en más de un controlador o necesita lógica propia. (Siempre)
+- **Formularios complejos:** Más de 3-4 campos, lógica condicional, eventos de formularios, sub-formularios. (Recomendado)
+- Puedes crear el formularios directamente en el controlador con createFormBuilder() para casos muy sencillos. (Opcional)
+
+Estructura completa de un Type en Symfony 7 + PHP8
+
+```php
+<?php
+declare(strict_types=1); // PHP 8: activar tipos estrictos
+
+namespace App\Form;
+
+use App\Entity\Producto;
+use App\Enum\CategoriaEnum; // PHP 8.1 Enum
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+
+class ProductoType extends AbstractType
+{
+    /**
+     * Construye los campos del formulario.
+     * $options permite pasar datos desde el controlador.
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('nombre', TextType::class, [
+                'label'       => 'Nombre del producto',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(min: 3, max: 200),
+                ],
+            ])
+            ->add('precio', MoneyType::class, [
+                'currency'    => 'EUR',
+                'constraints' => [new Assert\Positive()],
+            ])
+            ->add('categoria', EnumType::class, [
+                'class'   => CategoriaEnum::class, // PHP 8.1
+                'label'   => 'Categoría',
+                'expanded' => $options['mostrar_radio'], // opción custom
+            ]);
+    }
+
+    /**
+     * Opciones del formulario:
+     * - data_class: vincula al objeto Producto
+     * - Opciones personalizadas con setDefined/setAllowedTypes
+     */
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class'   => Producto::class,
+            'mostrar_radio' => false,    // opción propia con valor por defecto
+        ]);
+
+        // Restringir el tipo permitido para la opción personalizada
+        $resolver->setAllowedTypes('mostrar_radio', 'bool');
+    }
+
+    /**
+     * Prefijo CSS del formulario (opcional).
+     * Afecta al id de los campos HTML generados.
+     */
+    public function getBlockPrefix(): string
+    {
+        return 'producto'; // genera id="producto_nombre"
+    }
+}
+```
+
+Pasar opciones personalizadas desde el controlador:
+
+```php
+// En el controlador, pasar la opción personalizada:
+$form = $this->createForm(ProductoType::class, $producto, [
+    'mostrar_radio' => true, // ← opción definida en configureOptions
+]);
+```
+
+**Métodos principales de AbstractType:**
+
+- **buildForm:** Define los campos. Requerido
+- **configureOptions():** Define data_class y opciones. Recomendado.
+- **getBlockPrefix()**: Prefijo para IDs y bloques Twig. Opcional
+- **getParent():** Para extender otro tipo de campo. Avanzado.
 
 
 
+**Crear un tipo de campo reutilizable (Custom Field Type)**
+
+```php
+// Tipo de campo propio, no un formulario completo
+class DineroEurosType extends AbstractType
+{
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'currency' => 'EUR',
+            'scale'    => 2,
+        ]);
+    }
+
+    // Hereda todo el comportamiento de MoneyType
+    public function getParent(): string
+    {
+        return MoneyType::class;
+    }
+}
+
+// Uso: un campo personalizado reutilizable en cualquier formulario
+$builder->add('precio', DineroEurosType::class);
+```
+
+
+
+Nota: en Symfony, los tipos de formulario se autoregistran como servicios gracias al **autoconfigure** de Symfony DI.
 
 
 
