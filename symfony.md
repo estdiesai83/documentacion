@@ -3806,6 +3806,53 @@ Nota: en Symfony, los tipos de formulario se autoregistran como servicios gracia
 
 
 
+## PHP en Symfony
+
+**Array Shapes (Vía PHPStan/Psalm):** Aunque no es una función de ejecución, en Symfony 7 se usa mucho para documentar qué contiene un array:
+
+```php
+/** @param array{id: int, name: string} $data */
+public function update(array $data): void { ... }
+```
+
+ **Funciones Imprescindibles (Cheat Sheet)**
+
+Para trabajar en Symfony 7, estas son las funciones que más usarás a diario:
+
+- **array_map:** Transformar una colección de entidades en un array de IDs o nombres.
+
+| **Función**          | **Uso en Symfony**                                           |
+| -------------------- | ------------------------------------------------------------ |
+| `array_map()`        |                                                              |
+| `array_filter()`     | Limpiar resultados de una consulta o quitar elementos nulos de un formulario. |
+| `array_column()`     | Extraer una sola columna de un resultado de base de datos (PDO/Doctrine). |
+| `array_key_exists()` | Verificar si un parámetro opcional viene en la configuración. |
+| `array_merge()`      | Combinar configuraciones o parámetros de rutas.              |
+
+
+
+**¿Cuándo usar Arrys vs Collections?**
+
+- **Usa Arrays nativos:** Para configuraciones simples, pasar datos a una vista Twig o cuando el rendimiento sea crítico y los datos sean pocos.
+- **Usa ArrayCollection (Doctrine):** Cuando trabajes con entidades. Las colecciones de Doctrine parecen arrays, pero tienen métodos como `.filter`, `.map()` y `matching` que permiten hacer criterios de búsqueda sin traer todos los datos de la base de datos.
+
+**Arrays en Twig**
+
+```twig
+{# Acceso directo #}
+{{ mi_array.clave }} 
+
+{# Filtros de transformación #}
+{% set nombres = usuarios|map(u => u.name)|join(', ') %}
+
+{# Comprobar si está vacío #}
+{% if mi_array is empty %} ... {% endif %}
+```
+
+**Resumen:** En Symfony 7, la tendencia es usar **objetos (DTOs)** para mover datos importantes y dejar los **arrays** solo para estructuras temporales o configuraciones rápidas.
+
+
+
 # IMPORTANTE
 
 Cada vez que se hace referencia a un nombre de clase, se debe tener una declaración **use** correspondiente, de lo contrario PHP te dará un error diciendo que no puede encontrar la clase **Response**. 
